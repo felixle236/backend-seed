@@ -1,0 +1,7 @@
+import IBaseModel from '../../common/interfaces/IBaseModel';
+
+interface I{camelName} extends IBaseModel {
+    name: string;
+}
+
+export default I{camelName};

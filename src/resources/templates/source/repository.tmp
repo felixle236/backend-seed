@@ -1,0 +1,22 @@
+import I{camelName} from '../model/{pascalName}/interfaces/I{camelName}'; // eslint-disable-line
+import {camelName}Schema from '../dataAccess/schemas/{camelName}Schema';
+import BaseRepository from './base/BaseRepository';
+import {camelName}Create from '../model/{pascalName}/{camelName}Create'; // eslint-disable-line
+import {camelName}Update from '../model/{pascalName}/{camelName}Update'; // eslint-disable-line
+
+class {camelName}Repository extends BaseRepository<I{camelName}> {
+    constructor() {
+        super({camelName}Schema);
+    }
+
+    async create(data: {camelName}Create): Promise<I{camelName}> {
+        return await super.create(data);
+    }
+
+    async update(_id: string, data: {camelName}Update): Promise<boolean> {
+        return await super.update(_id, data);
+    }
+}
+
+Object.seal({camelName}Repository);
+export default {camelName}Repository;

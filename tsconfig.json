@@ -1,0 +1,33 @@
+{
+    "compilerOptions": {
+        "typeRoots": ["node_modules/@types"],
+        "target": "es2015",
+        "module": "commonjs",
+        "lib": [
+            "es5",
+            "es2015",
+            "es2017",
+            "dom",
+            "scripthost"
+        ],
+        "isolatedModules": false,
+        "noImplicitAny": false,
+        "sourceMap": true,
+        "removeComments": true,
+        "preserveConstEnums": true,
+        "noImplicitThis": true,
+        "strictNullChecks": true,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "suppressImplicitAnyIndexErrors": true,
+        "outDir": "./dest/",
+        "rootDir": "./src/"
+    },
+    "include": [
+        "./src/**/*.ts"
+    ],
+    "exclude": [
+        "node_modules",
+        "**/*.spec.ts"
+    ]
+}

@@ -1,0 +1,27 @@
+import I{camelName} from './interfaces/I{camelName}'; // eslint-disable-line
+
+class {camelName} {
+    _id: string;
+    name: string;
+
+    createdAt?: Date;
+    updatedAt?: Date;
+
+    constructor(model: I{camelName}) {
+        if (!model)
+            return;
+
+        this._id = model._id && model._id.toString();
+        this.name = model.name;
+
+        this.createdAt = model.createdAt;
+        this.updatedAt = model.updatedAt;
+    }
+
+    static parseArray(list: I{camelName}[]): {camelName}[] {
+        return list.map(item => new {camelName}(item));
+    }
+}
+
+Object.seal({camelName});
+export default {camelName};

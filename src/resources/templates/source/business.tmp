@@ -1,0 +1,61 @@
+import {camelName} from '../model/{pascalName}/{camelName}';
+import {camelName}Create from '../model/{pascalName}/{camelName}Create'; // eslint-disable-line
+import {camelName}Update from '../model/{pascalName}/{camelName}Update'; // eslint-disable-line
+import I{camelName}Business from './interfaces/I{camelName}Business'; // eslint-disable-line
+import {camelName}Repository from '../repository/{camelName}Repository';
+
+class {camelName}Business implements I{camelName}Business {
+    private {pascalName}Repository: {camelName}Repository;
+
+    constructor() {
+        this.{pascalName}Repository = new {camelName}Repository();
+    }
+
+    async getList(page: number, limit: number): Promise<{camelName}[]> {
+        let {pascalName}s = await this.{pascalName}Repository.find(null, null, page, limit);
+        return {camelName}.parseArray({pascalName}s);
+    }
+
+    async getCount(): Promise<number> {
+        return await this.{pascalName}Repository.getCount();
+    }
+
+    async get(_id: string): Promise<{camelName} | null> {
+        if (!_id)
+            return null;
+
+        let {pascalName} = await this.{pascalName}Repository.get(_id);
+        return {pascalName} && new {camelName}({pascalName});
+    }
+
+    async create(data: {camelName}Create): Promise<{camelName}> {
+        let {pascalName};
+        if (validateName(data.name))
+            {pascalName} = await this.{pascalName}Repository.create(data);
+
+        return {pascalName} && new {camelName}({pascalName});
+    }
+
+    async update(_id: string, data: {camelName}Update): Promise<{camelName} | null> {
+        if (validateName(data.name))
+            await this.{pascalName}Repository.update(_id, data);
+
+        return await this.get(_id);
+    }
+
+    async delete(_id: string): Promise<boolean> {
+        return await this.{pascalName}Repository.delete(_id);
+    }
+}
+
+function validateName(name: string): boolean {
+    if (!name)
+        throw new Error('Name is required!');
+    else if (name.trim().length < 4)
+        throw new Error('Minimum name is 4 characters!');
+
+    return true;
+}
+
+Object.seal({camelName}Business);
+export default {camelName}Business;

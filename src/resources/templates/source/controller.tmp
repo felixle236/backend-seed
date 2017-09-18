@@ -1,0 +1,48 @@
+import BaseController from './base/BaseController';
+import {camelName}Business from '../app/business/{camelName}Business';
+import I{camelName}Business from '../app/business/interfaces/I{camelName}Business';
+import {camelName}Create from '../app/model/{pascalName}/{camelName}Create';
+import {camelName}Update from '../app/model/{pascalName}/{camelName}Update';
+import Authenticator from '../system/Authenticator';
+
+class {camelName}Controller extends BaseController {
+    private {pascalName}Business: I{camelName}Business = new {camelName}Business();
+
+    constructor() {
+        super();
+
+        this.get('/list/:page/:limit', this.get{camelName}s.bind(this));
+        this.get('/list/count', this.getCount{camelName}s.bind(this));
+        this.get('/:_id', this.get{camelName}ById.bind(this));
+        this.post('/', Authenticator.isAuthenticated, this.create{camelName}.bind(this));
+        this.put('/:_id', Authenticator.isAuthenticated, this.update{camelName}.bind(this));
+        this.delete('/:_id', Authenticator.isHandlerRoles('Administrator'), this.delete{camelName}.bind(this));
+    }
+
+    async get{camelName}s(req): Promise<any> {
+        return await this.{pascalName}Business.getList(req.params.page, req.params.limit);
+    }
+
+    async getCount{camelName}s(req): Promise<any> {
+        return await this.{pascalName}Business.getCount();
+    }
+
+    async get{camelName}ById(req): Promise<any> {
+        return await this.{pascalName}Business.get(req.params._id);
+    }
+
+    async create{camelName}(req): Promise<any> {
+        return await this.{pascalName}Business.create(new {camelName}Create(req.body));
+    }
+
+    async update{camelName}(req): Promise<any> {
+        return await this.{pascalName}Business.update(req.params._id, new {camelName}Update(req.body));
+    }
+
+    async delete{camelName}(req): Promise<any> {
+        return await this.{pascalName}Business.delete(req.params._id);
+    }
+}
+
+Object.seal({camelName}Controller);
+export default {camelName}Controller;

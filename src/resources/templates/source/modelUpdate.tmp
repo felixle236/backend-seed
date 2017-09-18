@@ -1,0 +1,15 @@
+import I{camelName} from "./interfaces/I{camelName}"; // eslint-disable-line
+
+class {camelName}Update {
+    name: string;
+
+    constructor(model: I{camelName}) {
+        if (!model)
+            return;
+
+        this.name = model.name;
+    }
+}
+
+Object.seal({camelName}Update);
+export default {camelName}Update;
