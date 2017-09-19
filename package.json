@@ -10,7 +10,7 @@
         "build": "npm run eslint && ./node_modules/.bin/grunt build",
         "start": "npm run eslint && ./node_modules/.bin/grunt start",
         "start-with-data": "npm run eslint && ./node_modules/.bin/grunt start-with-data",
-        "deploy": "npm run eslint && pm2 start ./node_modules/.bin/grunt -- deploy",
+        "deploy": "npm run eslint && ./node_modules/.bin/grunt deploy",
         "test": "./node_modules/.bin/mocha -r ./node_modules/ts-node/register ./src/test/**/*.ts"
     },
     "dependencies": {
