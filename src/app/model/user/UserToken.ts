@@ -1,4 +1,4 @@
-import LoginProvider from './enums/LoginProvider';
+import {LoginProvider} from '../common/CommonType';
 
 class UserToken {
     provider: LoginProvider;

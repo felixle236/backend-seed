@@ -12,7 +12,7 @@ let connection;
 const roleRepository = new RoleRepository();
 
 before(done => {
-    connection = DataAccess.connect(Project.DB_CONN_TEST);
+    connection = DataAccess.connect(Project.DB_CONN_URI_TEST);
     connection.once('open', async () => {
         await connection.db.dropDatabase();
         done();

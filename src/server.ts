@@ -15,35 +15,41 @@ const port = parseInt(<string>process.env.PORT, 10) || Project.PORT;
 app.set('port', port);
 app.use(MiddlewareLoader.configuration);
 
-DataAccess.connect(Project.DB_CONN);
+DataAccess.connect(Project.DB_CONN_URI, {
+    user: Project.DATABASE.USERNAME,
+    pass: Project.DATABASE.PASSWORD,
+    useMongoClient: true
+});
 const debug = require('debug')('express-mongodb:server');
 
-if (process.env.NODE_ENV == 'development' && process.env.DEBUG_MODE) {
+if (process.env.NODE_ENV === 'Development' && process.env.DEBUG_MODE) {
     initData();
     createHttpServer();
 }
 else {
     if (cluster.isMaster) {
-        let numCPUs = os.cpus().length;
         console.log(`Master ${process.pid} is running`);
+        DataLoader.initMasterEvent(cluster);
 
-        // Fork workers.
-        for (let i = 0; i < numCPUs; i++) {
-            cluster.fork();
-        }
+        initData().then(() => {
+            let numCPUs = os.cpus().length;
 
-        cluster.on('exit', (worker, code, signal) => {
-            console.log(`worker ${worker.process.pid} died`);
+            // Fork workers.
+            for (let i = 0; i < numCPUs; i++) {
+                cluster.fork();
+            }
+            cluster.on('exit', (worker, code, signal) => {
+                console.log(`worker ${worker.process.pid} died`);
+            });
+            console.log(`Master ${process.pid} is started`);
         });
-
-        initData();
     }
     else {
         // Workers can share any TCP connection
         // In this case it is an HTTP server
-
         createHttpServer();
-        console.log(`Worker ${process.pid} started`);
+        DataLoader.initWorkerEvent();
+        console.log(`Worker ${process.pid} is started`);
     }
 }
 

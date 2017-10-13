@@ -9,7 +9,7 @@ import UserUpdate from '../model/user/UserUpdate'; // eslint-disable-line
 import UserLogin from '../model/user/UserLogin';
 import UserToken from '../model/user/UserToken';
 import UserPermission from '../model/user/UserPermission';
-import LoginProvider from '../model/user/enums/LoginProvider';
+import {LoginProvider} from '../model/common/CommonType';
 import DateHelper from '../../helpers/DateHelper';
 import Project from '../../config/Project';
 import Authenticator from '../../system/Authenticator';
@@ -48,7 +48,7 @@ class UserBusiness implements IUserBusiness {
         if (!user)
             throw new Error('Email or password is incorrect!');
 
-        if (!user.token || user.token.provider != LoginProvider.Local || !user.token.accessToken || !user.token.tokenExpire || user.token.tokenExpire < new Date())
+        if (!user.token || user.token.provider !== LoginProvider.Local || !user.token.accessToken || !user.token.tokenExpire || user.token.tokenExpire < new Date())
             user.token = await this.updateUserToken(user._id, new UserToken(LoginProvider.Local));
 
         return new UserLogin(user);

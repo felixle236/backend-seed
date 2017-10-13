@@ -11,11 +11,50 @@ class UserRepository extends BaseRepository<IUser> {
     }
 
     async getUserLogin(email: string, password: string): Promise<IUser | null> {
-        return await super.findOne({email: email, password: password});
+        let param = {
+            query: {
+                email: email,
+                password: password
+            }
+        };
+        return await super.findOne(param);
     }
 
     async getByToken(token: string): Promise<IUser | null> {
-        return await super.findOne({'token.accessToken': token, 'token.tokenExpire': {$gt: new Date()}});
+        let param = {
+            query: {
+                'token.accessToken': token,
+                'token.tokenExpire': {
+                    $gt: new Date()
+                }
+            }
+        };
+        return await super.findOne(param);
+    }
+
+    async getByEmail(email): Promise<IUser | null> {
+        let param = {
+            query: {
+                email: email
+            }
+        };
+        return await super.findOne(param);
+    }
+
+    async checkEmailExists(email: string): Promise<boolean> {
+        let param = {
+            query: {
+                email: email,
+                $or: [
+                    {deletedAt: {$exists: true}},
+                    {deletedAt: null}
+                ]
+            }
+        };
+        let user = await this.model.findOne(param);
+        if (user)
+            return true;
+        return false;
     }
 
     async create(data: UserCreate): Promise<IUser> {

@@ -5,15 +5,16 @@ class DataAccess {
         return mongoose.connection;
     }
 
-    static connect(connectionString: string): mongoose.Connection {
+    static connect(connectionString: string, connectionOptions?: object): mongoose.Connection {
         (<any>mongoose).Promise = Promise;
 
         // mongoose.connection.once('open', () => {
         //     console.log('Connected to mongodb.');
         // });
-        mongoose.connect(connectionString, {
+        connectionOptions = process.env.NODE_ENV === 'Production' ? connectionOptions : {
             useMongoClient: true,
-        });
+        };
+        mongoose.connect(connectionString, connectionOptions);
 
         return mongoose.connection;
     }

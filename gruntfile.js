@@ -1,4 +1,4 @@
-module.exports = function (grunt) {
+module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-sync');
     grunt.loadNpmTasks('grunt-exec');
     grunt.loadNpmTasks('grunt-contrib-watch');
@@ -33,19 +33,19 @@ module.exports = function (grunt) {
             start_with_data: {
                 cmd: () => {
                     process.env['DATA_TEST'] = true;
-                    process.env['NODE_ENV'] = 'development';
+                    process.env['NODE_ENV'] = 'Development';
                     return 'node ./dest/server.js';
                 }
             },
             start: {
                 cmd: () => {
-                    process.env['NODE_ENV'] = 'development';
+                    process.env['NODE_ENV'] = 'Development';
                     return 'node ./dest/server.js';
                 }
             },
             deploy: {
                 cmd: () => {
-                    process.env['NODE_ENV'] = 'deployment';
+                    process.env['NODE_ENV'] = 'Production';
                     return 'node ./dest/server.js';
                 }
             },

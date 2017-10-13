@@ -12,19 +12,19 @@ class UserController extends BaseController {
     constructor() {
         super();
 
-        this.get('/list/:page/:limit', this.getUsers.bind(this));
+        this.get('/list', this.validatePagination(), this.getUsers.bind(this));
         this.get('/list/count', this.getCountUsers.bind(this));
         this.get('/:_id', this.getUserById.bind(this));
         this.get('/profile', Authenticator.isAuthenticated, this.getProfile.bind(this));
         this.post('/signup', this.signup.bind(this));
-        this.post('/', Authenticator.isHandlerRoles('Administrator'), this.createUser.bind(this));
-        this.put('/:_id', Authenticator.isHandlerRoles('Administrator'), this.updateUser.bind(this));
+        this.post('/', Authenticator.checkRoles('Administrator'), this.createUser.bind(this));
+        this.put('/:_id', Authenticator.checkRoles('Administrator'), this.updateUser.bind(this));
         this.put('/profile', Authenticator.isAuthenticated, this.updateProfile.bind(this));
-        this.delete('/:_id', Authenticator.isHandlerRoles('Administrator'), this.deleteUser.bind(this));
+        this.delete('/:_id', Authenticator.checkRoles('Administrator'), this.deleteUser.bind(this));
     }
 
     async getUsers(req): Promise<any> {
-        return await this.userBusiness.getList(req.params.page, req.params.limit);
+        return await this.userBusiness.getList(req.query.page, req.query.limit);
     }
 
     async getCountUsers(req): Promise<any> {

@@ -9,7 +9,7 @@ import DateHelper from '../helpers/DateHelper';
 class Authenticator {
     private app: any;
     private userBusiness: IUserBusiness = new UserBusiness();
-    static userKey = 'user_login';
+    static readonly userKey = 'user_login';
     // Store list user login in memory
     private static authenticators: {expire: Date, userLogin: UserLogin}[] = [];
 
@@ -20,13 +20,13 @@ class Authenticator {
             try {
                 let expandTime = 10; // minutes
                 let token = <string>req.headers['authorization'];
-                let auth = Authenticator.authenticators.find(a => a.expire && a.expire >= new Date() && a.userLogin && a.userLogin.accessToken == token);
+                let auth = Authenticator.authenticators.find(a => a.expire && a.expire >= new Date() && a.userLogin && a.userLogin.accessToken === token);
 
                 if (!auth) {
                     let userLogin = await this.userBusiness.getUserLoginByToken(token);
 
                     if (userLogin) {
-                        auth = Authenticator.authenticators.find(a => a.userLogin && a.userLogin.user && a.userLogin.user._id == userLogin!.user._id);
+                        auth = Authenticator.authenticators.find(a => a.userLogin && a.userLogin.user && a.userLogin.user._id === userLogin!.user._id);
                         if (auth) {
                             auth.expire = DateHelper.addMinutes(new Date(), expandTime);
                             auth.userLogin = userLogin;
@@ -75,7 +75,7 @@ class Authenticator {
 
     // Use to remove authenticator in memory after modify info that relate to authentication
     static removeAuthenticator(userId: string) {
-        let index = Authenticator.authenticators.findIndex(a => a.userLogin && a.userLogin.user && a.userLogin.user._id == userId);
+        let index = Authenticator.authenticators.findIndex(a => a.userLogin && a.userLogin.user && a.userLogin.user._id === userId);
         if (index !== -1)
             Authenticator.authenticators.splice(index, 1);
     }
@@ -89,7 +89,7 @@ class Authenticator {
         }
     }
 
-    static isRoles(userLogin: UserLogin, ...roleNames: string[]): boolean {
+    static checkHandlerRoles(userLogin: UserLogin, ...roleNames: string[]): boolean {
         if (userLogin && userLogin.permission && userLogin.permission.roles) {
             roleNames = roleNames.map(roleName => roleName.toLowerCase());
 
@@ -98,7 +98,7 @@ class Authenticator {
             }).map(role => role._id);
 
             for (let i = 0; i < roleIds.length; i++) {
-                if (userLogin.permission.roles.includes(roleIds[i]))
+                if (userLogin.permission.roles.find(role => role._id === roleIds[i]))
                     return true;
             }
         }
@@ -106,23 +106,23 @@ class Authenticator {
         return false;
     }
 
-    static isHandlerRoles(...roleNames: string[]): express.RequestHandler {
+    static checkRoles(...roleNames: string[]): express.RequestHandler {
         return (req: express.Request, res: express.Response, next: express.NextFunction) => {
             let userLogin: UserLogin = req[Authenticator.userKey];
-            if (Authenticator.isRoles(userLogin, ...roleNames))
+            if (Authenticator.checkHandlerRoles(userLogin, ...roleNames))
                 next();
             else
                 Authenticator.accessDenied(res);
         };
     }
 
-    static isClaims(userLogin: UserLogin, ...claims: string[]): boolean {
+    static checkHandlerClaims(userLogin: UserLogin, ...claims: string[]): boolean {
         if (userLogin && userLogin.permission && (userLogin.permission.roles || userLogin.permission.claims)) {
             let userClaims: string[] = userLogin.permission.claims || [];
 
             if (userLogin.permission.roles) {
                 DataLoader.roles.filter(role => {
-                    return userLogin.permission.roles!.includes(role._id);
+                    return userLogin.permission.roles.findIndex(r => r._id === role._id) !== -1;
                 }).forEach(role => {
                     userClaims.concat(role.claims || []);
                 });
@@ -139,10 +139,10 @@ class Authenticator {
         return false;
     }
 
-    static isHandlerClaims(...claims: string[]): express.RequestHandler {
+    static checkClaims(...claims: string[]): express.RequestHandler {
         return (req: express.Request, res: express.Response, next: express.NextFunction) => {
             let userLogin: UserLogin = req[Authenticator.userKey];
-            if (Authenticator.isClaims(userLogin, ...claims))
+            if (Authenticator.checkHandlerClaims(userLogin, ...claims))
                 next();
             else
                 Authenticator.accessDenied(res);

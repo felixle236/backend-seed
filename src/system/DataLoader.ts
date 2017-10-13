@@ -1,24 +1,69 @@
 import Role from '../app/model/role/Role';
 import RoleBusiness from '../app/business/RoleBusiness';
 import IRoleBusiness from '../app/business/interfaces/IRoleBusiness';
+import {ClusterRequestType} from '../app/model/common/CommonType';
 
 class DataLoader {
+    private static isUseCluster: boolean = false;
     private static roleBusiness: IRoleBusiness = new RoleBusiness();
-
     static roles: Role[] = [];
 
-    static async loadAll(): Promise<void> {
-        await DataLoader.loadRoles();
-
-        if (process.env.NODE_ENV == 'development')
-            console.log('Global Data ===> Done.');
+    static initMasterEvent(cluster) {
+        cluster.on('message', async (worker, msg: {type: ClusterRequestType}, handle) => {
+            if (msg.type === ClusterRequestType.LoadAllData) {
+                DataLoader.pushDataToWorker(worker, msg.type, {
+                    roles: DataLoader.roles
+                });
+            }
+            else if (msg.type === ClusterRequestType.UpdateRole) {
+                DataLoader.roles = await DataLoader.roleBusiness.getAll();
+                DataLoader.pushDataToAllWorkers(cluster, msg.type, DataLoader.roles);
+            }
+        });
     }
 
-    static async loadRoles(): Promise<void> {
+    static initWorkerEvent() {
+        DataLoader.isUseCluster = true;
+
+        process.on('message', (msg: {type: ClusterRequestType, data: any}) => {
+            if (msg.type === ClusterRequestType.LoadAllData) {
+                DataLoader.roles = msg.data && msg.data.roles;
+            }
+            else if (msg.type === ClusterRequestType.UpdateRole)
+                DataLoader.roles = msg.data;
+        });
+
+        (<any>process).send({type: ClusterRequestType.LoadAllData});
+    }
+
+    static pushDataToAllWorkers(cluster, type, data) {
+        for (let key in cluster.workers) {
+            if (cluster.workers.hasOwnProperty(key)) {
+                let worker = cluster.workers[key];
+                DataLoader.pushDataToWorker(worker, type, data);
+            }
+        }
+    }
+
+    static pushDataToWorker(worker, type, data) {
+        worker.send({type: type, data: data});
+    }
+
+    // Using by master or normal, only called from server.ts file
+    static async loadAll(): Promise<void> {
         DataLoader.roles = await DataLoader.roleBusiness.getAll();
 
-        if (process.env.NODE_ENV == 'development')
-            console.log('The roles data loading has finished.');
+        console.log('Load global Data ===> Done.');
+    }
+
+    // Using by workers or normal
+    static async loadRoles(): Promise<void> {
+        if (DataLoader.isUseCluster)
+            (<any>process).send({type: ClusterRequestType.UpdateRole});
+        else
+            DataLoader.roles = await DataLoader.roleBusiness.getAll();
+
+        console.log('The roles data loading has finished.');
     }
 }
 

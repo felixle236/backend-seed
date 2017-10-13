@@ -9,14 +9,14 @@ import User from '../../app/model/user/User'; // eslint-disable-line
 import UserCreate from '../../app/model/user/UserCreate';
 import UserUpdate from '../../app/model/user/UserUpdate';
 import UserToken from '../../app/model/user/UserToken';
-import LoginProvider from '../../app/model/user/enums/LoginProvider';
+import {LoginProvider} from '../../app/model/common/CommonType';
 import DateHelper from '../../helpers/DateHelper';
 
 let connection;
 const userRepository = new UserRepository();
 
 before(done => {
-    connection = DataAccess.connect(Project.DB_CONN_TEST);
+    connection = DataAccess.connect(Project.DB_CONN_URI_TEST);
     connection.once('open', async () => {
         await connection.db.dropDatabase();
         done();

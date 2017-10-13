@@ -2,7 +2,6 @@ import UserBusiness from '../app/business/UserBusiness';
 import IUserBusiness from '../app/business/interfaces/IUserBusiness';
 import RoleBusiness from '../app/business/RoleBusiness';
 import IRoleBusiness from '../app/business/interfaces/IRoleBusiness';
-
 import getRoles from '../resources/initialData/Roles';
 import getRoleClaims from '../resources/initialData/RoleClaims';
 import getUsers from '../resources/initialData/Users';
@@ -55,7 +54,7 @@ class InitialData {
                         rcs.push(claim);
                 });
 
-                if ((role.claims || []).length != rcs.length) {
+                if ((role.claims || []).length !== rcs.length) {
                     await this.roleBusiness.updateClaims(role._id, rcs);
                     console.log(`Role claims of '${role.name}' has created.`);
                 }
@@ -90,7 +89,7 @@ class InitialData {
 
             if ((userRole.isRequired || process.env.DATA_TEST) && user) {
                 let permission = await this.userBusiness.getPermission(user._id);
-                let urs = permission && permission.roles ? permission.roles.slice() : [];
+                let urs = permission && permission.roles ? permission.roles.map(role => role._id) : [];
 
                 userRole.data.roles.forEach(roleName => {
                     let role = roles.find(role => role.name.toLowerCase().includes(roleName.toLowerCase()));
@@ -98,7 +97,7 @@ class InitialData {
                         urs.push(role._id);
                 });
 
-                if (((permission && permission.roles) || []).length != urs.length) {
+                if (((permission && permission.roles) || []).length !== urs.length) {
                     await this.userBusiness.updateRoles(user._id, urs);
                     console.log(`User roles of '${user.email}' has created.`);
                 }

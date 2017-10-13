@@ -2,10 +2,8 @@ module.exports = {
     extends: 'google',
     parser: 'typescript-eslint-parser',
     env: {
-        browser: true,
         commonjs: true,
         es6: true,
-        jquery: true,
         node: true,
         mocha: true
     },
@@ -19,6 +17,12 @@ module.exports = {
         'arrow-parens': 'off',
         'comma-dangle': 'off',
         'linebreak-style': 'off',
+        'yoda': 'error',
+        'space-infix-ops': 'error',
+        'switch-colon-spacing': ['error', {'before': false, 'after': true}],
+        'key-spacing': ['error', {'beforeColon': false, 'afterColon': true}],
+        'eqeqeq': ['error', 'always', {'null': 'ignore'}],
+        'no-multiple-empty-lines': ['error', { 'max': 1, 'maxEOF': 1 }],
         'keyword-spacing': ['error', {'before': true, 'after': true}],
         'arrow-spacing': ['error', {'before': true, 'after': true}],
         'brace-style': ['error', 'stroustrup'],
@@ -28,9 +32,10 @@ module.exports = {
             'named': 'never',
             'asyncArrow': 'always'
         }]
-        // 'quotes': ['error', 'double']
     },
     parserOptions: {
-        sourceType: 'module'
+        ecmaVersion: 7,
+        sourceType: 'module',
+        ecmaFeatures: {}
     }
 };

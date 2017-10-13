@@ -59,7 +59,7 @@ class RoleBusiness implements IRoleBusiness {
     async update(_id: string, data: RoleUpdate): Promise<Role | null> {
         if (validateName(data.name)) {
             let role = await this.getByName(data.name);
-            if (role && role._id == _id)
+            if (role && role._id === _id)
                 throw new Error('Name was already exists!');
 
             let result = await this.roleRepository.update(_id, data);

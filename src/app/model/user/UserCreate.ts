@@ -1,5 +1,5 @@
 import IUser from './interfaces/IUser'; // eslint-disable-line
-import GenderType from './enums/GenderType';
+import {GenderType} from '../common/CommonType';
 import UserToken from './UserToken';
 
 class UserCreate {

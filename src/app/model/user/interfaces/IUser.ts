@@ -1,6 +1,6 @@
 import IBaseModel from '../../common/interfaces/IBaseModel';
 import UserToken from '../UserToken';
-import GenderType from '../enums/GenderType';
+import {GenderType} from '../../common/CommonType';
 
 interface IUser extends IBaseModel {
     name: string;

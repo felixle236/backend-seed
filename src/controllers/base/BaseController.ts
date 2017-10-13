@@ -2,33 +2,36 @@ import * as express from 'express';
 
 class BaseController {
     private router: express.Router;
-    protected maxRecords: number = 30;
+    protected idRegex = /[0-9a-z]{24}/;
+    protected numRegex = /^[0-9]{1,9}$/;
 
     constructor() {
         this.router = express.Router(); // eslint-disable-line
-
-        let idRegex = /[0-9a-z]{24}/;
-        let numRegex = /^[0-9]{1,9}$/;
-
-        this.router.param('_id', this.validateRegExp(idRegex));
-        this.router.param('page', this.validateRegExp(numRegex, (req, res, next, page) => {
-            if (!page)
-                req.params.page = 1;
-            else if (typeof req.params.page === 'string')
-                req.params.page = Number(req.params.page);
-            next();
-        }));
-        this.router.param('limit', this.validateRegExp(numRegex, (req, res, next, limit) => {
-            if (!limit || limit > this.maxRecords)
-                req.params.limit = this.maxRecords;
-            else if (typeof req.params.limit === 'string')
-                req.params.limit = Number(req.params.limit);
-            next();
-        }));
+        this.router.param('_id', this.validateRegExp(this.idRegex));
     }
 
     getRouter() {
         return this.router;
+    }
+
+    validatePagination(maxRecords: number = 30) {
+        return (req: express.Request, res: express.Response, next: express.NextFunction) => {
+            if (!req.query.page || !req.query.limit || !this.numRegex.test(req.query.page) || !this.numRegex.test(req.query.limit))
+                this.sendError(res, new Error('Request is invalid!'));
+            else {
+                let page = Number(req.query.page);
+                let limit = Number(req.query.limit);
+
+                if (page < 1 || limit < 1)
+                    this.sendError(res, new Error('Request is invalid!'));
+                else {
+                    req.query.page = page;
+                    req.query.limit = limit > maxRecords ? maxRecords : limit;
+
+                    next();
+                }
+            }
+        };
     }
 
     private validateRegExp(regex: RegExp, cb?: Function): express.RequestParamHandler {
@@ -65,29 +68,31 @@ class BaseController {
                 if (!res.headersSent) {
                     if (handlerResult && typeof handlerResult['then'] === 'function')
                         handlerResult.then(data => {
-                            this.showConsole(data);
-                            res.send({data: data});
+                            this.sendData(res, data);
                         }).catch(err => {
-                            this.showConsole(err);
-                            res.status(400);
-                            res.send({error: {message: err.message}});
+                            this.sendError(res, err);
                         });
-                    else {
-                        this.showConsole(handlerResult);
-                        res.send({data: handlerResult});
-                    }
+                    else
+                        this.sendData(res, handlerResult);
                 }
             };
-
             return handlers;
         }
         else
             throw new Error('The router must have request handler function!');
     }
 
-    private showConsole(obj) {
-        if (process.env.NODE_ENV == 'development')
-            console.log(obj);
+    sendData(res: express.Response, data: any) {
+        if (process.env.NODE_ENV === 'Development')
+            console.log(JSON.stringify(data));
+        res.send({data});
+    }
+
+    sendError(res: express.Response, err: Error) {
+        if (process.env.NODE_ENV === 'Development')
+            console.error(err);
+        res.status(400);
+        res.send({error: {message: err.message}});
     }
 }
 

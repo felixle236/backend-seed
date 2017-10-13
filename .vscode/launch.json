@@ -18,7 +18,7 @@
             ],
             "outFiles": ["${workspaceRoot}/dest/**/*.js"],
             "env": {
-                "NODE_ENV": "development",
+                "NODE_ENV": "Development",
                 "DEBUG_MODE": "true"
             },
             "args": []

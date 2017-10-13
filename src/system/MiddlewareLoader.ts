@@ -9,7 +9,7 @@ class MiddlewareLoader {
     static get configuration() {
         let app = express();
 
-        if (process.env.NODE_ENV == 'development')
+        if (process.env.NODE_ENV === 'Development')
             app.use(logger('dev'));
 
         app.use(bodyParser.json());
@@ -20,7 +20,11 @@ class MiddlewareLoader {
             res.setHeader('Access-Control-Allow-Origin', '*');
             res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
             res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept, Authorization');
-            next();
+
+            if (req.method === 'OPTIONS')
+                return res.end();
+            else
+                next();
         });
 
         app.use(new Authenticator().getConfig());

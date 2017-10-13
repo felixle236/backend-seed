@@ -1,5 +1,5 @@
 import UserCreate from '../../app/model/user/UserCreate';
-import GenderType from '../../app/model/user/enums/GenderType';
+import {GenderType} from '../../app/model/common/CommonType';
 
 export default function getUsers(): {isRequired: boolean, data: UserCreate}[] {
     return [

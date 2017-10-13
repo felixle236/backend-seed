@@ -1,31 +1,47 @@
-class Project {
-    static DOMAIN: string = 'localhost';
-    static PORT: number = 3000;
-    static PROJECT_NAME: string = 'Backend seed';
-    static EXPIRE_DAYS: number = 15;
+import * as _ from 'lodash';
 
-    static DATABASE = {
-        SERVER: 'localhost',
-        DB_NAME: 'backend_seed',
-        DB_NAME_TEST: 'backend_seed_test',
-        USERNAME: '',
-        PASSWORD: ''
+interface IProject {
+    DOMAIN: string;
+    PORT: number;
+    PROJECT_NAME: string;
+    EXPIRE_DAYS: number;
+
+    DATABASE: {
+        SERVER: string,
+        DB_NAME: string,
+        DB_NAME_TEST: string,
+        USERNAME: string,
+        PASSWORD: string
     };
 
-    static DB_CONN: string = `mongodb://${Project.DATABASE.SERVER}/${Project.DATABASE.DB_NAME}`;
-    static DB_CONN_TEST: string = `mongodb://${Project.DATABASE.SERVER}/${Project.DATABASE.DB_NAME_TEST}`;
+    DB_CONN_URI: string;
+    DB_CONN_URI_TEST: string;
 
-    static SMTP_SETTINGS = {
+    SMTP: {
         AUTHENTICATOR: {
-            USERNAME: '[Authenticator Email]',
-            PASSWORD: '[Password]'
+            USERNAME: string,
+            PASSWORD: string
         },
         SENDER: {
-            NAME: '[Sender Name]',
-            EMAIL: '[Sender Email]'
+            NAME: string,
+            EMAIL: string
         }
     };
 }
 
+class Project {
+    static initGlobalConfig() {
+        // Get the default config
+        let defaultConfig = require('./env/Default');
+
+        // Get the current config
+        let environmentConfig = require(`./env/${(process as any).env.NODE_ENV}`);
+
+        // Merge config files
+        let config = _.merge(defaultConfig.default, environmentConfig.default);
+        return config;
+    }
+}
+
 Object.seal(Project);
-export default Project;
+export default <IProject>Project.initGlobalConfig();
