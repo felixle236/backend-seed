@@ -8,13 +8,6 @@ class {camelName}Update {
             return;
 
         this.name = model.name;
-
-        Object.keys(this).forEach(key => {
-            if (this[key] == undefined)
-                delete this[key];
-            if (this[key] == null || this[key] == 'null')
-                this[key] = undefined;
-        });
     }
 }
 
