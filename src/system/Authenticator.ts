@@ -60,7 +60,7 @@ class Authenticator {
 
         this.app.post('/api/signup', async (req: express.Request, res: express.Response, next: express.NextFunction) => {
             try {
-                let userLogin = await this.userBusiness.createUserLogin(new UserCreate(req.body));
+                let userLogin = await this.userBusiness.signup(new UserCreate(req.body));
                 res.send({data: userLogin});
             }
             catch (err) {

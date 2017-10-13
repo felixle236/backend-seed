@@ -13,8 +13,8 @@ interface IUserBusiness extends IBaseBusiness<User> {
     getByEmail: (email: string) => Promise<User | null>;
     getPermission: (_id: string) => Promise<UserPermission | null>;
     create: (data: UserCreate) => Promise<User>;
+    signup: (data: UserCreate) => Promise<UserLogin>;
     update: (_id: string, data: UserUpdate) => Promise<User | null>;
-    createUserLogin: (data: UserCreate) => Promise<UserLogin>;
     updateRoles: (_id: string, roles: string[]) => Promise<boolean>;
     updateClaims: (_id: string, claims: string[]) => Promise<boolean>;
 }

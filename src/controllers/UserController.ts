@@ -41,7 +41,7 @@ class UserController extends BaseController {
     }
 
     async signup(req): Promise<any> {
-        return await this.userBusiness.createUserLogin(new UserCreate(req.body));
+        return await this.userBusiness.signup(new UserCreate(req.body));
     }
 
     async createUser(req): Promise<any> {

@@ -42,7 +42,7 @@ describe('User business testing', () => {
             email: 'test2@gmail.com',
             password: '123456'
         });
-        let userLogin = await userBusiness.createUserLogin(userCreate);
+        let userLogin = await userBusiness.signup(userCreate);
         expect(userLogin.user.name).to.equal(userCreate.name);
     });
 

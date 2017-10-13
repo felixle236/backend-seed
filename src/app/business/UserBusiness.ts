@@ -86,7 +86,7 @@ class UserBusiness implements IUserBusiness {
         return user && new User(user);
     }
 
-    async createUserLogin(data: UserCreate): Promise<UserLogin> {
+    async signup(data: UserCreate): Promise<UserLogin> {
         let user;
         if (validateName(data.name) && validateEmail(data.email) && validatePassword(data.password)) {
             user = await this.createUserCommon(data);
