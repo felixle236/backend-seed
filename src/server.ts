@@ -2,7 +2,6 @@ import * as express from 'express';
 import * as http from 'http';
 import * as cluster from 'cluster';
 import * as os from 'os';
-
 import Project from './config/Project';
 import MiddlewareLoader from './system/MiddlewareLoader';
 import DataAccess from './app/dataAccess/DataAccess';
@@ -15,11 +14,7 @@ const port = parseInt(<string>process.env.PORT, 10) || Project.PORT;
 app.set('port', port);
 app.use(MiddlewareLoader.configuration);
 
-DataAccess.connect(Project.DB_CONN_URI, {
-    user: Project.DATABASE.USERNAME,
-    pass: Project.DATABASE.PASSWORD,
-    useMongoClient: true
-});
+DataAccess.connect();
 const debug = require('debug')('express-mongodb:server');
 
 if (process.env.NODE_ENV === 'Development' && process.env.DEBUG_MODE) {

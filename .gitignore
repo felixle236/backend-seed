@@ -61,3 +61,5 @@ typings/
 # Others
 package-lock.json
 /upload
+.idea
+.DS_Store

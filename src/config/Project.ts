@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import Default from './env/Default';
 
 interface IProject {
     DOMAIN: string;
@@ -30,18 +30,16 @@ interface IProject {
 }
 
 class Project {
-    static initGlobalConfig() {
-        // Get the default config
-        let defaultConfig = require('./env/Default');
-
+    static getConfiguration() {
         // Get the current config
-        let environmentConfig = require(`./env/${(process as any).env.NODE_ENV}`);
-
-        // Merge config files
-        let config = _.merge(defaultConfig.default, environmentConfig.default);
+        let envConfig = require(`./env/${process.env.NODE_ENV}`);
+        let config = {
+            ...Default,
+            ...envConfig.default
+        };
         return config;
     }
 }
 
 Object.seal(Project);
-export default <IProject>Project.initGlobalConfig();
+export default <IProject>Project.getConfiguration();

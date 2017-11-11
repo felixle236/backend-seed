@@ -55,7 +55,7 @@ describe('User repository testing', () => {
     it('Update user token', async () => {
         let user = await userRepository.findOne();
         if (user) {
-            let userToken = new UserToken(LoginProvider.Local);
+            let userToken = new UserToken(<any>{provider: LoginProvider.Local});
             userToken.accessToken = createAccessToken();
             userToken.tokenExpire = DateHelper.addDays(new Date(), Project.EXPIRE_DAYS);
             let result = await userRepository.updateUserToken(user._id, userToken);

@@ -1,11 +1,9 @@
-import IUser from './interfaces/IUser'; // eslint-disable-line
-import {GenderType} from '../common/CommonType';
-import UserToken from './UserToken';
+import IUser from '../../model/user/interfaces/IUser'; // eslint-disable-line
+import {GenderType} from '../../model/common/CommonType';
 
-class UserCreate {
+class UserProfile {
     name: string;
     email: string;
-    password?: string;
     avatar?: string;
     gender?: GenderType;
     birthday?: Date;
@@ -13,7 +11,6 @@ class UserCreate {
     address?: string;
     culture?: string;
     currency?: string;
-    token?: UserToken;
 
     constructor(model: IUser) {
         if (!model)
@@ -21,18 +18,16 @@ class UserCreate {
 
         this.name = model.name;
         this.email = model.email;
-        this.password = model.password;
         this.avatar = model.avatar;
         this.gender = model.gender;
         this.birthday = model.birthday;
+        this.gender = model.gender;
         this.phone = model.phone;
         this.address = model.address;
         this.culture = model.culture;
         this.currency = model.currency;
-
-        this.token = new UserToken(<any>{});
     }
 }
 
-Object.seal(UserCreate);
-export default UserCreate;
+Object.seal(UserProfile);
+export default UserProfile;

@@ -1,19 +1,22 @@
-import User from '../../model/user/User';
 import IUser from '../../model/user/interfaces/IUser'; // eslint-disable-line
+import UserToken from './UserToken';
+import UserProfile from '../../model/user/UserProfile';
 import UserPermission from '../../model/user/UserPermission';
 
 class UserLogin {
-    user: User;
+    _id: string;
+    profile: UserProfile;
     permission: UserPermission;
-    accessToken: string;
+    token: UserToken;
 
     constructor(model: IUser) {
         if (!model)
             return;
 
-        this.user = new User(model);
+        this._id = model._id && model._id.toString();
+        this.profile = new UserProfile(model);
         this.permission = new UserPermission(model);
-        this.accessToken = model.token ? model.token.accessToken : '';
+        this.token = new UserToken(model.token!);
     }
 }
 

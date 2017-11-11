@@ -16,6 +16,7 @@ class UserController extends BaseController {
         this.get('/list/count', this.getCountUsers.bind(this));
         this.get('/:_id', this.getUserById.bind(this));
         this.get('/profile', Authenticator.isAuthenticated, this.getProfile.bind(this));
+        this.post('/signin', this.signin.bind(this));
         this.post('/signup', this.signup.bind(this));
         this.post('/', Authenticator.checkRoles('Administrator'), this.createUser.bind(this));
         this.put('/:_id', Authenticator.checkRoles('Administrator'), this.updateUser.bind(this));
@@ -37,7 +38,11 @@ class UserController extends BaseController {
 
     async getProfile(req): Promise<any> {
         let userLogin: UserLogin = req[Authenticator.userKey];
-        return await this.userBusiness.get(userLogin.user._id);
+        return await this.userBusiness.get(userLogin._id);
+    }
+
+    async signin(req): Promise<any> {
+        return await this.userBusiness.getUserLogin(req.body.email, req.body.password);
     }
 
     async signup(req): Promise<any> {
@@ -54,7 +59,7 @@ class UserController extends BaseController {
 
     async updateProfile(req): Promise<any> {
         let userLogin: UserLogin = req[Authenticator.userKey];
-        return await this.userBusiness.update(userLogin.user._id, new UserUpdate(req.body));
+        return await this.userBusiness.update(userLogin._id, new UserUpdate(req.body));
     }
 
     async deleteUser(req): Promise<any> {

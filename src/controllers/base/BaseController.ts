@@ -16,21 +16,63 @@ class BaseController {
 
     validatePagination(maxRecords: number = 30) {
         return (req: express.Request, res: express.Response, next: express.NextFunction) => {
-            if (!req.query.page || !req.query.limit || !this.numRegex.test(req.query.page) || !this.numRegex.test(req.query.limit))
-                this.sendError(res, new Error('Request is invalid!'));
-            else {
-                let page = Number(req.query.page);
-                let limit = Number(req.query.limit);
+            if (!req.query.page || !this.numRegex.test(req.query.page) || Number(req.query.page) < 1)
+                return this.sendError(res, new Error('Request is invalid!'));
+            else
+                req.query.page = Number(req.query.page);
 
-                if (page < 1 || limit < 1)
-                    this.sendError(res, new Error('Request is invalid!'));
-                else {
-                    req.query.page = page;
-                    req.query.limit = limit > maxRecords ? maxRecords : limit;
+            if (req.query.limit && (!this.numRegex.test(req.query.limit) || Number(req.query.limit) < 1))
+                return this.sendError(res, new Error('Request is invalid!'));
+            else if (req.query.limit) {
+                req.query.limit = Number(req.query.limit);
+                if (req.query.limit > maxRecords && maxRecords !== -1)
+                    req.query.limit = maxRecords;
+            }
+            next();
+        };
+    }
 
-                    next();
+    validateDateTime(...options: {}[]) {
+        return (req: express.Request, res: express.Response, next: express.NextFunction) => {
+            for (let i = 0; i < options.length; i++) {
+                let option = options[i];
+                let field = Object.keys(option)[0];
+                let type = option[field];
+
+                if ((type === 'Y' || type === 'M' || type === 'D') && !this.numRegex.test(req.query[field]))
+                    return this.sendError(res, new Error('Request is invalid!'));
+
+                if (type === 'Y') {
+                    let year = Number(req.query[field]);
+
+                    if (year < 1970 || year > 9999)
+                        return this.sendError(res, new Error('Request is invalid!'));
+
+                    req.query[field] = year;
+                    continue;
+                }
+
+                if (type === 'M') {
+                    let month = Number(req.query[field]);
+
+                    if (month < 1 || month > 12)
+                        return this.sendError(res, new Error('Request is invalid!'));
+
+                    req.query[field] = month;
+                    continue;
+                }
+
+                if (type === 'D') {
+                    let day = Number(req.query[field]);
+
+                    if (day < 1 || day > 31)
+                        return this.sendError(res, new Error('Request is invalid!'));
+
+                    req.query[field] = day;
+                    continue;
                 }
             }
+            next();
         };
     }
 
@@ -83,14 +125,12 @@ class BaseController {
     }
 
     sendData(res: express.Response, data: any) {
-        if (process.env.NODE_ENV === 'Development')
-            console.log(JSON.stringify(data));
+        console.log(JSON.stringify(data));
         res.send({data});
     }
 
     sendError(res: express.Response, err: Error) {
-        if (process.env.NODE_ENV === 'Development')
-            console.error(err);
+        console.error(err);
         res.status(400);
         res.send({error: {message: err.message}});
     }

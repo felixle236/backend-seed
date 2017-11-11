@@ -43,13 +43,7 @@ module.exports = function(grunt) {
                     return 'node ./dest/server.js';
                 }
             },
-            deploy: {
-                cmd: () => {
-                    process.env['NODE_ENV'] = 'Production';
-                    return 'node ./dest/server.js';
-                }
-            },
-            drop_db: `mongo backend_seed --eval "db.dropDatabase();"`,
+            drop_db: `mongo justdone_core --eval "db.dropDatabase();"`,
             generate: {
                 cmd: moduleName => {
                     process.env['MODULE_NAME'] = moduleName;
@@ -71,5 +65,4 @@ module.exports = function(grunt) {
     grunt.registerTask('build', ['sync', 'exec:build']);
     grunt.registerTask('start-with-data', ['build', 'exec:start_with_data']);
     grunt.registerTask('start', ['build', 'exec:start']);
-    grunt.registerTask('deploy', ['install', 'build', 'exec:deploy']);
 };

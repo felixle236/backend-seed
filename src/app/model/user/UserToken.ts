@@ -1,3 +1,4 @@
+import IUser from '../../model/user/interfaces/IUser'; // eslint-disable-line
 import {LoginProvider} from '../common/CommonType';
 
 class UserToken {
@@ -6,9 +7,14 @@ class UserToken {
     accessToken: string;
     tokenExpire: Date;
 
-    constructor(provider: LoginProvider = LoginProvider.Local) {
-        this.provider = provider;
-        this.providerName = LoginProvider[provider];
+    constructor(model: UserToken) {
+        if (!model)
+            return;
+
+        this.provider = model.provider || LoginProvider.Local;
+        this.providerName = model.providerName || LoginProvider[this.provider];
+        this.accessToken = model.accessToken;
+        this.tokenExpire = model.tokenExpire;
     }
 }
 

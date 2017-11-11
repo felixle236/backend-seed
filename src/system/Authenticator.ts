@@ -1,5 +1,4 @@
 import * as express from 'express';
-import UserCreate from '../app/model/user/UserCreate';
 import UserLogin from '../app/model/user/UserLogin';
 import UserBusiness from '../app/business/UserBusiness';
 import IUserBusiness from '../app/business/interfaces/IUserBusiness';
@@ -9,7 +8,7 @@ import DateHelper from '../helpers/DateHelper';
 class Authenticator {
     private app: any;
     private userBusiness: IUserBusiness = new UserBusiness();
-    static readonly userKey = 'user_login';
+    static readonly userKey = 'authUser';
     // Store list user login in memory
     private static authenticators: {expire: Date, userLogin: UserLogin}[] = [];
 
@@ -20,13 +19,13 @@ class Authenticator {
             try {
                 let expandTime = 10; // minutes
                 let token = <string>req.headers['authorization'];
-                let auth = Authenticator.authenticators.find(a => a.expire && a.expire >= new Date() && a.userLogin && a.userLogin.accessToken === token);
+                let auth = Authenticator.authenticators.find(a => a.expire && a.expire >= new Date() && a.userLogin && a.userLogin.token && a.userLogin.token.accessToken === token);
 
                 if (!auth) {
                     let userLogin = await this.userBusiness.getUserLoginByToken(token);
 
                     if (userLogin) {
-                        auth = Authenticator.authenticators.find(a => a.userLogin && a.userLogin.user && a.userLogin.user._id === userLogin!.user._id);
+                        auth = Authenticator.authenticators.find(a => a.userLogin && a.userLogin._id === userLogin!._id);
                         if (auth) {
                             auth.expire = DateHelper.addMinutes(new Date(), expandTime);
                             auth.userLogin = userLogin;
@@ -47,26 +46,6 @@ class Authenticator {
             }
             next();
         });
-
-        this.app.post('/api/signin', async (req: express.Request, res: express.Response, next: express.NextFunction) => {
-            try {
-                let userLogin = await this.userBusiness.getUserLogin(req.body.email, req.body.password);
-                res.send({data: userLogin});
-            }
-            catch (err) {
-                res.send({error: {message: err.message}});
-            }
-        });
-
-        this.app.post('/api/signup', async (req: express.Request, res: express.Response, next: express.NextFunction) => {
-            try {
-                let userLogin = await this.userBusiness.signup(new UserCreate(req.body));
-                res.send({data: userLogin});
-            }
-            catch (err) {
-                res.send({error: {message: err.message}});
-            }
-        });
     }
 
     getConfig() {
@@ -75,7 +54,7 @@ class Authenticator {
 
     // Use to remove authenticator in memory after modify info that relate to authentication
     static removeAuthenticator(userId: string) {
-        let index = Authenticator.authenticators.findIndex(a => a.userLogin && a.userLogin.user && a.userLogin.user._id === userId);
+        let index = Authenticator.authenticators.findIndex(a => a.userLogin && a.userLogin._id === userId);
         if (index !== -1)
             Authenticator.authenticators.splice(index, 1);
     }
@@ -98,11 +77,10 @@ class Authenticator {
             }).map(role => role._id);
 
             for (let i = 0; i < roleIds.length; i++) {
-                if (userLogin.permission.roles.find(role => role._id === roleIds[i]))
+                if (userLogin.permission.roles.find(roleId => roleId === roleIds[i]))
                     return true;
             }
         }
-
         return false;
     }
 
@@ -122,7 +100,7 @@ class Authenticator {
 
             if (userLogin.permission.roles) {
                 DataLoader.roles.filter(role => {
-                    return userLogin.permission.roles.findIndex(r => r._id === role._id) !== -1;
+                    return userLogin.permission.roles!.findIndex(roleId => roleId === role._id) !== -1;
                 }).forEach(role => {
                     userClaims.concat(role.claims || []);
                 });

@@ -12,6 +12,7 @@ interface IUserBusiness extends IBaseBusiness<User> {
     getUserLoginByToken: (token: string) => Promise<UserLogin | null>;
     getByEmail: (email: string) => Promise<User | null>;
     getPermission: (_id: string) => Promise<UserPermission | null>;
+    validateEmail: (email: string) => Promise<boolean>;
     create: (data: UserCreate) => Promise<User>;
     signup: (data: UserCreate) => Promise<UserLogin>;
     update: (_id: string, data: UserUpdate) => Promise<User | null>;

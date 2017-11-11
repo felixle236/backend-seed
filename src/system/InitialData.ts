@@ -30,8 +30,13 @@ class InitialData {
             let item = list[i];
 
             if ((item.isRequired || process.env.DATA_TEST) && !roleNames.includes(item.data.name.toLowerCase())) {
-                await this.roleBusiness.create(item.data);
-                console.log(`Role '${item.data.name}' has created.`);
+                try {
+                    await this.roleBusiness.create(item.data);
+                    console.log(`Role '${item.data.name}' has created.`);
+                }
+                catch (error) {
+                    console.log(`Role '${item.data.name}' cannot create with error`, error);
+                }
             }
         }
 
@@ -55,8 +60,13 @@ class InitialData {
                 });
 
                 if ((role.claims || []).length !== rcs.length) {
-                    await this.roleBusiness.updateClaims(role._id, rcs);
-                    console.log(`Role claims of '${role.name}' has created.`);
+                    try {
+                        await this.roleBusiness.updateClaims(role._id, rcs);
+                        console.log(`Role claims of '${role.name}' has created.`);
+                    }
+                    catch (error) {
+                        console.log(`Role claims of '${role.name}' cannot create with error`, error);
+                    }
                 }
             }
         }
@@ -71,8 +81,13 @@ class InitialData {
             let item = list[i];
 
             if ((item.isRequired || process.env.DATA_TEST) && !(await this.userBusiness.getByEmail(item.data.email.toLowerCase()))) {
-                await this.userBusiness.create(item.data);
-                console.log(`User '${item.data.email}' has created.`);
+                try {
+                    await this.userBusiness.create(item.data);
+                    console.log(`User '${item.data.email}' has created.`);
+                }
+                catch (error) {
+                    console.log(`User '${item.data.email}' cannot create with error`, error);
+                }
             }
         }
 
@@ -89,7 +104,7 @@ class InitialData {
 
             if ((userRole.isRequired || process.env.DATA_TEST) && user) {
                 let permission = await this.userBusiness.getPermission(user._id);
-                let urs = permission && permission.roles ? permission.roles.map(role => role._id) : [];
+                let urs = permission && permission.roles ? permission.roles : [];
 
                 userRole.data.roles.forEach(roleName => {
                     let role = roles.find(role => role.name.toLowerCase().includes(roleName.toLowerCase()));
@@ -98,8 +113,13 @@ class InitialData {
                 });
 
                 if (((permission && permission.roles) || []).length !== urs.length) {
-                    await this.userBusiness.updateRoles(user._id, urs);
-                    console.log(`User roles of '${user.email}' has created.`);
+                    try {
+                        await this.userBusiness.updateRoles(user._id, urs);
+                        console.log(`User roles of '${user.email}' has created.`);
+                    }
+                    catch (error) {
+                        console.log(`User roles of '${user.email}' cannot create with error`, error);
+                    }
                 }
             }
         }

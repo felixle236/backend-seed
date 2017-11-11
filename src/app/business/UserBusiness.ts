@@ -13,6 +13,7 @@ import {LoginProvider} from '../model/common/CommonType';
 import DateHelper from '../../helpers/DateHelper';
 import Project from '../../config/Project';
 import Authenticator from '../../system/Authenticator';
+import MailHelper from '../../helpers/MailHelper';
 
 class UserBusiness implements IUserBusiness {
     private userRepository: UserRepository;
@@ -49,7 +50,7 @@ class UserBusiness implements IUserBusiness {
             throw new Error('Email or password is incorrect!');
 
         if (!user.token || user.token.provider !== LoginProvider.Local || !user.token.accessToken || !user.token.tokenExpire || user.token.tokenExpire < new Date())
-            user.token = await this.updateUserToken(user._id, new UserToken(LoginProvider.Local));
+            user.token = await this.updateUserToken(user._id, new UserToken(<any>{provider: LoginProvider.Local}));
 
         return new UserLogin(user);
     }
@@ -79,30 +80,37 @@ class UserBusiness implements IUserBusiness {
         return user && new UserPermission(user);
     }
 
-    async create(data: UserCreate): Promise<User> {
+    async validateEmail(email: string): Promise<boolean> {
+        if (!email)
+            throw new Error('Email is required!');
+        else if (!validator.isEmail(email))
+            throw new Error('Email is invalid!');
+
+        email = email.trim().toLowerCase();
+        if (await this.userRepository.checkEmailExists(email))
+            throw new Error('Email was already exists!');
+        if (!email.endsWith('@localhost.com') && !(await MailHelper.checkRealEmail(email)))
+            throw new Error('Email is incorrect!');
+
+        return true;
+    }
+
+    async create(data: UserCreate): Promise<IUser> {
         let user;
-        if (validateName(data.name) && validateEmail(data.email) && data.password && validatePassword(data.password))
-            user = await this.createUserCommon(data);
-        return user && new User(user);
+        if (validateName(data.name) && await this.validateEmail(data.email) && data.password && validatePassword(data.password)) {
+            data.password = hashPassword(data.password);
+            user = await this.userRepository.create(data);
+        }
+        else
+            throw new Error('Data is invalid!');
+        return user;
     }
 
     async signup(data: UserCreate): Promise<UserLogin> {
-        let user;
-        if (validateName(data.name) && validateEmail(data.email) && validatePassword(data.password)) {
-            user = await this.createUserCommon(data);
-            user.token = await this.updateUserToken(user._id, new UserToken(LoginProvider.Local));
-        }
+        let user = await this.create(data);
+        if (user)
+            user.token = await this.updateUserToken(user._id, new UserToken(<any>{provider: LoginProvider.Local}));
         return user && new UserLogin(user);
-    }
-
-    private async createUserCommon(data: UserCreate): Promise<IUser> {
-        if (data.password)
-            data.password = hashPassword(data.password);
-
-        if (await this.getByEmail(data.email))
-            throw new Error('Email was already exists!');
-
-        return await this.userRepository.create(data);
     }
 
     async update(_id: string, data: UserUpdate): Promise<User | null> {
@@ -151,20 +159,16 @@ function validateName(name: string): boolean {
     return true;
 }
 
-function validateEmail(email: string): boolean {
-    if (!email)
-        throw new Error('Email is required!');
-    else if (!validator.isEmail(email))
-        throw new Error('Email is invalid!');
-
-    return true;
-}
-
 function validatePassword(password: string | undefined): boolean {
     if (!password)
         throw new Error('Password is required!');
-    else if (password.length < 6)
+
+    if (password.length < 6)
         throw new Error('Minimum password is 6 characters!');
+
+    // let regExp = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%&*()]).{8,}/;
+    // if (!regExp.test(password))
+    //     throw new Error('The password must have atleast 8 chars with one uppercase letter, one lower case letter, one digit and one special character!');
 
     return true;
 }

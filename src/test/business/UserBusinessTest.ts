@@ -43,7 +43,7 @@ describe('User business testing', () => {
             password: '123456'
         });
         let userLogin = await userBusiness.signup(userCreate);
-        expect(userLogin.user.name).to.equal(userCreate.name);
+        expect(userLogin.profile.name).to.equal(userCreate.name);
     });
 
     it('Update user', async () => {
@@ -94,8 +94,8 @@ describe('User business testing', () => {
 
     it('Get user login by token', async () => {
         let userLogin = await userBusiness.getUserLogin('test@gmail.com', '123456');
-        if (userLogin) {
-            userLogin = await userBusiness.getUserLoginByToken(userLogin.accessToken);
+        if (userLogin && userLogin.token) {
+            userLogin = await userBusiness.getUserLoginByToken(userLogin.token.accessToken);
             expect(userLogin).to.not.be.null;
         }
     });

@@ -1,4 +1,5 @@
 import * as nodeMailer from 'nodemailer';
+import * as emailExistence from 'email-existence';
 import Project from '../config/Project';
 
 export default class MailHelper {
@@ -17,6 +18,18 @@ export default class MailHelper {
             subject: subject, // Subject line
             text: text, // plain text body
             html: html // html body
+        });
+    }
+
+    static checkRealEmail(email: string): Promise<boolean> {
+        return new Promise((resolve, reject) => {
+            emailExistence.check(email, (error, response) => {
+                if (error) {
+                    console.error(error);
+                    resolve(false);
+                }
+                resolve(response);
+            });
         });
     }
 }

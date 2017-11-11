@@ -1,21 +1,27 @@
 import * as mongoose from 'mongoose';
+import Project from '../../config/Project';
 
 class DataAccess {
     static get connection(): mongoose.Connection {
         return mongoose.connection;
     }
 
-    static connect(connectionString: string, connectionOptions?: object): mongoose.Connection {
+    static connect(uri?: string, options?: any): mongoose.Connection {
         (<any>mongoose).Promise = Promise;
 
-        // mongoose.connection.once('open', () => {
-        //     console.log('Connected to mongodb.');
-        // });
-        connectionOptions = process.env.NODE_ENV === 'Production' ? connectionOptions : {
-            useMongoClient: true,
-        };
-        mongoose.connect(connectionString, connectionOptions);
+        if (!uri)
+            uri = Project.DB_CONN_URI;
 
+        if (!options)
+            options = {};
+        options.useMongoClient = true;
+
+        if (process.env.NODE_ENV !== 'Development') {
+            options.user = Project.DATABASE.USERNAME;
+            options.pass = Project.DATABASE.PASSWORD;
+        }
+
+        mongoose.connect(uri, options);
         return mongoose.connection;
     }
 
@@ -36,7 +42,6 @@ class DataAccess {
         let schema = new mongoose.Schema(schemaDefinition);
 
         schema.pre('update', function(this: any, next) {
-            // this.update({}, {$set: {updatedAt: new Date()}});
             this.updatedAt = new Date(); // eslint-disable-line
             next();
         });
