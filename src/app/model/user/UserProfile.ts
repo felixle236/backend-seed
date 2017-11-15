@@ -21,7 +21,6 @@ class UserProfile {
         this.avatar = model.avatar;
         this.gender = model.gender;
         this.birthday = model.birthday;
-        this.gender = model.gender;
         this.phone = model.phone;
         this.address = model.address;
         this.culture = model.culture;

@@ -17,60 +17,16 @@ class BaseController {
     validatePagination(maxRecords: number = 30) {
         return (req: express.Request, res: express.Response, next: express.NextFunction) => {
             if (!req.query.page || !this.numRegex.test(req.query.page) || Number(req.query.page) < 1)
-                return this.sendError(res, new Error('Request is invalid!'));
+                return this.sendError(req, res, new Error('Request is invalid!'));
             else
                 req.query.page = Number(req.query.page);
 
             if (req.query.limit && (!this.numRegex.test(req.query.limit) || Number(req.query.limit) < 1))
-                return this.sendError(res, new Error('Request is invalid!'));
+                return this.sendError(req, res, new Error('Request is invalid!'));
             else if (req.query.limit) {
                 req.query.limit = Number(req.query.limit);
                 if (req.query.limit > maxRecords && maxRecords !== -1)
                     req.query.limit = maxRecords;
-            }
-            next();
-        };
-    }
-
-    validateDateTime(...options: {}[]) {
-        return (req: express.Request, res: express.Response, next: express.NextFunction) => {
-            for (let i = 0; i < options.length; i++) {
-                let option = options[i];
-                let field = Object.keys(option)[0];
-                let type = option[field];
-
-                if ((type === 'Y' || type === 'M' || type === 'D') && !this.numRegex.test(req.query[field]))
-                    return this.sendError(res, new Error('Request is invalid!'));
-
-                if (type === 'Y') {
-                    let year = Number(req.query[field]);
-
-                    if (year < 1970 || year > 9999)
-                        return this.sendError(res, new Error('Request is invalid!'));
-
-                    req.query[field] = year;
-                    continue;
-                }
-
-                if (type === 'M') {
-                    let month = Number(req.query[field]);
-
-                    if (month < 1 || month > 12)
-                        return this.sendError(res, new Error('Request is invalid!'));
-
-                    req.query[field] = month;
-                    continue;
-                }
-
-                if (type === 'D') {
-                    let day = Number(req.query[field]);
-
-                    if (day < 1 || day > 31)
-                        return this.sendError(res, new Error('Request is invalid!'));
-
-                    req.query[field] = day;
-                    continue;
-                }
             }
             next();
         };
@@ -97,6 +53,10 @@ class BaseController {
         this.router.put(path, this.handleRequest(handlers));
     }
 
+    protected patch(path: string, ...handlers: express.RequestHandler[]): void {
+        this.router.patch(path, this.handleRequest(handlers));
+    }
+
     protected delete(path: string, ...handlers: express.RequestHandler[]): void {
         this.router.delete(path, this.handleRequest(handlers));
     }
@@ -110,12 +70,12 @@ class BaseController {
                 if (!res.headersSent) {
                     if (handlerResult && typeof handlerResult['then'] === 'function')
                         handlerResult.then(data => {
-                            this.sendData(res, data);
+                            this.sendData(req, res, data);
                         }).catch(err => {
-                            this.sendError(res, err);
+                            this.sendError(req, res, err);
                         });
                     else
-                        this.sendData(res, handlerResult);
+                        this.sendData(req, res, handlerResult);
                 }
             };
             return handlers;
@@ -124,12 +84,14 @@ class BaseController {
             throw new Error('The router must have request handler function!');
     }
 
-    sendData(res: express.Response, data: any) {
+    sendData(req: express.Request, res: express.Response, data: any) {
+        console.log(`\n${req.method} ${req.originalUrl}`);
         console.log(JSON.stringify(data));
         res.send({data});
     }
 
-    sendError(res: express.Response, err: Error) {
+    sendError(req: express.Request, res: express.Response, err: Error) {
+        console.log(`\n${req.method} ${req.originalUrl}`);
         console.error(err);
         res.status(400);
         res.send({error: {message: err.message}});
