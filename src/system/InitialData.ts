@@ -8,8 +8,8 @@ import getUsers from '../resources/initialData/Users';
 import getUserRoles from '../resources/initialData/UserRoles';
 
 class InitialData {
-    private roleBusiness: IRoleBusiness = new RoleBusiness();
-    private userBusiness: IUserBusiness = new UserBusiness();
+    private roleBusiness: IRoleBusiness = RoleBusiness.Instance;
+    private userBusiness: IUserBusiness = UserBusiness.Instance;
 
     async init(): Promise<void> {
         await this.initRoles();

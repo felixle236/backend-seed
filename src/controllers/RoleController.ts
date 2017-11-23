@@ -6,7 +6,7 @@ import RoleUpdate from '../app/model/role/RoleUpdate';
 import Authenticator from '../system/Authenticator';
 
 class RoleController extends BaseController {
-    private roleBusiness: IRoleBusiness = new RoleBusiness();
+    private roleBusiness: IRoleBusiness = RoleBusiness.Instance;
 
     constructor() {
         super();

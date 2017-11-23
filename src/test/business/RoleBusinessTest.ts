@@ -10,7 +10,7 @@ import RoleCreate from '../../app/model/role/RoleCreate';
 import RoleUpdate from '../../app/model/role/RoleUpdate';
 
 let connection;
-let roleBusiness: IRoleBusiness = new RoleBusiness();
+let roleBusiness: IRoleBusiness = RoleBusiness.Instance;
 
 before(done => {
     connection = DataAccess.connect(Project.DB_CONN_URI_TEST);

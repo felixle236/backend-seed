@@ -7,7 +7,7 @@ import DateHelper from '../helpers/DateHelper';
 
 class Authenticator {
     private app: any;
-    private userBusiness: IUserBusiness = new UserBusiness();
+    private userBusiness: IUserBusiness = UserBusiness.Instance;
     static readonly userKey = 'authUser';
     // Store list user login in memory
     private static authenticators: {expire: Date, userLogin: UserLogin}[] = [];

@@ -5,8 +5,8 @@ import RoleBusiness from '../app/business/RoleBusiness';
 import IRoleBusiness from '../app/business/interfaces/IRoleBusiness';
 
 class HomeController extends BaseController {
-    private userBusiness: IUserBusiness = new UserBusiness();
-    private roleBusiness: IRoleBusiness = new RoleBusiness();
+    private userBusiness: IUserBusiness = UserBusiness.Instance;
+    private roleBusiness: IRoleBusiness = RoleBusiness.Instance;
 
     constructor() {
         super();

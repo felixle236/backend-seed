@@ -6,7 +6,7 @@ import {camelName}Update from '../app/model/{pascalName}/{camelName}Update';
 import Authenticator from '../system/Authenticator';
 
 class {camelName}Controller extends BaseController {
-    private {pascalName}Business: I{camelName}Business = new {camelName}Business();
+    private {pascalName}Business: I{camelName}Business = {camelName}Business.Instance;
 
     constructor() {
         super();

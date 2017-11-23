@@ -4,4 +4,5 @@ class Default {
     static PROJECT_NAME: string = 'Backend seed';
     static EXPIRE_DAYS: number = 15;
 }
+
 export default Default;

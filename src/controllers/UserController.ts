@@ -7,7 +7,7 @@ import UserLogin from '../app/model/user/UserLogin'; // eslint-disable-line
 import Authenticator from '../system/Authenticator';
 
 class UserController extends BaseController {
-    private userBusiness: IUserBusiness = new UserBusiness();
+    private userBusiness: IUserBusiness = UserBusiness.Instance;
 
     constructor() {
         super();

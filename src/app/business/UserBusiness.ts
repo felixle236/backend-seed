@@ -14,12 +14,18 @@ import DateHelper from '../../helpers/DateHelper';
 import Project from '../../config/Project';
 import Authenticator from '../../system/Authenticator';
 import MailHelper from '../../helpers/MailHelper';
+import {ErrorCommon} from '../model/common/Error';
 
 class UserBusiness implements IUserBusiness {
+    private static instance: IUserBusiness = new UserBusiness();
     private userRepository: UserRepository;
 
-    constructor() {
+    private constructor() {
         this.userRepository = new UserRepository();
+    }
+
+    public static get Instance() {
+        return UserBusiness.instance;
     }
 
     async getList(page: number, limit: number): Promise<User[]> {
@@ -41,13 +47,13 @@ class UserBusiness implements IUserBusiness {
 
     async getUserLogin(email: string, password: string): Promise<UserLogin | null> {
         if (!email || !validator.isEmail(email) || !password)
-            throw new Error('Email or password is invalid!');
+            throw new ErrorCommon(101, 'Email or password');
 
         email = email.trim().toLowerCase();
         let user = await this.userRepository.getUserLogin(email, hashPassword(password));
 
         if (!user)
-            throw new Error('Email or password is incorrect!');
+            throw new ErrorCommon(108, 'Email or password');
 
         if (!user.token || user.token.provider !== LoginProvider.Local || !user.token.accessToken || !user.token.tokenExpire || user.token.tokenExpire < new Date())
             user.token = await this.updateUserToken(user._id, new UserToken(<any>{provider: LoginProvider.Local}));
@@ -82,15 +88,15 @@ class UserBusiness implements IUserBusiness {
 
     async validateEmail(email: string): Promise<boolean> {
         if (!email)
-            throw new Error('Email is required!');
+            throw new ErrorCommon(105, 'Email');
         else if (!validator.isEmail(email))
-            throw new Error('Email is invalid!');
+            throw new ErrorCommon(101, 'Email');
 
         email = email.trim().toLowerCase();
         if (await this.userRepository.checkEmailExists(email))
-            throw new Error('Email was already exists!');
+            throw new ErrorCommon(104, 'Email');
         if (!email.endsWith('@localhost.com') && !(await MailHelper.checkRealEmail(email)))
-            throw new Error('Email is incorrect!');
+            throw new ErrorCommon(108, 'Email');
 
         return true;
     }
@@ -102,7 +108,7 @@ class UserBusiness implements IUserBusiness {
             user = await this.userRepository.create(data);
         }
         else
-            throw new Error('Data is invalid!');
+            throw new ErrorCommon(101, 'Data');
         return user;
     }
 
@@ -152,23 +158,23 @@ class UserBusiness implements IUserBusiness {
 
 function validateName(name: string): boolean {
     if (!name)
-        throw new Error('Name is required!');
+        throw new ErrorCommon(105, 'Name');
     else if (name.trim().length < 4)
-        throw new Error('Minimum name is 4 characters!');
+        throw new ErrorCommon(201, 'name', 4);
 
     return true;
 }
 
 function validatePassword(password: string | undefined): boolean {
     if (!password)
-        throw new Error('Password is required!');
+        throw new ErrorCommon(105, 'Password');
 
     if (password.length < 6)
-        throw new Error('Minimum password is 6 characters!');
+        throw new ErrorCommon(201, 'password', 6);
 
     // let regExp = /(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%&*()]).{8,}/;
     // if (!regExp.test(password))
-    //     throw new Error('The password must have atleast 8 chars with one uppercase letter, one lower case letter, one digit and one special character!');
+    //     throw new ErrorCommon(4);
 
     return true;
 }

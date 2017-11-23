@@ -4,12 +4,18 @@ import RoleUpdate from '../model/role/RoleUpdate'; // eslint-disable-line
 import IRoleBusiness from './interfaces/IRoleBusiness'; // eslint-disable-line
 import RoleRepository from '../repository/RoleRepository';
 import DataLoader from '../../system/DataLoader';
+import {ErrorCommon} from '../model/common/Error';
 
 class RoleBusiness implements IRoleBusiness {
+    private static instance: IRoleBusiness = new RoleBusiness();
     private roleRepository: RoleRepository;
 
-    constructor() {
+    private constructor() {
         this.roleRepository = new RoleRepository();
+    }
+
+    public static get Instance() {
+        return RoleBusiness.instance;
     }
 
     async getAll(): Promise<Role[]> {
@@ -46,7 +52,7 @@ class RoleBusiness implements IRoleBusiness {
         let role;
         if (validateName(data.name)) {
             if (await this.getByName(data.name))
-                throw new Error('Name was already exists!');
+                throw new ErrorCommon(104, 'Name');
 
             role = await this.roleRepository.create(data);
             // Load data roles in memory
@@ -60,7 +66,7 @@ class RoleBusiness implements IRoleBusiness {
         if (validateName(data.name)) {
             let role = await this.getByName(data.name);
             if (role && role._id === _id)
-                throw new Error('Name was already exists!');
+                throw new ErrorCommon(104, 'Name');
 
             let result = await this.roleRepository.update(_id, data);
 
@@ -94,9 +100,9 @@ class RoleBusiness implements IRoleBusiness {
 
 function validateName(name: string): boolean {
     if (!name)
-        throw new Error('Name is required!');
+        throw new ErrorCommon(105, 'Name');
     else if (name.trim().length < 4)
-        throw new Error('Minimum name is 4 characters!');
+        throw new ErrorCommon(201, 'name', 4);
 
     return true;
 }

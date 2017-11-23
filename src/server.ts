@@ -9,7 +9,7 @@ import InitialData from './system/InitialData';
 import DataLoader from './system/DataLoader';
 
 const app = express();
-const port = parseInt(<string>process.env.PORT, 10) || Project.PORT;
+const port = Project.PORT;
 
 app.set('port', port);
 app.use(MiddlewareLoader.configuration);
@@ -20,9 +20,11 @@ const debug = require('debug')('express-mongodb:server');
 if (process.env.NODE_ENV === 'Development' && process.env.DEBUG_MODE) {
     initData();
     createHttpServer();
+    console.log('\x1b[32m', '\nhttp://localhost' + (port !== 80 ? ':' + port : '') + '\n', '\x1b[0m');
 }
 else {
     if (cluster.isMaster) {
+        console.log('\x1b[32m', '\nhttp://localhost' + (port !== 80 ? ':' + port : '') + '\n', '\x1b[0m');
         console.log(`Master ${process.pid} is running`);
         DataLoader.initMasterEvent(cluster);
 

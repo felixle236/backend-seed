@@ -13,4 +13,10 @@ export default class DataHelper {
                 dataInput[key] = undefined;
         });
     }
+
+    static applyTemplate(template, ...params) {
+        return template.replace(/{(\d+)}/g, (match, number) => {
+            return params[number] || match;
+        });
+    }
 }
