@@ -44,14 +44,15 @@ class RoleBusiness implements IRoleBusiness {
         if (!name)
             return null;
 
-        let role = await this.roleRepository.findOne({name: name.trim()});
+        let role = await this.roleRepository.findOne({query: {name: name.trim()}});
         return role && new Role(role);
     }
 
     async create(data: RoleCreate): Promise<Role> {
         let role;
         if (validateName(data.name)) {
-            if (await this.getByName(data.name))
+            role = await this.getByName(data.name);
+            if (role)
                 throw new ErrorCommon(104, 'Name');
 
             role = await this.roleRepository.create(data);

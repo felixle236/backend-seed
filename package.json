@@ -6,13 +6,13 @@
     "scripts": {
         "watch": "./node_modules/.bin/grunt",
         "eslint": "./node_modules/.bin/eslint --ext .ts --ext .js ./src",
-        "drop-db": "./node_modules/.bin/grunt drop-db",
+        "drop-db": "mongo backend_seed_dev --eval 'db.dropDatabase();'",
+        "test": "./node_modules/.bin/mocha -r ./node_modules/ts-node/register ./src/test/**/*.ts",
         "build": "npm run eslint && ./node_modules/.bin/grunt build",
-        "start": "npm run eslint && ./node_modules/.bin/grunt start",
-        "start-with-data": "npm run eslint && ./node_modules/.bin/grunt start-with-data",
+        "start": "npm run eslint && ./node_modules/.bin/grunt build && NODE_ENV=Development node ./dest/server.js",
+        "start-with-data": "npm run eslint && ./node_modules/.bin/grunt build && NODE_ENV=Development DATA_TEST=Y node ./dest/server.js",
         "staging": "npm install && npm run eslint && ./node_modules/.bin/grunt build && NODE_ENV=Staging node ./dest/server.js",
-        "production": "npm install && npm run eslint && ./node_modules/.bin/grunt build && NODE_ENV=Production node ./dest/server.js",
-        "test": "./node_modules/.bin/mocha -r ./node_modules/ts-node/register ./src/test/**/*.ts"
+        "production": "npm install && npm run eslint && ./node_modules/.bin/grunt build && NODE_ENV=Production node ./dest/server.js"
     },
     "dependencies": {
         "body-parser": "^1.18.2",
@@ -20,30 +20,30 @@
         "debug": "^3.1.0",
         "email-existence": "^0.1.5",
         "express": "^4.16.2",
-        "mongoose": "^4.13.1",
+        "mongoose": "^4.13.4",
         "morgan": "^1.9.0",
         "nodemailer": "^4.4.0",
-        "validator": "^9.1.1"
+        "validator": "^9.1.2"
     },
     "devDependencies": {
         "@types/body-parser": "^1.16.8",
-        "@types/chai": "^4.0.4",
+        "@types/chai": "^4.0.5",
         "@types/express": "^4.0.39",
         "@types/mocha": "^2.2.44",
-        "@types/mongoose": "^4.7.25",
+        "@types/mongoose": "^4.7.28",
         "@types/morgan": "^1.7.35",
-        "@types/node": "^8.0.50",
-        "@types/nodemailer": "^4.3.0",
+        "@types/node": "^8.0.53",
+        "@types/nodemailer": "^4.3.1",
         "babel-eslint": "^8.0.2",
         "chai": "^4.1.2",
-        "eslint": "^4.10.0",
+        "eslint": "^4.11.0",
         "eslint-config-google": "^0.9.1",
         "eslint-config-standard": "^10.2.1",
         "eslint-plugin-import": "^2.8.0",
         "eslint-plugin-node": "^5.2.1",
         "eslint-plugin-promise": "^3.6.0",
         "eslint-plugin-standard": "^3.0.1",
-        "eslint-plugin-typescript": "^0.8.0",
+        "eslint-plugin-typescript": "^0.8.1",
         "grunt": "^1.0.1",
         "grunt-contrib-watch": "^1.0.0",
         "grunt-exec": "^3.0.0",
@@ -52,6 +52,6 @@
         "mockgoose": "^7.3.3",
         "ts-node": "^3.3.0",
         "typescript": "^2.6.1",
-        "typescript-eslint-parser": "^8.0.1"
+        "typescript-eslint-parser": "^9.0.0"
     }
 }

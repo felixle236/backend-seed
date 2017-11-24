@@ -74,7 +74,7 @@ class UserBusiness implements IUserBusiness {
             return null;
 
         email = email.trim().toLowerCase();
-        let user = await this.userRepository.findOne({email: email});
+        let user = await this.userRepository.findOne({query: {email: email}});
         return user && new User(user);
     }
 

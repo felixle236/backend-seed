@@ -18,8 +18,8 @@ module.exports = function(grunt) {
                 ignoreInDest: [
                     '**/*.js'
                 ], // Never remove js files from destination. Default: none
-                updateAndDelete: false, // Remove all files from dest that are not found in src. Default: false 
-                compareUsing: 'md5' // compares via md5 hash of file contents, instead of file modification time. Default: "mtime" 
+                updateAndDelete: false, // Remove all files from dest that are not found in src. Default: false
+                compareUsing: 'md5' // compares via md5 hash of file contents, instead of file modification time. Default: "mtime"
             }
         },
         exec: {
@@ -30,20 +30,6 @@ module.exports = function(grunt) {
             },
             eslint: './node_modules/.bin/eslint --ext .ts --ext .js ./src',
             build: './node_modules/.bin/tsc',
-            start_with_data: {
-                cmd: () => {
-                    process.env['DATA_TEST'] = true;
-                    process.env['NODE_ENV'] = 'Development';
-                    return 'node ./dest/server.js';
-                }
-            },
-            start: {
-                cmd: () => {
-                    process.env['NODE_ENV'] = 'Development';
-                    return 'node ./dest/server.js';
-                }
-            },
-            drop_db: `mongo justdone_core --eval "db.dropDatabase();"`,
             generate: {
                 cmd: moduleName => {
                     process.env['MODULE_NAME'] = moduleName;
@@ -61,8 +47,5 @@ module.exports = function(grunt) {
 
     grunt.registerTask('default', ['watch']);
     grunt.registerTask('install', ['exec:install']);
-    grunt.registerTask('drop-db', ['exec:drop_db']);
     grunt.registerTask('build', ['sync', 'exec:build']);
-    grunt.registerTask('start-with-data', ['build', 'exec:start_with_data']);
-    grunt.registerTask('start', ['build', 'exec:start']);
 };

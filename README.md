@@ -2,7 +2,7 @@
 NodeJS - Typescript - MongoDB
 
 * Integrating user permission & good transmission in large numbers of users.
-* Store common data in memory to increase performance.
+* Store common data in memory & share them between processes (if use cluster module) to improve performance.
 * Suitable for Web apps & APIs.
 * Run & debug on .ts files by Visual Code.
 * Reference structure from https://github.com/ErickWendel/NodeJSWithTypescript
@@ -28,7 +28,7 @@ NodeJS - Typescript - MongoDB
 ### Install
 
 ```s
-npm install && npm install -g grunt
+npm install
 ```
 
 ### Structure
@@ -71,12 +71,13 @@ npm install && npm install -g grunt
 ```s
 npm run watch ----------// watch.
 npm run eslint
-npm run drop-db ----------// drop database.
-npm run build
-npm run start ----------// start for development.
-npm run start-with-data ----------// start for development & insert data test.
-npm run deploy ----------// start for deployment.
+npm run drop-db ----------// drop database for development.
 npm run test ----------// run unit test.
+npm run build
+npm run start ----------// start with development environment.
+npm run start-with-data ----------// start for development & insert data test.
+npm run staging ----------// start with staging environment.
+npm run production ----------// start with production environment.
 grunt exec:generate:Customer ----------// Generate module "Customer": schema, model, repository, business, controller,... (without route loader)
 ```
 
