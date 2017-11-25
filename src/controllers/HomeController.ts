@@ -1,3 +1,4 @@
+import {inject} from '../helpers/InjectionHelper';
 import BaseController from './base/BaseController';
 import UserBusiness from '../app/business/UserBusiness';
 import IUserBusiness from '../app/business/interfaces/IUserBusiness';
@@ -5,8 +6,10 @@ import RoleBusiness from '../app/business/RoleBusiness';
 import IRoleBusiness from '../app/business/interfaces/IRoleBusiness';
 
 class HomeController extends BaseController {
-    private userBusiness: IUserBusiness = UserBusiness.Instance;
-    private roleBusiness: IRoleBusiness = RoleBusiness.Instance;
+    @inject(UserBusiness)
+    private userBusiness: IUserBusiness;
+    @inject(RoleBusiness)
+    private roleBusiness: IRoleBusiness;
 
     constructor() {
         super();

@@ -1,3 +1,4 @@
+import {inject} from '../helpers/InjectionHelper';
 import UserBusiness from '../app/business/UserBusiness';
 import IUserBusiness from '../app/business/interfaces/IUserBusiness';
 import RoleBusiness from '../app/business/RoleBusiness';
@@ -8,8 +9,10 @@ import getUsers from '../resources/initialData/Users';
 import getUserRoles from '../resources/initialData/UserRoles';
 
 class InitialData {
-    private roleBusiness: IRoleBusiness = RoleBusiness.Instance;
-    private userBusiness: IUserBusiness = UserBusiness.Instance;
+    @inject(RoleBusiness)
+    private roleBusiness: IRoleBusiness;
+    @inject(UserBusiness)
+    private userBusiness: IUserBusiness;
 
     async init(): Promise<void> {
         await this.initRoles();

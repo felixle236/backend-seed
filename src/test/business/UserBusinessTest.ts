@@ -11,7 +11,7 @@ import UserUpdate from '../../app/model/user/UserUpdate';
 import UserLogin from '../../app/model/user/UserLogin'; // eslint-disable-line
 
 let connection;
-let userBusiness: IUserBusiness = UserBusiness.Instance;
+let userBusiness: IUserBusiness = new UserBusiness();
 
 before(done => {
     connection = DataAccess.connect(Project.DB_CONN_URI_TEST);

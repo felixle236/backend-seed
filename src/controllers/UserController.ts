@@ -1,3 +1,4 @@
+import {inject} from '../helpers/InjectionHelper';
 import BaseController from './base/BaseController';
 import UserBusiness from '../app/business/UserBusiness';
 import IUserBusiness from '../app/business/interfaces/IUserBusiness';
@@ -7,7 +8,8 @@ import UserLogin from '../app/model/user/UserLogin'; // eslint-disable-line
 import Authenticator from '../system/Authenticator';
 
 class UserController extends BaseController {
-    private userBusiness: IUserBusiness = UserBusiness.Instance;
+    @inject(UserBusiness)
+    private userBusiness: IUserBusiness;
 
     constructor() {
         super();

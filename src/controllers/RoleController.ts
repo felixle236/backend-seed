@@ -1,3 +1,4 @@
+import {inject} from '../helpers/InjectionHelper';
 import BaseController from './base/BaseController';
 import RoleBusiness from '../app/business/RoleBusiness';
 import IRoleBusiness from '../app/business/interfaces/IRoleBusiness';
@@ -6,7 +7,8 @@ import RoleUpdate from '../app/model/role/RoleUpdate';
 import Authenticator from '../system/Authenticator';
 
 class RoleController extends BaseController {
-    private roleBusiness: IRoleBusiness = RoleBusiness.Instance;
+    @inject(RoleBusiness)
+    private roleBusiness: IRoleBusiness;
 
     constructor() {
         super();

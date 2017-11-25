@@ -1,3 +1,4 @@
+import {injectable} from '../../helpers/InjectionHelper'; // eslint-disable-line
 import Role from '../model/role/Role';
 import RoleCreate from '../model/role/RoleCreate'; // eslint-disable-line
 import RoleUpdate from '../model/role/RoleUpdate'; // eslint-disable-line
@@ -6,16 +7,12 @@ import RoleRepository from '../repository/RoleRepository';
 import DataLoader from '../../system/DataLoader';
 import {ErrorCommon} from '../model/common/Error';
 
+@injectable
 class RoleBusiness implements IRoleBusiness {
-    private static instance: IRoleBusiness = new RoleBusiness();
     private roleRepository: RoleRepository;
 
-    private constructor() {
+    constructor() {
         this.roleRepository = new RoleRepository();
-    }
-
-    public static get Instance() {
-        return RoleBusiness.instance;
     }
 
     async getAll(): Promise<Role[]> {

@@ -1,9 +1,13 @@
+import {inject} from '../helpers/InjectionHelper';
 import Role from '../app/model/role/Role';
 import RoleBusiness from '../app/business/RoleBusiness';
+import IRoleBusiness from '../app/business/interfaces/IRoleBusiness';
 import {ClusterRequestType} from '../app/model/common/CommonType';
 
 class DataLoader {
     private static isUseCluster: boolean = false;
+    @inject(RoleBusiness)
+    private static roleBusiness: IRoleBusiness;
     static roles: Role[] = [];
 
     static initMasterEvent(cluster) {
@@ -14,7 +18,7 @@ class DataLoader {
                 });
             }
             else if (msg.type === ClusterRequestType.UpdateRole) {
-                DataLoader.roles = await RoleBusiness.Instance.getAll();
+                DataLoader.roles = await DataLoader.roleBusiness.getAll();
                 DataLoader.pushDataToAllWorkers(cluster, msg.type, DataLoader.roles);
             }
         });
@@ -49,7 +53,7 @@ class DataLoader {
 
     // Using by master or normal, only called from server.ts file
     static async loadAll(): Promise<void> {
-        DataLoader.roles = await RoleBusiness.Instance.getAll();
+        DataLoader.roles = await DataLoader.roleBusiness.getAll();
 
         console.log('Load global Data ===> Done.');
     }
@@ -59,7 +63,7 @@ class DataLoader {
         if (DataLoader.isUseCluster)
             (<any>process).send({type: ClusterRequestType.UpdateRole});
         else
-            DataLoader.roles = await RoleBusiness.Instance.getAll();
+            DataLoader.roles = await DataLoader.roleBusiness.getAll();
 
         console.log('The roles data loading has finished.');
     }

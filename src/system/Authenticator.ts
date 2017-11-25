@@ -1,4 +1,5 @@
 import * as express from 'express';
+import {inject} from '../helpers/InjectionHelper';
 import UserLogin from '../app/model/user/UserLogin';
 import UserBusiness from '../app/business/UserBusiness';
 import IUserBusiness from '../app/business/interfaces/IUserBusiness';
@@ -7,7 +8,8 @@ import DateHelper from '../helpers/DateHelper';
 
 class Authenticator {
     private app: any;
-    private userBusiness: IUserBusiness = UserBusiness.Instance;
+    @inject(UserBusiness)
+    private userBusiness: IUserBusiness;
     static readonly userKey = 'authUser';
     // Store list user login in memory
     private static authenticators: {expire: Date, userLogin: UserLogin}[] = [];

@@ -1,3 +1,4 @@
+import {injectable} from '../../helpers/InjectionHelper'; // eslint-disable-line
 import * as validator from 'validator';
 import * as crypto from 'crypto';
 import IUserBusiness from './interfaces/IUserBusiness'; // eslint-disable-line
@@ -16,16 +17,12 @@ import Authenticator from '../../system/Authenticator';
 import MailHelper from '../../helpers/MailHelper';
 import {ErrorCommon} from '../model/common/Error';
 
+@injectable
 class UserBusiness implements IUserBusiness {
-    private static instance: IUserBusiness = new UserBusiness();
     private userRepository: UserRepository;
 
-    private constructor() {
+    constructor() {
         this.userRepository = new UserRepository();
-    }
-
-    public static get Instance() {
-        return UserBusiness.instance;
     }
 
     async getList(page: number, limit: number): Promise<User[]> {
