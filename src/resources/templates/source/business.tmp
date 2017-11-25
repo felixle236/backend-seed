@@ -1,3 +1,4 @@
+import {injectable} from '../../helpers/InjectionHelper'; // eslint-disable-line
 import {camelName} from '../model/{pascalName}/{camelName}';
 import {camelName}Create from '../model/{pascalName}/{camelName}Create'; // eslint-disable-line
 import {camelName}Update from '../model/{pascalName}/{camelName}Update'; // eslint-disable-line
@@ -5,16 +6,12 @@ import I{camelName}Business from './interfaces/I{camelName}Business'; // eslint-
 import {camelName}Repository from '../repository/{camelName}Repository';
 import {ErrorCommon} from '../model/common/Error';
 
+@injectable
 class {camelName}Business implements I{camelName}Business {
-    private static instance: I{camelName}Business = new {camelName}Business();
     private {pascalName}Repository: {camelName}Repository;
 
-    private constructor() {
+    constructor() {
         this.{pascalName}Repository = new {camelName}Repository();
-    }
-
-    public static get Instance() {
-        return {camelName}Business.instance;
     }
 
     async getList(page: number, limit: number): Promise<{camelName}[]> {

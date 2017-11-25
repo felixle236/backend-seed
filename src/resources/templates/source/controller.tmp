@@ -1,3 +1,4 @@
+import {inject} from '../helpers/InjectionHelper';
 import BaseController from './base/BaseController';
 import {camelName}Business from '../app/business/{camelName}Business';
 import I{camelName}Business from '../app/business/interfaces/I{camelName}Business';
@@ -6,7 +7,8 @@ import {camelName}Update from '../app/model/{pascalName}/{camelName}Update';
 import Authenticator from '../system/Authenticator';
 
 class {camelName}Controller extends BaseController {
-    private {pascalName}Business: I{camelName}Business = {camelName}Business.Instance;
+    @inject({camelName}Business)
+    private {pascalName}Business: I{camelName}Business;
 
     constructor() {
         super();
