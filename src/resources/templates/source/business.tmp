@@ -14,13 +14,25 @@ class {camelName}Business implements I{camelName}Business {
         this.{pascalName}Repository = new {camelName}Repository();
     }
 
-    async getList(page: number, limit: number): Promise<{camelName}[]> {
-        let {pascalName}s = await this.{pascalName}Repository.find(null, null, page, limit);
+    async search(name?: string, page?: number, limit?: number): Promise<{camelName}[]> {
+        let param = {
+            query: <any>{}
+        };
+        if (name)
+            param.query.name = new RegExp(name, 'i');
+
+        let {pascalName}s = await this.{pascalName}Repository.find(param, {name: 1}, page, limit);
         return {camelName}.parseArray({pascalName}s);
     }
 
-    async getCount(): Promise<number> {
-        return await this.{pascalName}Repository.getCount();
+    async getCountSearch(name?: string): Promise<number> {
+        let param = {
+            query: <any>{}
+        };
+        if (name)
+            param.query.name = new RegExp(name, 'i');
+
+        return await this.{pascalName}Repository.getCount(param);
     }
 
     async get(_id: string): Promise<{camelName} | null> {

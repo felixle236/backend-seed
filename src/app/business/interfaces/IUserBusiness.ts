@@ -6,8 +6,8 @@ import UserLogin from '../../model/user/UserLogin';
 import UserPermission from '../../model/user/UserPermission';
 
 interface IUserBusiness extends IBaseBusiness<User> {
-    getList: (page: number, limit: number) => Promise<User[]>;
-    getCount: () => Promise<number>;
+    search: (name?: string, page?: number, limit?: number) => Promise<User[]>;
+    getCountSearch: (name?: string) => Promise<number>;
     getUserLogin: (email: string, password: string) => Promise<UserLogin | null>;
     getUserLoginByToken: (token: string) => Promise<UserLogin | null>;
     getByEmail: (email: string) => Promise<User | null>;

@@ -47,7 +47,7 @@ describe('User business testing', () => {
     });
 
     it('Update user', async () => {
-        let users = await userBusiness.getList(1, 1);
+        let users = await userBusiness.search('', 1, 1);
         if (users && users.length > 0) {
             let userUpdate = new UserUpdate(<IUser>users[0]);
             userUpdate.name = 'User updated';
@@ -57,7 +57,7 @@ describe('User business testing', () => {
     });
 
     it('Update user roles', async () => {
-        let users = await userBusiness.getList(1, 1);
+        let users = await userBusiness.search('', 1, 1);
         if (users && users.length > 0) {
             let user = users[0];
             let result = await userBusiness.updateRoles(user._id, ['697ef0012199231dc95f94a0', '797ef0012199231dc95f94a1']);
@@ -66,7 +66,7 @@ describe('User business testing', () => {
     });
 
     it('Update user claims', async () => {
-        let users = await userBusiness.getList(1, 1);
+        let users = await userBusiness.search('', 1, 1);
         if (users && users.length > 0) {
             let user = users[0];
             let result = await userBusiness.updateClaims(user._id, ['Claim 1', 'Claim 2']);
@@ -75,12 +75,12 @@ describe('User business testing', () => {
     });
 
     it('Find users', async () => {
-        let users = await userBusiness.getList(1, 1);
+        let users = await userBusiness.search('', 1, 1);
         expect(Array.isArray(users)).to.be.true;
     });
 
     it('Get user by id', async () => {
-        let users = await userBusiness.getList(1, 1);
+        let users = await userBusiness.search('', 1, 1);
         if (users && users.length > 0) {
             let user = await userBusiness.get(users[0]._id);
             expect(user).to.not.be.null;
@@ -106,7 +106,7 @@ describe('User business testing', () => {
     });
 
     it('Get user permission', async () => {
-        let users = await userBusiness.getList(1, 1);
+        let users = await userBusiness.search('', 1, 1);
         if (users && users.length > 0) {
             let userPermission = await userBusiness.getPermission(users[0]._id);
             expect(userPermission).to.not.be.null;
@@ -114,7 +114,7 @@ describe('User business testing', () => {
     });
 
     it('Delete user', async () => {
-        let users = await userBusiness.getList(1, 1);
+        let users = await userBusiness.search('', 1, 1);
         if (users && users.length > 0) {
             let result = await userBusiness.delete(users[0]._id);
             expect(result).to.be.true;

@@ -14,8 +14,8 @@ class UserController extends BaseController {
     constructor() {
         super();
 
-        this.get('/list', this.validatePagination(), this.getUsers.bind(this));
-        this.get('/list/count', this.getCountUsers.bind(this));
+        this.get('/search', this.validatePagination(), this.searchUsers.bind(this));
+        this.get('/search-count', this.getCountSearchUsers.bind(this));
         this.get('/:_id', this.getUserById.bind(this));
         this.get('/profile', Authenticator.isAuthenticated, this.getProfile.bind(this));
         this.post('/signin', this.signin.bind(this));
@@ -26,12 +26,12 @@ class UserController extends BaseController {
         this.delete('/:_id', Authenticator.checkRoles('Administrator'), this.deleteUser.bind(this));
     }
 
-    async getUsers(req): Promise<any> {
-        return await this.userBusiness.getList(req.query.page, req.query.limit);
+    async searchUsers(req): Promise<any> {
+        return await this.userBusiness.search(req.query.name, req.query.page, req.query.limit);
     }
 
-    async getCountUsers(req): Promise<any> {
-        return await this.userBusiness.getCount();
+    async getCountSearchUsers(req): Promise<any> {
+        return await this.userBusiness.getCountSearch(req.query.name);
     }
 
     async getUserById(req): Promise<any> {

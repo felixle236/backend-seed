@@ -5,8 +5,8 @@ import RoleUpdate from '../../model/role/RoleUpdate'; // eslint-disable-line
 
 interface IRoleBusiness extends IBaseBusiness<Role> {
     getAll: () => Promise<Role[]>;
-    getList: (page: number, limit: number) => Promise<Role[]>;
-    getCount: () => Promise<number>;
+    search: (name?: string, page?: number, limit?: number) => Promise<Role[]>;
+    getCountSearch: (name?: string) => Promise<number>;
     getByName: (name: string) => Promise<Role | null>;
     create: (data: RoleCreate) => Promise<Role>;
     update: (_id: string, data: RoleUpdate) => Promise<Role | null>;

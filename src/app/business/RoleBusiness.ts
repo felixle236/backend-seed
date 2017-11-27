@@ -20,13 +20,25 @@ class RoleBusiness implements IRoleBusiness {
         return Role.parseArray(roles);
     }
 
-    async getList(page: number, limit: number): Promise<Role[]> {
-        let roles = await this.roleRepository.find(null, null, page, limit);
+    async search(name?: string, page?: number, limit?: number): Promise<Role[]> {
+        let param = {
+            query: <any>{}
+        };
+        if (name)
+            param.query.name = new RegExp(name, 'i');
+
+        let roles = await this.roleRepository.find(param, {name: 1}, page, limit);
         return Role.parseArray(roles);
     }
 
-    async getCount(): Promise<number> {
-        return await this.roleRepository.getCount();
+    async getCountSearch(name?: string): Promise<number> {
+        let param = {
+            query: <any>{}
+        };
+        if (name)
+            param.query.name = new RegExp(name, 'i');
+
+        return await this.roleRepository.getCount(param);
     }
 
     async get(_id: string): Promise<Role | null> {

@@ -25,13 +25,25 @@ class UserBusiness implements IUserBusiness {
         this.userRepository = new UserRepository();
     }
 
-    async getList(page: number, limit: number): Promise<User[]> {
-        let users = await this.userRepository.find(null, null, page, limit);
+    async search(name?: string, page?: number, limit?: number): Promise<User[]> {
+        let param = {
+            query: <any>{}
+        };
+        if (name)
+            param.query.name = new RegExp(name, 'i');
+
+        let users = await this.userRepository.find(param, {name: 1}, page, limit);
         return User.parseArray(users);
     }
 
-    async getCount(): Promise<number> {
-        return await this.userRepository.getCount();
+    async getCountSearch(name?: string): Promise<number> {
+        let param = {
+            query: <any>{}
+        };
+        if (name)
+            param.query.name = new RegExp(name, 'i');
+
+        return await this.userRepository.getCount(param);
     }
 
     async get(_id: string): Promise<User | null> {

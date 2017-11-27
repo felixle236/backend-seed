@@ -13,20 +13,20 @@ class {camelName}Controller extends BaseController {
     constructor() {
         super();
 
-        this.get('/list', this.validatePagination(), this.get{camelName}s.bind(this));
-        this.get('/list/count', this.getCount{camelName}s.bind(this));
+        this.get('/search', this.validatePagination(), this.search{camelName}s.bind(this));
+        this.get('/search-count', this.getCountSearch{camelName}s.bind(this));
         this.get('/:_id', this.get{camelName}ById.bind(this));
         this.post('/', Authenticator.isAuthenticated, this.create{camelName}.bind(this));
         this.put('/:_id', Authenticator.isAuthenticated, this.update{camelName}.bind(this));
         this.delete('/:_id', Authenticator.checkRoles('Administrator'), this.delete{camelName}.bind(this));
     }
 
-    async get{camelName}s(req): Promise<any> {
-        return await this.{pascalName}Business.getList(req.query.page, req.query.limit);
+    async search{camelName}s(req): Promise<any> {
+        return await this.{pascalName}Business.search(req.query.name, req.query.page, req.query.limit);
     }
 
-    async getCount{camelName}s(req): Promise<any> {
-        return await this.{pascalName}Business.getCount();
+    async getCountSearch{camelName}s(req): Promise<any> {
+        return await this.{pascalName}Business.getCountSearch(req.query.name);
     }
 
     async get{camelName}ById(req): Promise<any> {
