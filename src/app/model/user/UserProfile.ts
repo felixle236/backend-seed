@@ -1,6 +1,8 @@
+import {sealed} from '../../../helpers/InjectionHelper'; // eslint-disable-line
 import IUser from '../../model/user/interfaces/IUser'; // eslint-disable-line
 import {GenderType} from '../../model/common/CommonType';
 
+@sealed
 class UserProfile {
     name: string;
     email: string;
@@ -28,5 +30,4 @@ class UserProfile {
     }
 }
 
-Object.seal(UserProfile);
 export default UserProfile;

@@ -1,4 +1,4 @@
-import {injectable} from '../../helpers/InjectionHelper'; // eslint-disable-line
+import {injectable, sealed} from '../../helpers/InjectionHelper'; // eslint-disable-line
 import * as validator from 'validator';
 import * as crypto from 'crypto';
 import IUserBusiness from './interfaces/IUserBusiness'; // eslint-disable-line
@@ -17,6 +17,7 @@ import Authenticator from '../../system/Authenticator';
 import MailHelper from '../../helpers/MailHelper';
 import {ErrorCommon} from '../model/common/Error';
 
+@sealed
 @injectable
 class UserBusiness implements IUserBusiness {
     private userRepository: UserRepository;
@@ -198,5 +199,4 @@ function createAccessToken() {
     return crypto.randomBytes(64).toString('hex').substr(0, 128);
 }
 
-Object.seal(UserBusiness);
 export default UserBusiness;

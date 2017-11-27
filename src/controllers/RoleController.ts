@@ -1,4 +1,4 @@
-import {inject} from '../helpers/InjectionHelper';
+import {inject, sealed} from '../helpers/InjectionHelper'; // eslint-disable-line
 import BaseController from './base/BaseController';
 import RoleBusiness from '../app/business/RoleBusiness';
 import IRoleBusiness from '../app/business/interfaces/IRoleBusiness';
@@ -6,6 +6,7 @@ import RoleCreate from '../app/model/role/RoleCreate';
 import RoleUpdate from '../app/model/role/RoleUpdate';
 import Authenticator from '../system/Authenticator';
 
+@sealed
 class RoleController extends BaseController {
     @inject(RoleBusiness)
     private roleBusiness: IRoleBusiness;
@@ -46,5 +47,4 @@ class RoleController extends BaseController {
     }
 }
 
-Object.seal(RoleController);
 export default RoleController;

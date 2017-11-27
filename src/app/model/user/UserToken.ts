@@ -1,6 +1,8 @@
+import {sealed} from '../../../helpers/InjectionHelper'; // eslint-disable-line
 import IUser from '../../model/user/interfaces/IUser'; // eslint-disable-line
 import {LoginProvider} from '../common/CommonType';
 
+@sealed
 class UserToken {
     provider: LoginProvider;
     providerName: string;

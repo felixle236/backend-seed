@@ -1,3 +1,4 @@
+import {sealed} from '../helpers/InjectionHelper'; // eslint-disable-line
 import Default from './env/Default';
 
 interface IProject {
@@ -29,6 +30,7 @@ interface IProject {
     };
 }
 
+@sealed
 class Project {
     static getConfiguration() {
         // Get the current config
@@ -41,5 +43,4 @@ class Project {
     }
 }
 
-Object.seal(Project);
 export default <IProject>Project.getConfiguration();

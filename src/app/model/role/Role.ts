@@ -1,5 +1,7 @@
+import {sealed} from '../../../helpers/InjectionHelper'; // eslint-disable-line
 import IRole from './interfaces/IRole'; // eslint-disable-line
 
+@sealed
 class Role {
     _id: string;
     name: string;
@@ -27,5 +29,4 @@ class Role {
     }
 }
 
-Object.seal(Role);
 export default Role;

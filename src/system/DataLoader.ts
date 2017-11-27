@@ -1,9 +1,10 @@
-import {inject} from '../helpers/InjectionHelper';
+import {inject, sealed} from '../helpers/InjectionHelper'; // eslint-disable-line
 import Role from '../app/model/role/Role';
 import RoleBusiness from '../app/business/RoleBusiness';
 import IRoleBusiness from '../app/business/interfaces/IRoleBusiness';
 import {ClusterRequestType} from '../app/model/common/CommonType';
 
+@sealed
 class DataLoader {
     private static isUseCluster: boolean = false;
     @inject(RoleBusiness)
@@ -69,5 +70,4 @@ class DataLoader {
     }
 }
 
-Object.seal(DataLoader);
 export default DataLoader;

@@ -1,3 +1,6 @@
+import {sealed} from '../../../helpers/InjectionHelper'; // eslint-disable-line
+
+@sealed
 class Pagination {
     skip: number;
     limit: number;

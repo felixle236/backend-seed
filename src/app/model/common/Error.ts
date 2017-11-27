@@ -1,6 +1,8 @@
+import {sealed} from '../../../helpers/InjectionHelper'; // eslint-disable-line
 import DataHelper from '../../../helpers/DataHelper';
 import ErrorCommonData from '../../../resources/errors/ErrorCommonData';
 
+@sealed
 export class BaseError {
     code: string;
     message?: string;
@@ -21,12 +23,14 @@ export class BaseError {
     }
 };
 
+@sealed
 export class ErrorSystem extends BaseError {
     constructor(message?: string) {
         super('SYS', undefined, message);
     }
 };
 
+@sealed
 export class ErrorCommon extends BaseError {
     constructor(codeNum: number, ...params) {
         super('COM', codeNum);

@@ -1,4 +1,4 @@
-import {inject} from '../helpers/InjectionHelper';
+import {inject, sealed} from '../helpers/InjectionHelper'; // eslint-disable-line
 import BaseController from './base/BaseController';
 import UserBusiness from '../app/business/UserBusiness';
 import IUserBusiness from '../app/business/interfaces/IUserBusiness';
@@ -7,6 +7,7 @@ import UserUpdate from '../app/model/user/UserUpdate';
 import UserLogin from '../app/model/user/UserLogin'; // eslint-disable-line
 import Authenticator from '../system/Authenticator';
 
+@sealed
 class UserController extends BaseController {
     @inject(UserBusiness)
     private userBusiness: IUserBusiness;
@@ -69,5 +70,4 @@ class UserController extends BaseController {
     }
 }
 
-Object.seal(UserController);
 export default UserController;

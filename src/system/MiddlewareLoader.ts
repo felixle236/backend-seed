@@ -2,9 +2,11 @@ import * as express from 'express';
 import * as path from 'path';
 import * as logger from 'morgan';
 import * as bodyParser from 'body-parser';
+import {sealed} from '../helpers/InjectionHelper'; // eslint-disable-line
 import Authenticator from './Authenticator';
 import RouteLoader from './RouteLoader';
 
+@sealed
 class MiddlewareLoader {
     static get configuration() {
         let app = express();
@@ -47,5 +49,4 @@ class MiddlewareLoader {
     }
 }
 
-Object.seal(MiddlewareLoader);
 export default MiddlewareLoader;

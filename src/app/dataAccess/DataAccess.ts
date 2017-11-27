@@ -1,6 +1,8 @@
 import * as mongoose from 'mongoose';
 import Project from '../../config/Project';
+import {sealed} from '../../helpers/InjectionHelper'; // eslint-disable-line
 
+@sealed
 class DataAccess {
     static get connection(): mongoose.Connection {
         return mongoose.connection;

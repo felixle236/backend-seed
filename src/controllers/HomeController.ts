@@ -1,10 +1,11 @@
-import {inject} from '../helpers/InjectionHelper';
+import {inject, sealed} from '../helpers/InjectionHelper'; // eslint-disable-line
 import BaseController from './base/BaseController';
 import UserBusiness from '../app/business/UserBusiness';
 import IUserBusiness from '../app/business/interfaces/IUserBusiness';
 import RoleBusiness from '../app/business/RoleBusiness';
 import IRoleBusiness from '../app/business/interfaces/IRoleBusiness';
 
+@sealed
 class HomeController extends BaseController {
     @inject(UserBusiness)
     private userBusiness: IUserBusiness;
@@ -27,5 +28,4 @@ class HomeController extends BaseController {
     }
 }
 
-Object.seal(HomeController);
 export default HomeController;

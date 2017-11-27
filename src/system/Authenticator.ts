@@ -1,11 +1,12 @@
 import * as express from 'express';
-import {inject} from '../helpers/InjectionHelper';
+import {inject, sealed} from '../helpers/InjectionHelper'; // eslint-disable-line
 import UserLogin from '../app/model/user/UserLogin';
 import UserBusiness from '../app/business/UserBusiness';
 import IUserBusiness from '../app/business/interfaces/IUserBusiness';
 import DataLoader from './DataLoader';
 import DateHelper from '../helpers/DateHelper';
 
+@sealed
 class Authenticator {
     private app: any;
     @inject(UserBusiness)
@@ -135,5 +136,4 @@ class Authenticator {
     }
 }
 
-Object.seal(Authenticator);
 export default Authenticator;
