@@ -1,7 +1,7 @@
 import * as path from 'path';
 import * as fs from 'fs';
 
-export default class FileHelper {
+class FileHelper {
     static getDirectories = function(sourcePath: string): Promise<string[]> {
         return new Promise<string[]>((resolve, reject) => {
             fs.readdir(sourcePath, (err, list) => {
@@ -32,3 +32,6 @@ export default class FileHelper {
         return fs.readdirSync(sourcePath).filter(item => !fs.statSync(path.join(sourcePath, item)).isDirectory());
     }
 }
+
+Object.seal(FileHelper);
+export default FileHelper;

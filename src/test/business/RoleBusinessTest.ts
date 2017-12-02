@@ -1,16 +1,17 @@
 import 'mocha';
 import {expect} from 'chai';
 import Project from '../../config/Project';
+import BusinessLoader from '../../system/BusinessLoader';
 import DataAccess from '../../app/dataAccess/DataAccess';
 import IRoleBusiness from '../../app/business/interfaces/IRoleBusiness'; // eslint-disable-line
-import RoleBusiness from '../../app/business/RoleBusiness';
 import IRole from '../../app/model/role/interfaces/IRole';
 import Role from '../../app/model/role/Role'; // eslint-disable-line
 import RoleCreate from '../../app/model/role/RoleCreate';
 import RoleUpdate from '../../app/model/role/RoleUpdate';
 
+BusinessLoader.init();
 let connection;
-let roleBusiness: IRoleBusiness = new RoleBusiness();
+let roleBusiness: IRoleBusiness = BusinessLoader.roleBusiness;
 
 before(done => {
     connection = DataAccess.connect(Project.DB_CONN_URI_TEST);

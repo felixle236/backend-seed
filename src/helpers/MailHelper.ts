@@ -2,7 +2,7 @@ import * as nodeMailer from 'nodemailer';
 import * as emailExistence from 'email-existence';
 import Project from '../config/Project';
 
-export default class MailHelper {
+class MailHelper {
     private static transporter: nodeMailer.Transporter = nodeMailer.createTransport({
         service: 'gmail',
         auth: {
@@ -33,3 +33,6 @@ export default class MailHelper {
         });
     }
 }
+
+Object.seal(MailHelper);
+export default MailHelper;

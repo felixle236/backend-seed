@@ -1,4 +1,3 @@
-import {injectable, sealed} from '../../helpers/InjectionHelper'; // eslint-disable-line
 import Role from '../model/role/Role';
 import RoleCreate from '../model/role/RoleCreate'; // eslint-disable-line
 import RoleUpdate from '../model/role/RoleUpdate'; // eslint-disable-line
@@ -7,8 +6,6 @@ import RoleRepository from '../repository/RoleRepository';
 import DataLoader from '../../system/DataLoader';
 import {ErrorCommon} from '../model/common/Error';
 
-@sealed
-@injectable
 class RoleBusiness implements IRoleBusiness {
     private roleRepository: RoleRepository;
 
@@ -118,4 +115,5 @@ function validateName(name: string): boolean {
     return true;
 }
 
+Object.seal(RoleBusiness);
 export default RoleBusiness;

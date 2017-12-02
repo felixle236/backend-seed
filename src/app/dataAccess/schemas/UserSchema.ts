@@ -46,7 +46,7 @@ class UserSchema {
             },
             roles: {
                 type: [mongoose.Schema.Types.ObjectId],
-                refer: 'Role'
+                ref: 'Role'
             },
             claims: [String],
             token: mongoose.Schema.Types.Mixed

@@ -1,8 +1,6 @@
 import * as mongoose from 'mongoose';
 import Project from '../../config/Project';
-import {sealed} from '../../helpers/InjectionHelper'; // eslint-disable-line
 
-@sealed
 class DataAccess {
     static get connection(): mongoose.Connection {
         return mongoose.connection;
@@ -43,13 +41,24 @@ class DataAccess {
 
         let schema = new mongoose.Schema(schemaDefinition);
 
-        schema.pre('update', function(this: any, next) {
-            this.updatedAt = new Date(); // eslint-disable-line
-            next();
+        // schema.pre('update', function(this: any, next) {
+        //     console.log('schema.pre', this.updatedAt); // eslint-disable-line
+        //     this.updatedAt = new Date(); // eslint-disable-line
+        //     next();
+        // });
+
+        schema.pre('update', function(this: any) {
+            try {
+                this.update({}, {$set: {updatedAt: new Date()}}); // eslint-disable-line
+            }
+            catch (error) {
+                console.error('Schema pre update', error);
+            }
         });
 
         return schema;
     }
 }
 
+Object.seal(DataAccess);
 export default DataAccess;

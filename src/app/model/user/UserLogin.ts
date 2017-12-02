@@ -1,10 +1,8 @@
-import {sealed} from '../../../helpers/InjectionHelper'; // eslint-disable-line
 import IUser from '../../model/user/interfaces/IUser'; // eslint-disable-line
 import UserToken from './UserToken';
 import UserProfile from '../../model/user/UserProfile';
 import UserPermission from '../../model/user/UserPermission';
 
-@sealed
 class UserLogin {
     _id: string;
     profile: UserProfile;
@@ -22,4 +20,5 @@ class UserLogin {
     }
 }
 
+Object.seal(UserLogin);
 export default UserLogin;

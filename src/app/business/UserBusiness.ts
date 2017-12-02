@@ -1,6 +1,7 @@
-import {injectable, sealed} from '../../helpers/InjectionHelper'; // eslint-disable-line
 import * as validator from 'validator';
 import * as crypto from 'crypto';
+import RoleBusiness from './RoleBusiness'; // eslint-disable-line
+import IRoleBusiness from './interfaces/IRoleBusiness'; // eslint-disable-line
 import IUserBusiness from './interfaces/IUserBusiness'; // eslint-disable-line
 import UserRepository from '../repository/UserRepository';
 import User from '../model/user/User';
@@ -17,8 +18,6 @@ import Authenticator from '../../system/Authenticator';
 import MailHelper from '../../helpers/MailHelper';
 import {ErrorCommon} from '../model/common/Error';
 
-@sealed
-@injectable
 class UserBusiness implements IUserBusiness {
     private userRepository: UserRepository;
 
@@ -96,14 +95,14 @@ class UserBusiness implements IUserBusiness {
         return user && new UserPermission(user);
     }
 
-    async validateEmail(email: string): Promise<boolean> {
+    async validateEmail(email: string, isCheckExists?: boolean): Promise<boolean> {
         if (!email)
             throw new ErrorCommon(105, 'Email');
         else if (!validator.isEmail(email))
             throw new ErrorCommon(101, 'Email');
 
         email = email.trim().toLowerCase();
-        if (await this.userRepository.checkEmailExists(email))
+        if (isCheckExists && await this.userRepository.checkEmailExists(email))
             throw new ErrorCommon(104, 'Email');
         if (!email.endsWith('@localhost.com') && !(await MailHelper.checkRealEmail(email)))
             throw new ErrorCommon(108, 'Email');
@@ -113,7 +112,7 @@ class UserBusiness implements IUserBusiness {
 
     async create(data: UserCreate): Promise<IUser> {
         let user;
-        if (validateName(data.name) && await this.validateEmail(data.email) && data.password && validatePassword(data.password)) {
+        if (validateName(data.name) && await this.validateEmail(data.email, true) && data.password && validatePassword(data.password)) {
             data.password = hashPassword(data.password);
             user = await this.userRepository.create(data);
         }
@@ -199,4 +198,5 @@ function createAccessToken() {
     return crypto.randomBytes(64).toString('hex').substr(0, 128);
 }
 
+Object.seal(UserBusiness);
 export default UserBusiness;

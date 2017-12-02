@@ -73,7 +73,7 @@ class BaseRepository<T extends mongoose.Document> implements IRead<T>, IWrite<T>
 
     async getCount(param?: any): Promise<number> {
         param = this.validateParam(param);
-        return await this.model.find(param).count();
+        return await this.model.find(param.query).count();
     }
 
     async get(_id: string, populate?: any): Promise<T | null> {
@@ -108,4 +108,5 @@ class BaseRepository<T extends mongoose.Document> implements IRead<T>, IWrite<T>
     }
 }
 
+Object.seal(BaseRepository);
 export default BaseRepository;

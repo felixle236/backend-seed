@@ -1,7 +1,5 @@
-import {sealed} from '../../../helpers/InjectionHelper'; // eslint-disable-line
 import IUser from '../../model/user/interfaces/IUser'; // eslint-disable-line
 
-@sealed
 class UserPermission {
     roles: string[];
     claims?: string[];
@@ -15,4 +13,5 @@ class UserPermission {
     }
 }
 
+Object.seal(UserPermission);
 export default UserPermission;

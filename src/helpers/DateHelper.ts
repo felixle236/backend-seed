@@ -1,4 +1,4 @@
-export default class DateHelper {
+class DateHelper {
     static addSeconds(date: Date, seconds: number): Date {
         date.setSeconds(date.getSeconds() + seconds);
         return date;
@@ -29,3 +29,6 @@ export default class DateHelper {
         return date;
     }
 }
+
+Object.seal(DateHelper);
+export default DateHelper;

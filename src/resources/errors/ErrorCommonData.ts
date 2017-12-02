@@ -1,4 +1,4 @@
-export default class ErrorCommonData {
+class ErrorCommonData {
     static COM001 = 'You have no permission to retrieve this information!';
     static COM002 = 'Router must have request handler function!';
     static COM003 = 'Bad request!';
@@ -23,3 +23,6 @@ export default class ErrorCommonData {
     static COM202 = 'Maximum {0} is {1} characters!';
     static COM203 = '{0} is greater than {1}!';
 };
+
+Object.seal(ErrorCommonData);
+export default ErrorCommonData;

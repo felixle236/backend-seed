@@ -33,53 +33,58 @@ class BaseController {
         };
     }
 
-    validateDateTime(...options: {}[]) {
+    validateDateTime(...options: {target?: string, required?: boolean, field: string, type: string}[]) {
         return (req: express.Request, res: express.Response, next: express.NextFunction) => {
             for (let i = 0; i < options.length; i++) {
                 let option = options[i];
-                let field = Object.keys(option)[0];
-                let type = option[field];
+                let target = option.target || 'query';
+                let required = option.required;
+                let field = option.field;
+                let type = option.type;
 
-                if ((type === 'Y' || type === 'M' || type === 'D' || type === 'DATE') && !this.numRegex.test(req.query[field]))
+                if (!['params', 'query', 'body'].includes(target) || !field || !['DATE', 'Y', 'M', 'D'].includes(type))
+                    throw new ErrorCommon(108, 'Validation');
+
+                if ((required || req[target][field]) && ['Y', 'M', 'D'].includes(type) && !this.numRegex.test(req[target][field]))
                     return this.sendError(req, res, new ErrorCommon(101, 'Request'));
 
-                if (type === 'Y') {
-                    let year = Number(req.query[field]);
+                if ((required || req[target][field]) && type === 'Y') {
+                    let year = Number(req[target][field]);
 
                     if (year < 1970 || year > 9999)
                         return this.sendError(req, res, new ErrorCommon(101, 'Request'));
 
-                    req.query[field] = year;
+                    req[target][field] = year;
                     continue;
                 }
 
-                if (type === 'M') {
-                    let month = Number(req.query[field]);
+                if ((required || req[target][field]) && type === 'M') {
+                    let month = Number(req[target][field]);
 
                     if (month < 1 || month > 12)
                         return this.sendError(req, res, new ErrorCommon(101, 'Request'));
 
-                    req.query[field] = month;
+                    req[target][field] = month;
                     continue;
                 }
 
-                if (type === 'D') {
-                    let day = Number(req.query[field]);
+                if ((required || req[target][field]) && type === 'D') {
+                    let day = Number(req[target][field]);
 
                     if (day < 1 || day > 31)
                         return this.sendError(req, res, new ErrorCommon(101, 'Request'));
 
-                    req.query[field] = day;
+                    req[target][field] = day;
                     continue;
                 }
 
-                if (type === 'DATE') {
-                    let date: any = new Date(req.query[field]);
+                if ((required || req[target][field]) && type === 'DATE') {
+                    let date: any = new Date(req[target][field]);
 
                     if (date === 'Invalid Date' || isNaN(date))
                         return this.sendError(req, res, new ErrorCommon(101, 'Request'));
 
-                    req.query[field] = date;
+                    req[target][field] = date;
                     continue;
                 }
             }
@@ -154,4 +159,5 @@ class BaseController {
     }
 }
 
+Object.seal(BaseController);
 export default BaseController;

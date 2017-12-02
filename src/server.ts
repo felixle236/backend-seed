@@ -3,6 +3,7 @@ import * as http from 'http';
 import * as cluster from 'cluster';
 import * as os from 'os';
 import Project from './config/Project';
+import BusinessLoader from './system/BusinessLoader';
 import MiddlewareLoader from './system/MiddlewareLoader';
 import DataAccess from './app/dataAccess/DataAccess';
 import InitialData from './system/InitialData';
@@ -10,11 +11,11 @@ import DataLoader from './system/DataLoader';
 
 const app = express();
 const port = Project.PORT;
-
 app.set('port', port);
-app.use(MiddlewareLoader.configuration);
 
 DataAccess.connect();
+BusinessLoader.init();
+app.use(MiddlewareLoader.configuration);
 const debug = require('debug')('express-mongodb:server');
 
 if (process.env.NODE_ENV === 'Development' && process.env.DEBUG_MODE) {
@@ -51,8 +52,13 @@ else {
 }
 
 async function initData(): Promise<void> {
-    await (new InitialData()).init();
-    await DataLoader.loadAll();
+    try {
+        await (new InitialData()).init();
+        await DataLoader.loadAll();
+    }
+    catch (error) {
+        console.error(error);
+    }
 }
 
 function createHttpServer() {

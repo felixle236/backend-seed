@@ -1,10 +1,8 @@
 import * as express from 'express';
-import {sealed} from '../helpers/InjectionHelper'; // eslint-disable-line
 import HomeController from '../controllers/HomeController';
 import UserController from '../controllers/UserController';
 import RoleController from '../controllers/RoleController';
 
-@sealed
 class RouteLoader {
     private app: express.Express = express();
 
@@ -19,4 +17,5 @@ class RouteLoader {
     }
 }
 
+Object.seal(RouteLoader);
 export default RouteLoader;

@@ -1,6 +1,6 @@
 import * as mongoose from 'mongoose';
 
-export default class DataHelper {
+class DataHelper {
     static toObjectId(_id: string): mongoose.Types.ObjectId {
         return mongoose.Types.ObjectId.createFromHexString(_id && _id.toString());
     }
@@ -20,3 +20,6 @@ export default class DataHelper {
         });
     }
 }
+
+Object.seal(DataHelper);
+export default DataHelper;

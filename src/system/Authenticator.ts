@@ -1,16 +1,13 @@
 import * as express from 'express';
-import {inject, sealed} from '../helpers/InjectionHelper'; // eslint-disable-line
 import UserLogin from '../app/model/user/UserLogin';
-import UserBusiness from '../app/business/UserBusiness';
+import BusinessLoader from '../system/BusinessLoader';
 import IUserBusiness from '../app/business/interfaces/IUserBusiness';
 import DataLoader from './DataLoader';
 import DateHelper from '../helpers/DateHelper';
 
-@sealed
 class Authenticator {
     private app: any;
-    @inject(UserBusiness)
-    private userBusiness: IUserBusiness;
+    private userBusiness: IUserBusiness = BusinessLoader.userBusiness;
     static readonly userKey = 'authUser';
     // Store list user login in memory
     private static authenticators: {expire: Date, userLogin: UserLogin}[] = [];
@@ -136,4 +133,5 @@ class Authenticator {
     }
 }
 
+Object.seal(Authenticator);
 export default Authenticator;

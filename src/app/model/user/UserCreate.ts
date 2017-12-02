@@ -1,9 +1,7 @@
-import {sealed} from '../../../helpers/InjectionHelper'; // eslint-disable-line
 import IUser from './interfaces/IUser'; // eslint-disable-line
 import {GenderType} from '../common/CommonType';
 import UserToken from './UserToken';
 
-@sealed
 class UserCreate {
     name: string;
     email: string;
@@ -36,4 +34,5 @@ class UserCreate {
     }
 }
 
+Object.seal(UserCreate);
 export default UserCreate;

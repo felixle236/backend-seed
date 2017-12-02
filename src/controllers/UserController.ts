@@ -1,16 +1,13 @@
-import {inject, sealed} from '../helpers/InjectionHelper'; // eslint-disable-line
 import BaseController from './base/BaseController';
-import UserBusiness from '../app/business/UserBusiness';
+import BusinessLoader from '../system/BusinessLoader';
 import IUserBusiness from '../app/business/interfaces/IUserBusiness';
 import UserCreate from '../app/model/user/UserCreate';
 import UserUpdate from '../app/model/user/UserUpdate';
 import UserLogin from '../app/model/user/UserLogin'; // eslint-disable-line
 import Authenticator from '../system/Authenticator';
 
-@sealed
 class UserController extends BaseController {
-    @inject(UserBusiness)
-    private userBusiness: IUserBusiness;
+    private userBusiness: IUserBusiness = BusinessLoader.userBusiness;
 
     constructor() {
         super();
@@ -19,11 +16,14 @@ class UserController extends BaseController {
         this.get('/search-count', this.getCountSearchUsers.bind(this));
         this.get('/:_id', this.getUserById.bind(this));
         this.get('/profile', Authenticator.isAuthenticated, this.getProfile.bind(this));
+
         this.post('/signin', this.signin.bind(this));
         this.post('/signup', this.signup.bind(this));
         this.post('/', Authenticator.checkRoles('Administrator'), this.createUser.bind(this));
+
         this.put('/:_id', Authenticator.checkRoles('Administrator'), this.updateUser.bind(this));
         this.put('/profile', Authenticator.isAuthenticated, this.updateProfile.bind(this));
+
         this.delete('/:_id', Authenticator.checkRoles('Administrator'), this.deleteUser.bind(this));
     }
 
@@ -70,4 +70,5 @@ class UserController extends BaseController {
     }
 }
 
+Object.seal(UserController);
 export default UserController;

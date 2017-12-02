@@ -1,19 +1,14 @@
-import {inject, sealed} from '../helpers/InjectionHelper'; // eslint-disable-line
-import UserBusiness from '../app/business/UserBusiness';
 import IUserBusiness from '../app/business/interfaces/IUserBusiness';
-import RoleBusiness from '../app/business/RoleBusiness';
 import IRoleBusiness from '../app/business/interfaces/IRoleBusiness';
+import BusinessLoader from '../system/BusinessLoader';
 import getRoles from '../resources/initialData/Roles';
 import getRoleClaims from '../resources/initialData/RoleClaims';
 import getUsers from '../resources/initialData/Users';
 import getUserRoles from '../resources/initialData/UserRoles';
 
-@sealed
 class InitialData {
-    @inject(RoleBusiness)
-    private roleBusiness: IRoleBusiness;
-    @inject(UserBusiness)
-    private userBusiness: IUserBusiness;
+    private roleBusiness: IRoleBusiness = BusinessLoader.roleBusiness;
+    private userBusiness: IUserBusiness = BusinessLoader.userBusiness;
 
     async init(): Promise<void> {
         await this.initRoles();
@@ -132,4 +127,5 @@ class InitialData {
     }
 }
 
+Object.seal(InitialData);
 export default InitialData;
