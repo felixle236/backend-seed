@@ -1,7 +1,8 @@
 // Place your settings in this file to overwrite default and user settings.
 {
     "search.exclude": {
-        "**/dest": true
+        "**/dest": true,
+        ".history": true
     },
     "editor.tabSize": 4,
     "eslint.enable": true, //Enable eslint

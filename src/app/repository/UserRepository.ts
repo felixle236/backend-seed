@@ -10,7 +10,7 @@ class UserRepository extends BaseRepository<IUser> {
         super(UserSchema);
     }
 
-    async getUserLogin(email: string, password: string): Promise<IUser | null> {
+    async authenticate(email: string, password: string): Promise<IUser | null> {
         let param = {
             query: {
                 email: email,
@@ -61,19 +61,19 @@ class UserRepository extends BaseRepository<IUser> {
         return await super.create(data);
     }
 
-    async update(_id: string, data: UserUpdate): Promise<boolean> {
+    async update(_id: string, data: UserUpdate): Promise<IUser> {
         return await super.update(_id, data);
     }
 
-    async updateUserToken(_id: string, token: UserToken): Promise<boolean> {
+    async updateUserToken(_id: string, token: UserToken): Promise<IUser> {
         return await super.update(_id, {token: token});
     }
 
-    async updateRoles(_id: string, roles: string[]): Promise<boolean> {
+    async updateRoles(_id: string, roles: string[]): Promise<IUser> {
         return await super.update(_id, {roles: roles});
     }
 
-    async updateClaims(_id: string, claims: string[]): Promise<boolean> {
+    async updateClaims(_id: string, claims: string[]): Promise<IUser> {
         return await super.update(_id, {claims: claims});
     }
 }

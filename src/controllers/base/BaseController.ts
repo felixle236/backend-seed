@@ -5,6 +5,8 @@ class BaseController {
     private router: express.Router;
     protected idRegex = /[0-9a-z]{24}/;
     protected numRegex = /^[0-9]{1,9}$/;
+    protected targets = ['params', 'query', 'body'];
+    protected types = ['ID', 'NUM', 'BOOL', 'DATE', 'Y', 'M', 'D'];
 
     constructor() {
         this.router = express.Router(); // eslint-disable-line
@@ -33,59 +35,89 @@ class BaseController {
         };
     }
 
-    validateDateTime(...options: {target?: string, required?: boolean, field: string, type: string}[]) {
+    validateData(...options: {target?: string, required?: boolean, field: string, type: string}[]) {
         return (req: express.Request, res: express.Response, next: express.NextFunction) => {
             for (let i = 0; i < options.length; i++) {
                 let option = options[i];
-                let target = option.target || 'query';
+                let target = option.target || (['GET', 'DELETE'].includes(req.method) ? 'query' : 'body');
                 let required = option.required;
                 let field = option.field;
                 let type = option.type;
 
-                if (!['params', 'query', 'body'].includes(target) || !field || !['DATE', 'Y', 'M', 'D'].includes(type))
-                    throw new ErrorCommon(108, 'Validation');
+                if (!this.targets.includes(target) || !this.types.includes(type) || !field || (required && !req[target][field] && req[target][field] !== false)) {
+                    console.log(`Validate ${target} ${field} ${type}${required ? ' Required' : ''}: ${JSON.stringify(req[target][field])} (${typeof req[target][field]})`);
+                    return this.sendError(req, res, new ErrorCommon(101, (field || 'Data') + ' format'));
+                }
 
-                if ((required || req[target][field]) && ['Y', 'M', 'D'].includes(type) && !this.numRegex.test(req[target][field]))
+                if (!required && !req[target][field])
+                    continue;
+                else if (type === 'ID' && !this.idRegex.test(req[target][field])) {
+                    console.log(`Validate ${target} ${field} ${type}${required ? ' Required' : ''}: ${JSON.stringify(req[target][field])} (${typeof req[target][field]})`);
                     return this.sendError(req, res, new ErrorCommon(101, 'Request'));
-
-                if ((required || req[target][field]) && type === 'Y') {
-                    let year = Number(req[target][field]);
-
-                    if (year < 1970 || year > 9999)
+                }
+                else if (['NUM'].includes(type)) {
+                    if (!this.numRegex.test(req[target][field])) {
+                        console.log(`Validate ${target} ${field} ${type}${required ? ' Required' : ''}: ${JSON.stringify(req[target][field])} (${typeof req[target][field]})`);
                         return this.sendError(req, res, new ErrorCommon(101, 'Request'));
+                    }
 
-                    req[target][field] = year;
+                    req[target][field] = Number(req[target][field]);
                     continue;
                 }
-
-                if ((required || req[target][field]) && type === 'M') {
-                    let month = Number(req[target][field]);
-
-                    if (month < 1 || month > 12)
-                        return this.sendError(req, res, new ErrorCommon(101, 'Request'));
-
-                    req[target][field] = month;
+                else if (['BOOL'].includes(type)) {
+                    req[target][field] = req[target][field] === true;
                     continue;
                 }
-
-                if ((required || req[target][field]) && type === 'D') {
-                    let day = Number(req[target][field]);
-
-                    if (day < 1 || day > 31)
-                        return this.sendError(req, res, new ErrorCommon(101, 'Request'));
-
-                    req[target][field] = day;
-                    continue;
-                }
-
-                if ((required || req[target][field]) && type === 'DATE') {
+                else if (type === 'DATE') {
                     let date: any = new Date(req[target][field]);
 
-                    if (date === 'Invalid Date' || isNaN(date))
+                    if (date === 'Invalid Date' || isNaN(date)) {
+                        console.log(`Validate ${target} ${field} ${type}${required ? ' Required' : ''}: ${JSON.stringify(req[target][field])} (${typeof req[target][field]})`);
                         return this.sendError(req, res, new ErrorCommon(101, 'Request'));
+                    }
 
                     req[target][field] = date;
                     continue;
+                }
+                else if (['Y', 'M', 'D'].includes(type)) {
+                    if (!this.numRegex.test(req[target][field])) {
+                        console.log(`Validate ${target} ${field} ${type}${required ? ' Required' : ''}: ${JSON.stringify(req[target][field])} (${typeof req[target][field]})`);
+                        return this.sendError(req, res, new ErrorCommon(101, 'Request'));
+                    }
+
+                    if (type === 'Y') {
+                        let year = Number(req[target][field]);
+
+                        if (year < 1970 || year > 9999) {
+                            console.log(`Validate ${target} ${field} ${type}${required ? ' Required' : ''}: ${JSON.stringify(req[target][field])} (${typeof req[target][field]})`);
+                            return this.sendError(req, res, new ErrorCommon(101, 'Request'));
+                        }
+
+                        req[target][field] = year;
+                        continue;
+                    }
+                    else if (type === 'M') {
+                        let month = Number(req[target][field]);
+
+                        if (month < 1 || month > 12) {
+                            console.log(`Validate ${target} ${field} ${type}${required ? ' Required' : ''}: ${JSON.stringify(req[target][field])} (${typeof req[target][field]})`);
+                            return this.sendError(req, res, new ErrorCommon(101, 'Request'));
+                        }
+
+                        req[target][field] = month;
+                        continue;
+                    }
+                    else if (type === 'D') {
+                        let day = Number(req[target][field]);
+
+                        if (day < 1 || day > 31) {
+                            console.log(`Validate ${target} ${field} ${type}${required ? ' Required' : ''}: ${JSON.stringify(req[target][field])} (${typeof req[target][field]})`);
+                            return this.sendError(req, res, new ErrorCommon(101, 'Request'));
+                        }
+
+                        req[target][field] = day;
+                        continue;
+                    }
                 }
             }
             next();
@@ -141,7 +173,7 @@ class BaseController {
             return handlers;
         }
         else
-            throw new ErrorCommon(2);
+            throw new Error('The router must have request handler function!');
     }
 
     sendData(req: express.Request, res: express.Response, data: any) {

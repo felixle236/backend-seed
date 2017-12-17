@@ -8,7 +8,7 @@ import User from '../model/user/User';
 import IUser from '../model/user/interfaces/IUser'; // eslint-disable-line
 import UserCreate from '../model/user/UserCreate'; // eslint-disable-line
 import UserUpdate from '../model/user/UserUpdate'; // eslint-disable-line
-import UserLogin from '../model/user/UserLogin';
+import UserAuthentication from '../model/user/UserAuthentication';
 import UserToken from '../model/user/UserToken';
 import UserPermission from '../model/user/UserPermission';
 import {LoginProvider} from '../model/common/CommonType';
@@ -54,12 +54,12 @@ class UserBusiness implements IUserBusiness {
         return user && new User(user);
     }
 
-    async getUserLogin(email: string, password: string): Promise<UserLogin | null> {
+    async authenticate(email: string, password: string): Promise<UserAuthentication | null> {
         if (!email || !validator.isEmail(email) || !password)
             throw new ErrorCommon(101, 'Email or password');
 
         email = email.trim().toLowerCase();
-        let user = await this.userRepository.getUserLogin(email, hashPassword(password));
+        let user = await this.userRepository.authenticate(email, hashPassword(password));
 
         if (!user)
             throw new ErrorCommon(108, 'Email or password');
@@ -67,15 +67,15 @@ class UserBusiness implements IUserBusiness {
         if (!user.token || user.token.provider !== LoginProvider.Local || !user.token.accessToken || !user.token.tokenExpire || user.token.tokenExpire < new Date())
             user.token = await this.updateUserToken(user._id, new UserToken(<any>{provider: LoginProvider.Local}));
 
-        return new UserLogin(user);
+        return new UserAuthentication(user);
     }
 
-    async getUserLoginByToken(token: string): Promise<UserLogin | null> {
+    async getByToken(token: string): Promise<UserAuthentication | null> {
         if (!token)
             return null;
 
         let user = await this.userRepository.getByToken(token);
-        return user && new UserLogin(user);
+        return user && new UserAuthentication(user);
     }
 
     async getByEmail(email: string): Promise<User | null> {
@@ -121,23 +121,23 @@ class UserBusiness implements IUserBusiness {
         return user;
     }
 
-    async signup(data: UserCreate): Promise<UserLogin> {
+    async signup(data: UserCreate): Promise<UserAuthentication> {
         let user = await this.create(data);
         if (user)
             user.token = await this.updateUserToken(user._id, new UserToken(<any>{provider: LoginProvider.Local}));
-        return user && new UserLogin(user);
+        return user && new UserAuthentication(user);
     }
 
     async update(_id: string, data: UserUpdate): Promise<User | null> {
-        let result;
+        let user;
 
         if (validateName(data.name)) {
-            result = await this.userRepository.update(_id, data);
-            if (result)
+            user = await this.userRepository.update(_id, data);
+            if (user)
                 Authenticator.removeAuthenticator(_id);
         }
 
-        return result ? await this.get(_id) : null;
+        return user && new User(user);
     }
 
     private async updateUserToken(_id: string, token: UserToken): Promise<UserToken> {
@@ -151,12 +151,14 @@ class UserBusiness implements IUserBusiness {
 
     async updateRoles(_id: string, roles: string[]): Promise<boolean> {
         Authenticator.removeAuthenticator(_id);
-        return await this.userRepository.updateRoles(_id, roles);
+        let result = await this.userRepository.updateRoles(_id, roles);
+        return result ? true : false;
     }
 
     async updateClaims(_id: string, claims: string[]): Promise<boolean> {
         Authenticator.removeAuthenticator(_id);
-        return await this.userRepository.updateClaims(_id, claims);
+        let result = await this.userRepository.updateClaims(_id, claims);
+        return result ? true : false;
     }
 
     async delete(_id: string): Promise<boolean> {

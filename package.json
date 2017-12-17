@@ -8,8 +8,6 @@
         "eslint": "./node_modules/.bin/eslint --ext .ts --ext .js ./src",
         "drop-db": "mongo backend_seed_dev --eval 'db.dropDatabase();'",
         "test": "NODE_ENV=Development ./node_modules/.bin/mocha --exit ./node_modules/ts-node/register ./src/test/**/*.ts",
-        "test-stag": "NODE_ENV=Staging ./node_modules/.bin/mocha --exit ./node_modules/ts-node/register ./src/test/**/*.ts",
-        "test-prod": "NODE_ENV=Production ./node_modules/.bin/mocha --exit ./node_modules/ts-node/register ./src/test/**/*.ts",
         "build": "npm run eslint && ./node_modules/.bin/grunt build",
         "start": "npm run eslint && ./node_modules/.bin/grunt build && NODE_ENV=Development node ./dest/server.js",
         "start-with-data": "npm run eslint && ./node_modules/.bin/grunt build && NODE_ENV=Development DATA_TEST=Y node ./dest/server.js",

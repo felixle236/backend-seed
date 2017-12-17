@@ -9,6 +9,10 @@ module.exports = function(grunt) {
             main: {
                 files: [{
                     cwd: 'src',
+                    src: ['resources/templates/mail/*'],
+                    dest: 'dest'
+                }, {
+                    cwd: 'src',
                     src: [], // ['**/*', '!**/*.ts'],
                     dest: 'dest'
                 }],

@@ -80,7 +80,7 @@ describe('User repository testing', () => {
     });
 
     it('Get user login', async () => {
-        let user = await userRepository.getUserLogin('test@gmail.com', '123456');
+        let user = await userRepository.authenticate('test@gmail.com', '123456');
         expect(user).to.not.be.null;
     });
 

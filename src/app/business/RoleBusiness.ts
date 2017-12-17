@@ -71,18 +71,19 @@ class RoleBusiness implements IRoleBusiness {
     }
 
     async update(_id: string, data: RoleUpdate): Promise<Role | null> {
+        let result;
         if (validateName(data.name)) {
             let role = await this.getByName(data.name);
             if (role && role._id === _id)
                 throw new ErrorCommon(104, 'Name');
 
-            let result = await this.roleRepository.update(_id, data);
+            result = await this.roleRepository.update(_id, data);
 
             // Load data roles in memory
             if (result)
                 DataLoader.loadRoles();
         }
-        return await this.get(_id);
+        return result && new Role(result);
     }
 
     async updateClaims(_id: string, claims: string[]): Promise<boolean> {
@@ -92,7 +93,7 @@ class RoleBusiness implements IRoleBusiness {
         if (result)
             DataLoader.loadRoles();
 
-        return result;
+        return result ? true : false;
     }
 
     async delete(_id: string): Promise<boolean> {

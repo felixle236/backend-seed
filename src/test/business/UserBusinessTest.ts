@@ -8,7 +8,7 @@ import IUser from '../../app/model/user/interfaces/IUser';
 import User from '../../app/model/user/User'; // eslint-disable-line
 import UserCreate from '../../app/model/user/UserCreate';
 import UserUpdate from '../../app/model/user/UserUpdate';
-import UserLogin from '../../app/model/user/UserLogin'; // eslint-disable-line
+import UserAuthentication from '../../app/model/user/UserAuthentication'; // eslint-disable-line
 
 BusinessLoader.init();
 let connection;
@@ -45,8 +45,8 @@ describe('User business testing', () => {
             email: 'felix.le.236@gmail.com',
             password: '123456'
         });
-        let userLogin = await userBusiness.signup(userCreate);
-        expect(userLogin.profile.name).to.equal(userCreate.name);
+        let userAuth = await userBusiness.signup(userCreate);
+        expect(userAuth.profile.name).to.equal(userCreate.name);
     });
 
     it('Update user', async () => {
@@ -91,15 +91,15 @@ describe('User business testing', () => {
     });
 
     it('Get user login', async () => {
-        let userLogin = await userBusiness.getUserLogin('felix.le.236@gmail.com', '123456');
-        expect(userLogin).to.not.be.null;
+        let userAuth = await userBusiness.authenticate('felix.le.236@gmail.com', '123456');
+        expect(userAuth).to.not.be.null;
     });
 
     it('Get user login by token', async () => {
-        let userLogin = await userBusiness.getUserLogin('felix.le.236@gmail.com', '123456');
-        if (userLogin && userLogin.token) {
-            userLogin = await userBusiness.getUserLoginByToken(userLogin.token.accessToken);
-            expect(userLogin).to.not.be.null;
+        let userAuth = await userBusiness.authenticate('felix.le.236@gmail.com', '123456');
+        if (userAuth && userAuth.token) {
+            userAuth = await userBusiness.getByToken(userAuth.token.accessToken);
+            expect(userAuth).to.not.be.null;
         }
     });
 

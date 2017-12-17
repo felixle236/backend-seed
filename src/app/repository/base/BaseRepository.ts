@@ -92,9 +92,8 @@ class BaseRepository<T extends mongoose.Document> implements IRead<T>, IWrite<T>
         return <T>(await this.model.create(data));
     }
 
-    async update(_id: string, data: object): Promise<boolean> {
-        let result = await this.model.update({_id: DataHelper.toObjectId(_id)}, data).exec();
-        return result && result.ok > 0;
+    async update(_id: string, data: object): Promise<T> {
+        return <T>(await this.model.findOneAndUpdate({_id}, data, {new: true}).exec());
     }
 
     async delete(_id: string, isRealDelete: boolean = false): Promise<boolean> {

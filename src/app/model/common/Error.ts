@@ -15,9 +15,9 @@ export class BaseError {
             this.message = message;
     }
 
-    applyParams(...params) {
+    applyParams(params) {
         if (this.message && params && params.length > 0)
-            this.message = DataHelper.applyTemplate(this.message, params);
+            this.message = DataHelper.applyTemplate(this.message, ...params);
     }
 };
 Object.seal(BaseError);

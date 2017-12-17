@@ -3,7 +3,7 @@ import BusinessLoader from '../system/BusinessLoader';
 import IUserBusiness from '../app/business/interfaces/IUserBusiness';
 import UserCreate from '../app/model/user/UserCreate';
 import UserUpdate from '../app/model/user/UserUpdate';
-import UserLogin from '../app/model/user/UserLogin'; // eslint-disable-line
+import UserAuthentication from '../app/model/user/UserAuthentication'; // eslint-disable-line
 import Authenticator from '../system/Authenticator';
 
 class UserController extends BaseController {
@@ -40,12 +40,12 @@ class UserController extends BaseController {
     }
 
     async getProfile(req): Promise<any> {
-        let userLogin: UserLogin = req[Authenticator.userKey];
-        return await this.userBusiness.get(userLogin._id);
+        let userAuth: UserAuthentication = req[Authenticator.userKey];
+        return await this.userBusiness.get(userAuth._id);
     }
 
     async signin(req): Promise<any> {
-        return await this.userBusiness.getUserLogin(req.body.email, req.body.password);
+        return await this.userBusiness.authenticate(req.body.email, req.body.password);
     }
 
     async signup(req): Promise<any> {
@@ -61,8 +61,8 @@ class UserController extends BaseController {
     }
 
     async updateProfile(req): Promise<any> {
-        let userLogin: UserLogin = req[Authenticator.userKey];
-        return await this.userBusiness.update(userLogin._id, new UserUpdate(req.body));
+        let userAuth: UserAuthentication = req[Authenticator.userKey];
+        return await this.userBusiness.update(userAuth._id, new UserUpdate(req.body));
     }
 
     async deleteUser(req): Promise<any> {

@@ -3,7 +3,7 @@ import UserToken from './UserToken';
 import UserProfile from '../../model/user/UserProfile';
 import UserPermission from '../../model/user/UserPermission';
 
-class UserLogin {
+class UserAuthentication {
     _id: string;
     profile: UserProfile;
     permission: UserPermission;
@@ -20,5 +20,5 @@ class UserLogin {
     }
 }
 
-Object.seal(UserLogin);
-export default UserLogin;
+Object.seal(UserAuthentication);
+export default UserAuthentication;

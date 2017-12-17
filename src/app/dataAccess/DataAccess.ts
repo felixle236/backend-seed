@@ -16,7 +16,7 @@ class DataAccess {
             options = {};
         options.useMongoClient = true;
 
-        if (process.env.NODE_ENV !== 'Development') {
+        if (process.env.NODE_ENV !== 'Development' && Project.DATABASE.USERNAME) {
             options.user = Project.DATABASE.USERNAME;
             options.pass = Project.DATABASE.PASSWORD;
         }
@@ -28,11 +28,11 @@ class DataAccess {
     static initSchema(schemaDefinition: mongoose.SchemaDefinition): mongoose.Schema {
         schemaDefinition.createdAt = {
             type: Date,
-            default: new Date()
+            default: Date.now
         };
         schemaDefinition.updatedAt = {
             type: Date,
-            default: new Date()
+            default: Date.now
         };
         schemaDefinition.deletedAt = {
             type: Date,
@@ -41,19 +41,8 @@ class DataAccess {
 
         let schema = new mongoose.Schema(schemaDefinition);
 
-        // schema.pre('update', function(this: any, next) {
-        //     console.log('schema.pre', this.updatedAt); // eslint-disable-line
-        //     this.updatedAt = new Date(); // eslint-disable-line
-        //     next();
-        // });
-
         schema.pre('update', function(this: any) {
-            try {
-                this.update({}, {$set: {updatedAt: new Date()}}); // eslint-disable-line
-            }
-            catch (error) {
-                console.error('Schema pre update', error);
-            }
+            this.update({}, {$set: {updatedAt: Date.now()}}); // eslint-disable-line
         });
 
         return schema;
