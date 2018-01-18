@@ -61,20 +61,20 @@ class UserRepository extends BaseRepository<IUser> {
         return await super.create(data);
     }
 
-    async update(_id: string, data: UserUpdate): Promise<IUser> {
+    async update(_id: string, data: UserUpdate): Promise<boolean> {
         return await super.update(_id, data);
     }
 
-    async updateUserToken(_id: string, token: UserToken): Promise<IUser> {
-        return await super.update(_id, {token: token});
+    async updateUserToken(_id: string, token: UserToken): Promise<IUser | null> {
+        return await super.findOneAndUpdate({_id}, {token: token});
     }
 
-    async updateRoles(_id: string, roles: string[]): Promise<IUser> {
-        return await super.update(_id, {roles: roles});
+    async updateRoles(_id: string, roles: string[]): Promise<IUser | null> {
+        return await super.findOneAndUpdate({_id}, {roles: roles});
     }
 
-    async updateClaims(_id: string, claims: string[]): Promise<IUser> {
-        return await super.update(_id, {claims: claims});
+    async updateClaims(_id: string, claims: string[]): Promise<IUser | null> {
+        return await super.findOneAndUpdate({_id}, {claims: claims});
     }
 }
 

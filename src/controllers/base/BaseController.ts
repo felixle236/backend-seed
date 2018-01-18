@@ -1,5 +1,6 @@
 import * as express from 'express';
-import {BaseError, ErrorSystem, ErrorCommon} from '../../app/model/common/Error'; // eslint-disable-line
+import {ErrorCommon, ErrorSystem} from '../../app/model/common/Error'; // eslint-disable-line
+import LogHelper from '../../helpers/LogHelper';
 
 class BaseController {
     private router: express.Router;
@@ -159,37 +160,41 @@ class BaseController {
 
             handlers[handlers.length - 1] = (req: express.Request, res: express.Response, next: express.NextFunction): void => {
                 let handlerResult = handler(req, res, next);
-                if (!res.headersSent) {
-                    if (handlerResult && typeof handlerResult['then'] === 'function')
-                        handlerResult.then(data => {
-                            this.sendData(req, res, data);
-                        }).catch(err => {
-                            this.sendError(req, res, err);
-                        });
-                    else
-                        this.sendData(req, res, handlerResult);
-                }
+                if (handlerResult && typeof handlerResult['then'] === 'function')
+                    handlerResult.then(data => {
+                        this.sendData(req, res, data);
+                    }).catch(err => {
+                        this.sendError(req, res, err);
+                    });
+                else
+                    this.sendData(req, res, handlerResult);
             };
             return handlers;
         }
         else
-            throw new Error('The router must have request handler function!');
+            throw new ErrorCommon(2);
     }
 
     sendData(req: express.Request, res: express.Response, data: any) {
         console.log(`\n${req.method} ${req.originalUrl}`);
         console.log(JSON.stringify(data));
-        res.send({data});
+        if (!res.headersSent)
+            res.send({data});
     }
 
-    sendError(req: express.Request, res: express.Response, err: BaseError) {
+    sendError(req: express.Request, res: express.Response, err) {
         err = err.code ? err : new ErrorSystem(err.message);
         console.log(`\n${req.method} ${req.originalUrl}`);
         console.error(err);
-        res.status(400);
-        res.send({error: err});
+
+        if (err.code !== 'COM')
+            LogHelper.writeLog(err.message);
+
+        if (!res.headersSent) {
+            res.status(400);
+            res.send({error: err});
+        }
     }
 }
 
-Object.seal(BaseController);
 export default BaseController;

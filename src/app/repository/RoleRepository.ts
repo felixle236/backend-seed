@@ -13,12 +13,12 @@ class RoleRepository extends BaseRepository<IRole> {
         return await super.create(data);
     }
 
-    async update(_id: string, data: RoleUpdate): Promise<IRole> {
-        return await super.update(_id, data);
+    async update(_id: string, data: RoleUpdate): Promise<boolean> {
+        return await this.update(_id, data);
     }
 
-    async updateClaims(_id: string, claims: string[]): Promise<IRole> {
-        return await super.update(_id, {claims: claims});
+    async updateClaims(_id: string, claims: string[]): Promise<IRole | null> {
+        return await super.findOneAndUpdate({_id}, {claims: claims});
     }
 }
 

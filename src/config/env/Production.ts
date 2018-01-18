@@ -1,7 +1,7 @@
 class Production {
     static DATABASE = {
         SERVER: 'localhost',
-        DB_NAME: 'backend_seed',
+        DB_NAME: 'backend_seed_production',
         DB_NAME_TEST: 'backend_seed_test',
         USERNAME: '',
         PASSWORD: ''

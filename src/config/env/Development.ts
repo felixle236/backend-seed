@@ -1,7 +1,7 @@
 class Development {
     static DATABASE = {
         SERVER: 'localhost',
-        DB_NAME: 'backend_seed_dev',
+        DB_NAME: 'backend_seed_development',
         DB_NAME_TEST: 'backend_seed_test',
         USERNAME: '',
         PASSWORD: ''

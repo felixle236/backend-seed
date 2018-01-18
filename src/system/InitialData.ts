@@ -7,10 +7,13 @@ import getUsers from '../resources/initialData/Users';
 import getUserRoles from '../resources/initialData/UserRoles';
 
 class InitialData {
+    isRequired?: boolean;
     private roleBusiness: IRoleBusiness = BusinessLoader.roleBusiness;
     private userBusiness: IUserBusiness = BusinessLoader.userBusiness;
 
-    async init(): Promise<void> {
+    async init(isRequired?: boolean): Promise<void> {
+        this.isRequired = isRequired;
+
         await this.initRoles();
         await this.initRoleClaims();
         await this.initUsers();
@@ -28,7 +31,7 @@ class InitialData {
         for (let i = 0; i < list.length; i++) {
             let item = list[i];
 
-            if ((item.isRequired || (process.env.DATA_TEST || 'N').toUpperCase() === 'Y') && !roleNames.includes(item.data.name.toLowerCase())) {
+            if ((item.isRequired || this.isRequired) && !roleNames.includes(item.data.name.toLowerCase())) {
                 try {
                     await this.roleBusiness.create(item.data);
                     console.log(`Role '${item.data.name}' has created.`);
@@ -50,7 +53,7 @@ class InitialData {
             let roleClaim = roleClaims[i];
             let role = roles.find(role => role.name.toLowerCase().includes(roleClaim.data.name.toLowerCase()));
 
-            if ((roleClaim.isRequired || (process.env.DATA_TEST || 'N').toUpperCase() === 'Y') && role) {
+            if ((roleClaim.isRequired || this.isRequired) && role) {
                 let rcs = role.claims ? role.claims.slice() : [];
 
                 roleClaim.data.claims.forEach(claim => {
@@ -79,7 +82,7 @@ class InitialData {
         for (let i = 0; i < list.length; i++) {
             let item = list[i];
 
-            if ((item.isRequired || (process.env.DATA_TEST || 'N').toUpperCase() === 'Y') && !(await this.userBusiness.getByEmail(item.data.email.toLowerCase()))) {
+            if ((item.isRequired || this.isRequired) && !(await this.userBusiness.getByEmail(item.data.email.toLowerCase()))) {
                 try {
                     await this.userBusiness.create(item.data);
                     console.log(`User '${item.data.email}' has created.`);
@@ -101,7 +104,7 @@ class InitialData {
             let userRole = userRoles[i];
             let user = await this.userBusiness.getByEmail(userRole.data.email.toLowerCase());
 
-            if ((userRole.isRequired || (process.env.DATA_TEST || 'N').toUpperCase() === 'Y') && user) {
+            if ((userRole.isRequired || this.isRequired) && user) {
                 let permission = await this.userBusiness.getPermission(user._id);
                 let urs = permission && permission.roles ? permission.roles : [];
 

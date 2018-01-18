@@ -1,5 +1,6 @@
 import * as express from 'express';
 import HomeController from '../controllers/HomeController';
+import SystemController from '../controllers/SystemController';
 import UserController from '../controllers/UserController';
 import RoleController from '../controllers/RoleController';
 
@@ -8,6 +9,7 @@ class RouteLoader {
 
     constructor() {
         this.app.use('/api/', new HomeController().getRouter());
+        this.app.use('/api/system', new SystemController().getRouter());
         this.app.use('/api/user', new UserController().getRouter());
         this.app.use('/api/role', new RoleController().getRouter());
     }

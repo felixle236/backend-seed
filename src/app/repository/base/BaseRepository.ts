@@ -39,7 +39,7 @@ class BaseRepository<T extends mongoose.Document> implements IRead<T>, IWrite<T>
             query = query.sort(order);
 
         query = query.skip(pagination.skip).limit(pagination.limit);
-        return <T[]>(await query.exec());
+        return <T[]>(await query.exec().then(docs => docs.map(doc => doc.toJSON())));
     }
 
     async findAll(param?: any, order?: any): Promise<T[]> {
@@ -55,7 +55,7 @@ class BaseRepository<T extends mongoose.Document> implements IRead<T>, IWrite<T>
         if (order)
             query = query.sort(order);
 
-        return <T[]>(await query.exec());
+        return <T[]>(await query.exec().then(docs => docs.map(doc => doc.toJSON())));
     }
 
     async findOne(param?: any): Promise<T | null> {
@@ -68,7 +68,7 @@ class BaseRepository<T extends mongoose.Document> implements IRead<T>, IWrite<T>
         if (param.populate)
             query = query.populate(param.populate);
 
-        return <T>(await query.exec());
+        return <T>(await query.exec().then(doc => doc ? doc.toJSON() : null));
     }
 
     async getCount(param?: any): Promise<number> {
@@ -79,21 +79,51 @@ class BaseRepository<T extends mongoose.Document> implements IRead<T>, IWrite<T>
     async get(_id: string, populate?: any): Promise<T | null> {
         if (populate && typeof populate !== 'object')
             populate = null;
-
         let query = this.model.findById(_id);
 
         if (populate)
             query = query.populate(populate);
 
-        return <T>(await query.exec());
+        return <T>(await query.exec().then(doc => doc ? doc.toJSON() : null));
+    }
+
+    async aggregate(query: any): Promise<any[]> {
+        return await this.model.aggregate(query).exec();
     }
 
     async create(data: object): Promise<T> {
-        return <T>(await this.model.create(data));
+        return <T>(await this.model.create(data).then(doc => doc ? doc.toJSON() : null));
     }
 
-    async update(_id: string, data: object): Promise<T> {
-        return <T>(await this.model.findOneAndUpdate({_id}, data, {new: true}).exec());
+    async createMultiple(data: object[]): Promise<T[]> {
+        return <T[]>(await this.model.create(data).then(docs => docs.map(doc => doc.toJSON())));
+    }
+
+    async createOrUpdate(query: any, data: object): Promise<T | null> {
+        let options = {upsert: true, new: true, setDefaultsOnInsert: true};
+        return <T>(await this.model.findOneAndUpdate(query, data, options).exec().then(doc => doc ? doc.toJSON() : null));
+    }
+
+    async update(_id: string, data: object): Promise<boolean> {
+        let result = await this.model.update({_id: DataHelper.toObjectId(_id)}, data).exec();
+        return result && result.ok > 0;
+    }
+
+    async findOneAndUpdate(query: object, data: object): Promise<T | null> {
+        return <T>(await this.model.findOneAndUpdate(query, data, {new: true}).exec().then(doc => doc ? doc.toJSON() : null));
+    }
+
+    async updateDataByFields(_id: string, data: any, parentField?: string): Promise<void> {
+        if (_id && data) {
+            for (let field in data) {
+                if (data.hasOwnProperty(field)) {
+                    let prop = parentField ? parentField + '.' + field : field;
+                    let dataUpdate = {};
+                    dataUpdate[prop] = data[field];
+                    await this.update(_id, dataUpdate);
+                }
+            }
+        }
     }
 
     async delete(_id: string, isRealDelete: boolean = false): Promise<boolean> {
@@ -101,11 +131,9 @@ class BaseRepository<T extends mongoose.Document> implements IRead<T>, IWrite<T>
             let result = await this.model.update({_id: DataHelper.toObjectId(_id)}, {deletedAt: new Date()}).exec();
             return result && result.ok > 0;
         }
-
         await this.model.remove({_id: DataHelper.toObjectId(_id)}).exec();
         return true;
     }
 }
 
-Object.seal(BaseRepository);
 export default BaseRepository;
