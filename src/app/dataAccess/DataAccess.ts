@@ -6,15 +6,17 @@ class DataAccess {
         return mongoose.connection;
     }
 
-    static connect(uri?: string, options?: any): mongoose.Connection {
+    static connect(uri?: string): mongoose.Connection {
         (<any>mongoose).Promise = Promise;
 
         if (!uri)
             uri = Project.DB_CONN_URI;
 
-        if (!options)
-            options = {};
-        options.useMongoClient = true;
+        let options = <any>{
+            poolSize: 10, // default is 5
+            reconnectTries: Number.MAX_VALUE, // Never stop trying to reconnect
+            reconnectInterval: 500 // Reconnect every 500ms
+        };
 
         if (process.env.NODE_ENV !== 'Development' && Project.DATABASE.USERNAME) {
             options.user = Project.DATABASE.USERNAME;
