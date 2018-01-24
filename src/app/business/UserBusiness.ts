@@ -73,7 +73,6 @@ class UserBusiness implements IUserBusiness {
     async getByToken(token: string): Promise<UserAuthentication | null> {
         if (!token)
             return null;
-
         let user = await this.userRepository.getByToken(token);
         return user && new UserAuthentication(user);
     }
@@ -132,7 +131,7 @@ class UserBusiness implements IUserBusiness {
         let user;
 
         if (validateName(data.name)) {
-            user = await this.userRepository.update(_id, data);
+            user = await this.userRepository.findOneAndUpdate({_id}, data);
             if (user)
                 Authenticator.removeAuthenticator(_id);
         }

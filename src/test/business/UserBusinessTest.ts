@@ -30,7 +30,7 @@ describe('User business testing', () => {
     it('Create new user', async function(this: any) {
         this.timeout(6000); // eslint-disable-line
         let userCreate = new UserCreate(<IUser>{
-            name: 'User test',
+            name: 'Felix Le',
             email: 'felix.le.236@gmail.com',
             password: '123456'
         });
@@ -38,25 +38,51 @@ describe('User business testing', () => {
         expect(user.name).to.equal(userCreate.name);
     });
 
+    it('Find users', async () => {
+        let users = await userBusiness.search('', 1, 1);
+        expect(Array.isArray(users)).to.be.true;
+    });
+
+    it('Get user by email', async () => {
+        let user = await userBusiness.getByEmail('felix.le.236@gmail.com');
+        expect(user).to.not.be.null;
+    });
+
+    it('Get user by id', async () => {
+        let user = await userBusiness.getByEmail('felix.le.236@gmail.com');
+        if (user) {
+            user = await userBusiness.get(user._id);
+            expect(user).to.not.be.null;
+        }
+    });
+
+    it('Update user', async () => {
+        let user = await userBusiness.getByEmail('felix.le.236@gmail.com');
+        if (user) {
+            let userUpdate = new UserUpdate(<IUser>user);
+            userUpdate.name = 'User updated';
+            user = await userBusiness.update(user._id, userUpdate);
+            expect(user).to.not.be.null;
+        }
+    });
+
+    it('Delete user', async () => {
+        let user = await userBusiness.getByEmail('felix.le.236@gmail.com');
+        if (user) {
+            let result = await userBusiness.delete(user._id);
+            expect(result).to.be.true;
+        }
+    });
+
     it('Create user login', async function(this: any) {
         this.timeout(6000); // eslint-disable-line
         let userCreate = new UserCreate(<IUser>{
-            name: 'User test 2',
+            name: 'Felix Le',
             email: 'felix.le.236@gmail.com',
             password: '123456'
         });
         let userAuth = await userBusiness.signup(userCreate);
         expect(userAuth.profile.name).to.equal(userCreate.name);
-    });
-
-    it('Update user', async () => {
-        let users = await userBusiness.search('', 1, 1);
-        if (users && users.length > 0) {
-            let userUpdate = new UserUpdate(<IUser>users[0]);
-            userUpdate.name = 'User updated';
-            let user = await userBusiness.update(users[0]._id, userUpdate);
-            expect(user).to.not.be.null;
-        }
     });
 
     it('Update user roles', async () => {
@@ -77,25 +103,12 @@ describe('User business testing', () => {
         }
     });
 
-    it('Find users', async () => {
-        let users = await userBusiness.search('', 1, 1);
-        expect(Array.isArray(users)).to.be.true;
-    });
-
-    it('Get user by id', async () => {
-        let users = await userBusiness.search('', 1, 1);
-        if (users && users.length > 0) {
-            let user = await userBusiness.get(users[0]._id);
-            expect(user).to.not.be.null;
-        }
-    });
-
     it('Get user login', async () => {
         let userAuth = await userBusiness.authenticate('felix.le.236@gmail.com', '123456');
         expect(userAuth).to.not.be.null;
     });
 
-    it('Get user login by token', async () => {
+    it('Get user by token', async () => {
         let userAuth = await userBusiness.authenticate('felix.le.236@gmail.com', '123456');
         if (userAuth && userAuth.token) {
             userAuth = await userBusiness.getByToken(userAuth.token.accessToken);
@@ -103,24 +116,11 @@ describe('User business testing', () => {
         }
     });
 
-    it('Get user by email', async () => {
-        let user = await userBusiness.getByEmail('felix.le.236@gmail.com');
-        expect(user).to.not.be.null;
-    });
-
     it('Get user permission', async () => {
         let users = await userBusiness.search('', 1, 1);
         if (users && users.length > 0) {
             let userPermission = await userBusiness.getPermission(users[0]._id);
             expect(userPermission).to.not.be.null;
-        }
-    });
-
-    it('Delete user', async () => {
-        let users = await userBusiness.search('', 1, 1);
-        if (users && users.length > 0) {
-            let result = await userBusiness.delete(users[0]._id);
-            expect(result).to.be.true;
         }
     });
 });

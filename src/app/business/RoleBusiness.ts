@@ -77,7 +77,7 @@ class RoleBusiness implements IRoleBusiness {
             if (role && role._id === _id)
                 throw new ErrorCommon(104, 'Name');
 
-            result = await this.roleRepository.update(_id, data);
+            result = await this.roleRepository.findOneAndUpdate({_id}, data);
 
             // Load data roles in memory
             if (result)

@@ -7,7 +7,7 @@
         "watch": "./node_modules/.bin/grunt",
         "eslint": "./node_modules/.bin/eslint --ext .ts --ext .js ./src",
         "drop-db": "mongo backend_seed_development --eval 'db.dropDatabase();' && mongo backend_seed_staging --eval 'db.dropDatabase();'",
-        "test": "NODE_ENV=Development ./node_modules/.bin/mocha --exit ./node_modules/ts-node/register ./src/test/**/*.ts",
+        "test": "NODE_ENV=Development ./node_modules/.bin/mocha --exit --require ts-node/register ./src/test/**/*.ts",
         "build": "npm run eslint && ./node_modules/.bin/grunt build",
         "start": "npm run eslint && ./node_modules/.bin/grunt build && NODE_ENV=Development node ./dest/server.js",
         "staging": "npm install && npm run eslint && ./node_modules/.bin/grunt build && NODE_ENV=Staging node ./dest/server.js",

@@ -49,7 +49,12 @@ class UserSchema {
                 ref: 'Role'
             },
             claims: [String],
-            token: mongoose.Schema.Types.Mixed
+            token: {
+                provider: Number,
+                providerName: String,
+                accessToken: String,
+                tokenExpire: Date
+            }
         };
 
         return DataAccess.initSchema(schemaDefinition);
