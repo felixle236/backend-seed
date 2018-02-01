@@ -43,8 +43,10 @@ class DataAccess {
 
         let schema = new mongoose.Schema(schemaDefinition);
 
-        schema.pre('update', function(this: any) {
-            this.update({}, {$set: {updatedAt: Date.now()}}); // eslint-disable-line
+        schema.pre('update', function(this: any, next) {
+            // this.update({}, {$set: {updatedAt: new Date()}});
+            this.updatedAt = Date.now; // eslint-disable-line
+            next();
         });
 
         return schema;
