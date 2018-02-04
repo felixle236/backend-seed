@@ -18,7 +18,8 @@ class BaseRepository<T extends mongoose.Document> implements IRead<T>, IWrite<T>
             param.query = {};
         if (param.populate && typeof param.populate !== 'object')
             param.populate = null;
-        param.query.deletedAt = null;
+        if (param.query.deletedAt === undefined)
+            param.query.deletedAt = null;
 
         return param;
     }
