@@ -19,18 +19,22 @@ class BaseController {
         return this.router;
     }
 
-    validatePagination(maxRecords: number = 30) {
+    validatePagination(maxRecords: number = 10) {
         return (req: express.Request, res: express.Response, next: express.NextFunction) => {
-            if (!req.query.page || !this.numRegex.test(req.query.page) || Number(req.query.page) < 1)
+            if (!req.query.page)
+                req.query.page = 1;
+            else if (!this.numRegex.test(req.query.page) || Number(req.query.page) < 1)
                 return this.sendError(req, res, new ErrorCommon(101, 'Request'));
             else
                 req.query.page = Number(req.query.page);
 
-            if (req.query.limit && (!this.numRegex.test(req.query.limit) || Number(req.query.limit) < 1))
+            if (!req.query.limit)
+                req.query.limit = maxRecords;
+            else if (!this.numRegex.test(req.query.limit) || Number(req.query.limit) < 1)
                 return this.sendError(req, res, new ErrorCommon(101, 'Request'));
-            else if (req.query.limit) {
+            else {
                 req.query.limit = Number(req.query.limit);
-                if (req.query.limit > maxRecords && maxRecords !== -1)
+                if (req.query.limit > maxRecords || req.query.limit < 1)
                     req.query.limit = maxRecords;
             }
             next();
@@ -179,19 +183,20 @@ class BaseController {
     }
 
     sendData(req: express.Request, res: express.Response, data: any) {
-        console.log(`\n${req.method} ${req.originalUrl}`);
-        console.log(JSON.stringify(data));
+        console.log('\n');
+        console.log('\x1b[36m', data, '\x1b[0m');
+
         if (!res.headersSent)
             res.send({data});
     }
 
     sendError(req: express.Request, res: express.Response, err) {
         err = err.code ? err : new ErrorSystem(err.message);
-        console.log(`\n${req.method} ${req.originalUrl}`);
-        console.error(err);
+        console.log('\n');
+        console.log('\x1b[31m', err, '\x1b[0m');
 
-        if (err.code !== 'COM')
-            LogHelper.writeLog(err.message);
+        if (err.code && !err.code.startsWith('COM'))
+            LogHelper.writeLog(`${req.method} ${req.originalUrl}\n${err.message}\n`);
 
         if (!res.headersSent) {
             res.status(400);
