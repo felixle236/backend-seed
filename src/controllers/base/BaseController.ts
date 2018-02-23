@@ -1,5 +1,6 @@
 import * as express from 'express';
-import {ErrorCommon, ErrorSystem} from '../../app/model/common/Error'; // eslint-disable-line
+import {ErrorCommon, ErrorSystem} from '../../app/model/common/Error';
+import DataHelper from '../../helpers/DataHelper';
 import LogHelper from '../../helpers/LogHelper';
 
 class BaseController {
@@ -50,8 +51,10 @@ class BaseController {
                     return this.sendError(req, res, new ErrorCommon(101, (field || 'Data') + ' format'));
                 }
 
-                if (!required && !req[target][field])
+                if (!required && !req[target][field]) {
+                    req[target][field] = null;
                     continue;
+                }
                 else if (type === 'ID' && !this.idRegex.test(req[target][field])) {
                     console.log(`Validate ${target} ${field} ${type}${required ? ' Required' : ''}: ${JSON.stringify(req[target][field])} (${typeof req[target][field]})`);
                     return this.sendError(req, res, new ErrorCommon(101, 'Request'));
@@ -66,7 +69,7 @@ class BaseController {
                     continue;
                 }
                 else if (['BOOL'].includes(type)) {
-                    req[target][field] = req[target][field] === true;
+                    req[target][field] = DataHelper.convertStringToBoolean(req[target][field]);
                     continue;
                 }
                 else if (type === 'DATE') {

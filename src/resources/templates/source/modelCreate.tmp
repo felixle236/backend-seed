@@ -1,9 +1,9 @@
-import I{camelName} from "./interfaces/I{camelName}"; // eslint-disable-line
+import I{pascalName} from "./interfaces/I{pascalName}"; // eslint-disable-line
 
-class {camelName}Create {
+class {pascalName}Create {
     name: string;
 
-    constructor(model: I{camelName}) {
+    constructor(model: I{pascalName}) {
         if (!model)
             return;
 
@@ -11,5 +11,5 @@ class {camelName}Create {
     }
 }
 
-Object.seal({camelName}Create);
-export default {camelName}Create;
+Object.seal({pascalName}Create);
+export default {pascalName}Create;

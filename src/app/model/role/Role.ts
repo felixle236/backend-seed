@@ -1,4 +1,5 @@
 import IRole from './interfaces/IRole'; // eslint-disable-line
+import DataHelper from '../../../helpers/DataHelper';
 
 class Role {
     _id: string;
@@ -13,7 +14,7 @@ class Role {
         if (!model)
             return;
 
-        this._id = model._id && model._id.toString();
+        this._id = DataHelper.handleIdDataModel(model._id);
         this.name = model.name;
         this.order = model.order;
         this.claims = model.claims;

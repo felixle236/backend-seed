@@ -70,7 +70,7 @@ describe('Role business testing', () => {
     it('Get role by name', async () => {
         let roles = await roleBusiness.getAll();
         if (roles && roles.length > 0) {
-            let user = await roleBusiness.getByName(roles[0].name);
+            let user = await roleBusiness.getRoleByName(roles[0].name);
             expect(user).to.not.be.null;
         }
     });

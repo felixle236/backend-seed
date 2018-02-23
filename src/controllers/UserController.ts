@@ -1,8 +1,6 @@
 import BaseController from './base/BaseController';
 import BusinessLoader from '../system/BusinessLoader';
 import IUserBusiness from '../app/business/interfaces/IUserBusiness';
-import UserCreate from '../app/model/user/UserCreate';
-import UserUpdate from '../app/model/user/UserUpdate';
 import UserAuthentication from '../app/model/user/UserAuthentication'; // eslint-disable-line
 import Authenticator from '../system/Authenticator';
 
@@ -12,8 +10,8 @@ class UserController extends BaseController {
     constructor() {
         super();
 
-        this.get('/search', this.validatePagination(), this.searchUsers.bind(this));
-        this.get('/search-count', this.getCountSearchUsers.bind(this));
+        this.get('/list', this.validatePagination(10), this.getUsers.bind(this));
+        this.get('/count', this.countUsers.bind(this));
         this.get('/:_id', this.getUserById.bind(this));
         this.get('/profile', Authenticator.isAuthenticated, this.getProfile.bind(this));
 
@@ -27,12 +25,12 @@ class UserController extends BaseController {
         this.delete('/:_id', Authenticator.checkRoles('Administrator'), this.deleteUser.bind(this));
     }
 
-    async searchUsers(req): Promise<any> {
-        return await this.userBusiness.search(req.query.name, req.query.page, req.query.limit);
+    async getUsers(req): Promise<any> {
+        return await this.userBusiness.getUsers(req.query.name, req.query.page, req.query.limit);
     }
 
-    async getCountSearchUsers(req): Promise<any> {
-        return await this.userBusiness.getCountSearch(req.query.name);
+    async countUsers(req): Promise<any> {
+        return await this.userBusiness.countUsers(req.query.name);
     }
 
     async getUserById(req): Promise<any> {
@@ -49,20 +47,20 @@ class UserController extends BaseController {
     }
 
     async signup(req): Promise<any> {
-        return await this.userBusiness.signup(new UserCreate(req.body));
+        return await this.userBusiness.signup(req.body);
     }
 
     async createUser(req): Promise<any> {
-        return await this.userBusiness.create(new UserCreate(req.body));
+        return await this.userBusiness.create(req.body);
     }
 
     async updateUser(req): Promise<any> {
-        return await this.userBusiness.update(req.params._id, new UserUpdate(req.body));
+        return await this.userBusiness.update(req.params._id, req.body);
     }
 
     async updateProfile(req): Promise<any> {
         let userAuth: UserAuthentication = req[Authenticator.userKey];
-        return await this.userBusiness.update(userAuth._id, new UserUpdate(req.body));
+        return await this.userBusiness.update(userAuth._id, req.body);
     }
 
     async deleteUser(req): Promise<any> {

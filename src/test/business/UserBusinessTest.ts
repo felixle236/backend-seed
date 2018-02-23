@@ -39,17 +39,17 @@ describe('User business testing', () => {
     });
 
     it('Find users', async () => {
-        let users = await userBusiness.search('', 1, 1);
+        let users = await userBusiness.getUsers('', 1, 1);
         expect(Array.isArray(users)).to.be.true;
     });
 
     it('Get user by email', async () => {
-        let user = await userBusiness.getByEmail('felix.le.236@gmail.com');
+        let user = await userBusiness.getUserByEmail('felix.le.236@gmail.com');
         expect(user).to.not.be.null;
     });
 
     it('Get user by id', async () => {
-        let user = await userBusiness.getByEmail('felix.le.236@gmail.com');
+        let user = await userBusiness.getUserByEmail('felix.le.236@gmail.com');
         if (user) {
             user = await userBusiness.get(user._id);
             expect(user).to.not.be.null;
@@ -57,7 +57,7 @@ describe('User business testing', () => {
     });
 
     it('Update user', async () => {
-        let user = await userBusiness.getByEmail('felix.le.236@gmail.com');
+        let user = await userBusiness.getUserByEmail('felix.le.236@gmail.com');
         if (user) {
             let userUpdate = new UserUpdate(<IUser>user);
             userUpdate.name = 'User updated';
@@ -67,7 +67,7 @@ describe('User business testing', () => {
     });
 
     it('Delete user', async () => {
-        let user = await userBusiness.getByEmail('felix.le.236@gmail.com');
+        let user = await userBusiness.getUserByEmail('felix.le.236@gmail.com');
         if (user) {
             let result = await userBusiness.delete(user._id);
             expect(result).to.be.true;
@@ -86,7 +86,7 @@ describe('User business testing', () => {
     });
 
     it('Update user roles', async () => {
-        let users = await userBusiness.search('', 1, 1);
+        let users = await userBusiness.getUsers('', 1, 1);
         if (users && users.length > 0) {
             let user = users[0];
             let result = await userBusiness.updateRoles(user._id, ['697ef0012199231dc95f94a0', '797ef0012199231dc95f94a1']);
@@ -95,7 +95,7 @@ describe('User business testing', () => {
     });
 
     it('Update user claims', async () => {
-        let users = await userBusiness.search('', 1, 1);
+        let users = await userBusiness.getUsers('', 1, 1);
         if (users && users.length > 0) {
             let user = users[0];
             let result = await userBusiness.updateClaims(user._id, ['Claim 1', 'Claim 2']);
@@ -111,13 +111,13 @@ describe('User business testing', () => {
     it('Get user by token', async () => {
         let userAuth = await userBusiness.authenticate('felix.le.236@gmail.com', '123456');
         if (userAuth && userAuth.token) {
-            userAuth = await userBusiness.getByToken(userAuth.token.accessToken);
+            userAuth = await userBusiness.getUserByToken(userAuth.token.accessToken);
             expect(userAuth).to.not.be.null;
         }
     });
 
     it('Get user permission', async () => {
-        let users = await userBusiness.search('', 1, 1);
+        let users = await userBusiness.getUsers('', 1, 1);
         if (users && users.length > 0) {
             let userPermission = await userBusiness.getPermission(users[0]._id);
             expect(userPermission).to.not.be.null;

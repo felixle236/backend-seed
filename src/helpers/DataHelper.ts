@@ -27,6 +27,12 @@ class DataHelper {
         return undefined;
     }
 
+    static applyTemplate(template, ...params) {
+        return template.replace(/{(\d+)}/g, (match, number) => {
+            return params[number] || match;
+        });
+    }
+
     static convertToCurrency(value: number, option): string {
         if (typeof value !== 'number')
             return '';
@@ -41,10 +47,16 @@ class DataHelper {
         return value.toLocaleString(option.format, {style: 'currency', currency: option.currency});
     }
 
-    static applyTemplate(template, ...params) {
-        return template.replace(/{(\d+)}/g, (match, number) => {
-            return params[number] || match;
-        });
+    static convertStringToBoolean(val: string): boolean {
+        if (!val)
+            return false;
+        val = val.toString();
+
+        switch (val.toLowerCase().trim()) {
+        case 'true': case 'yes': case '1': return true;
+        case 'false': case 'no': case '0': return false;
+        default: return false;
+        }
     }
 }
 

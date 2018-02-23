@@ -1,22 +1,22 @@
-import I{camelName} from '../model/{pascalName}/interfaces/I{camelName}'; // eslint-disable-line
-import {camelName}Schema from '../dataAccess/schemas/{camelName}Schema';
+import I{pascalName} from '../model/{camelName}/interfaces/I{pascalName}'; // eslint-disable-line
+import {pascalName}Schema from '../dataAccess/schemas/{pascalName}Schema';
 import BaseRepository from './base/BaseRepository';
-import {camelName}Create from '../model/{pascalName}/{camelName}Create'; // eslint-disable-line
-import {camelName}Update from '../model/{pascalName}/{camelName}Update'; // eslint-disable-line
+import {pascalName}Create from '../model/{camelName}/{pascalName}Create'; // eslint-disable-line
+import {pascalName}Update from '../model/{camelName}/{pascalName}Update'; // eslint-disable-line
 
-class {camelName}Repository extends BaseRepository<I{camelName}> {
+class {pascalName}Repository extends BaseRepository<I{pascalName}> {
     constructor() {
-        super({camelName}Schema);
+        super({pascalName}Schema);
     }
 
-    async create(data: {camelName}Create): Promise<I{camelName}> {
+    async create(data: {pascalName}Create): Promise<I{pascalName}> {
         return await super.create(data);
     }
 
-    async update(_id: string, data: {camelName}Update): Promise<boolean> {
+    async update(_id: string, data: {pascalName}Update): Promise<boolean> {
         return await super.update(_id, data);
     }
 }
 
-Object.seal({camelName}Repository);
-export default {camelName}Repository;
+Object.seal({pascalName}Repository);
+export default {pascalName}Repository;

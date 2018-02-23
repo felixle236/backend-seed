@@ -25,7 +25,7 @@ class UserBusiness implements IUserBusiness {
         this.userRepository = new UserRepository();
     }
 
-    async search(name?: string, page?: number, limit?: number): Promise<User[]> {
+    async getUsers(name?: string, page?: number, limit?: number): Promise<User[]> {
         let param = {
             query: <any>{}
         };
@@ -36,7 +36,7 @@ class UserBusiness implements IUserBusiness {
         return User.parseArray(users);
     }
 
-    async getCountSearch(name?: string): Promise<number> {
+    async countUsers(name?: string): Promise<number> {
         let param = {
             query: <any>{}
         };
@@ -70,14 +70,14 @@ class UserBusiness implements IUserBusiness {
         return new UserAuthentication(user);
     }
 
-    async getByToken(token: string): Promise<UserAuthentication | null> {
+    async getUserByToken(token: string): Promise<UserAuthentication | null> {
         if (!token)
             return null;
         let user = await this.userRepository.getByToken(token);
         return user && new UserAuthentication(user);
     }
 
-    async getByEmail(email: string): Promise<User | null> {
+    async getUserByEmail(email: string): Promise<User | null> {
         if (!email)
             return null;
 
@@ -109,29 +109,32 @@ class UserBusiness implements IUserBusiness {
         return true;
     }
 
-    async create(data: UserCreate): Promise<IUser> {
-        let user;
-        if (validateName(data.name) && await this.validateEmail(data.email, true) && data.password && validatePassword(data.password)) {
-            data.password = hashPassword(data.password);
-            user = await this.userRepository.create(data);
-        }
-        else
-            throw new ErrorCommon(101, 'Data');
-        return user;
-    }
-
-    async signup(data: UserCreate): Promise<UserAuthentication> {
-        let user = await this.create(data);
+    async signup(data: any): Promise<UserAuthentication> {
+        let user: any = await this.create(data);
         if (user)
             user.token = await this.updateUserToken(user._id, new UserToken(<any>{provider: LoginProvider.Local}));
         return user && new UserAuthentication(user);
     }
 
-    async update(_id: string, data: UserUpdate): Promise<User | null> {
+    async create(data: any): Promise<User> {
         let user;
+        let dataCreate = new UserCreate(data);
 
-        if (validateName(data.name)) {
-            user = await this.userRepository.findOneAndUpdate({_id}, data);
+        if (validateName(dataCreate.name) && await this.validateEmail(dataCreate.email, true) && dataCreate.password && validatePassword(dataCreate.password)) {
+            dataCreate.password = hashPassword(dataCreate.password);
+            user = await this.userRepository.create(dataCreate);
+        }
+        else
+            throw new ErrorCommon(101, 'Data');
+        return user && new User(user);
+    }
+
+    async update(_id: string, data: any): Promise<User | null> {
+        let user;
+        let dataUpdate = new UserUpdate(data);
+
+        if (validateName(dataUpdate.name)) {
+            user = await this.userRepository.findOneAndUpdate({_id}, dataUpdate);
             if (user)
                 Authenticator.removeAuthenticator(_id);
         }

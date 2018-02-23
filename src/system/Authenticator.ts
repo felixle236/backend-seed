@@ -22,7 +22,7 @@ class Authenticator {
                 let auth = Authenticator.authenticators.find(a => a.expire && a.expire >= new Date() && a.userAuth && a.userAuth.token && a.userAuth.token.accessToken === token);
 
                 if (!auth) {
-                    let userAuth = await this.userBusiness.getByToken(token);
+                    let userAuth = await this.userBusiness.getUserByToken(token);
 
                     if (userAuth) {
                         auth = Authenticator.authenticators.find(a => a.userAuth && a.userAuth._id === userAuth!._id);

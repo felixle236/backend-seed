@@ -27,11 +27,6 @@ module.exports = function(grunt) {
             }
         },
         exec: {
-            install: {
-                cmd: () => {
-                    return 'npm install';
-                }
-            },
             eslint: './node_modules/.bin/eslint --ext .ts --ext .js ./src',
             build: './node_modules/.bin/tsc',
             generate: {
@@ -50,6 +45,5 @@ module.exports = function(grunt) {
     });
 
     grunt.registerTask('default', ['watch']);
-    grunt.registerTask('install', ['exec:install']);
     grunt.registerTask('build', ['sync', 'exec:build']);
 };

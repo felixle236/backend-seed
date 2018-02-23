@@ -1,49 +1,48 @@
 import BaseController from './base/BaseController';
-import {camelName}Business from '../app/business/{camelName}Business';
-import I{camelName}Business from '../app/business/interfaces/I{camelName}Business';
-import {camelName}Create from '../app/model/{pascalName}/{camelName}Create';
-import {camelName}Update from '../app/model/{pascalName}/{camelName}Update';
+import I{pascalName}Business from '../app/business/interfaces/I{pascalName}Business';
+import {pascalName}Create from '../app/model/{camelName}/{pascalName}Create';
+import {pascalName}Update from '../app/model/{camelName}/{pascalName}Update';
 import BusinessLoader from '../system/BusinessLoader';
 import Authenticator from '../system/Authenticator';
 
-class {camelName}Controller extends BaseController {
-    private {pascalName}Business: I{camelName}Business = BusinessLoader.{pascalName}Business;
+class {pascalName}Controller extends BaseController {
+    private {camelName}Business: I{pascalName}Business = BusinessLoader.{camelName}Business;
 
     constructor() {
         super();
 
-        this.get('/search', this.validatePagination(), this.search{camelName}s.bind(this));
-        this.get('/search-count', this.getCountSearch{camelName}s.bind(this));
-        this.get('/:_id', this.get{camelName}ById.bind(this));
-        this.post('/', Authenticator.isAuthenticated, this.create{camelName}.bind(this));
-        this.put('/:_id', Authenticator.isAuthenticated, this.update{camelName}.bind(this));
-        this.delete('/:_id', Authenticator.checkRoles('Administrator'), this.delete{camelName}.bind(this));
+        this.get('/search', this.validatePagination(), this.search{pascalName}s.bind(this));
+        this.get('/search-count', this.getCountSearch{pascalName}s.bind(this));
+        this.get('/:_id', this.get{pascalName}ById.bind(this));
+        this.post('/', Authenticator.isAuthenticated, this.create{pascalName}.bind(this));
+        this.put('/:_id', Authenticator.isAuthenticated, this.update{pascalName}.bind(this));
+        this.delete('/:_id', Authenticator.checkRoles('Administrator'), this.delete{pascalName}.bind(this));
     }
 
-    async search{camelName}s(req): Promise<any> {
-        return await this.{pascalName}Business.search(req.query.name, req.query.page, req.query.limit);
+    async search{pascalName}s(req): Promise<any> {
+        return await this.{camelName}Business.search(req.query.name, req.query.page, req.query.limit);
     }
 
-    async getCountSearch{camelName}s(req): Promise<any> {
-        return await this.{pascalName}Business.getCountSearch(req.query.name);
+    async getCountSearch{pascalName}s(req): Promise<any> {
+        return await this.{camelName}Business.getCountSearch(req.query.name);
     }
 
-    async get{camelName}ById(req): Promise<any> {
-        return await this.{pascalName}Business.get(req.params._id);
+    async get{pascalName}ById(req): Promise<any> {
+        return await this.{camelName}Business.get(req.params._id);
     }
 
-    async create{camelName}(req): Promise<any> {
-        return await this.{pascalName}Business.create(new {camelName}Create(req.body));
+    async create{pascalName}(req): Promise<any> {
+        return await this.{camelName}Business.create(new {pascalName}Create(req.body));
     }
 
-    async update{camelName}(req): Promise<any> {
-        return await this.{pascalName}Business.update(req.params._id, new {camelName}Update(req.body));
+    async update{pascalName}(req): Promise<any> {
+        return await this.{camelName}Business.update(req.params._id, new {pascalName}Update(req.body));
     }
 
-    async delete{camelName}(req): Promise<any> {
-        return await this.{pascalName}Business.delete(req.params._id);
+    async delete{pascalName}(req): Promise<any> {
+        return await this.{camelName}Business.delete(req.params._id);
     }
 }
 
-Object.seal({camelName}Controller);
-export default {camelName}Controller;
+Object.seal({pascalName}Controller);
+export default {pascalName}Controller;

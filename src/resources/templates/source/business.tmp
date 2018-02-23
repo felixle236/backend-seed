@@ -1,26 +1,26 @@
-import {camelName} from '../model/{pascalName}/{camelName}';
-import {camelName}Create from '../model/{pascalName}/{camelName}Create'; // eslint-disable-line
-import {camelName}Update from '../model/{pascalName}/{camelName}Update'; // eslint-disable-line
-import I{camelName}Business from './interfaces/I{camelName}Business'; // eslint-disable-line
-import {camelName}Repository from '../repository/{camelName}Repository';
+import {pascalName} from '../model/{camelName}/{pascalName}';
+import {pascalName}Create from '../model/{camelName}/{pascalName}Create'; // eslint-disable-line
+import {pascalName}Update from '../model/{camelName}/{pascalName}Update'; // eslint-disable-line
+import I{pascalName}Business from './interfaces/I{pascalName}Business'; // eslint-disable-line
+import {pascalName}Repository from '../repository/{pascalName}Repository';
 import {ErrorCommon} from '../model/common/Error';
 
-class {camelName}Business implements I{camelName}Business {
-    private {pascalName}Repository: {camelName}Repository;
+class {pascalName}Business implements I{pascalName}Business {
+    private {camelName}Repository: {pascalName}Repository;
 
     constructor() {
-        this.{pascalName}Repository = new {camelName}Repository();
+        this.{camelName}Repository = new {pascalName}Repository();
     }
 
-    async search(name?: string, page?: number, limit?: number): Promise<{camelName}[]> {
+    async search(name?: string, page?: number, limit?: number): Promise<{pascalName}[]> {
         let param = {
             query: <any>{}
         };
         if (name)
             param.query.name = new RegExp(name, 'i');
 
-        let {pascalName}s = await this.{pascalName}Repository.find(param, {name: 1}, page, limit);
-        return {camelName}.parseArray({pascalName}s);
+        let {camelName}s = await this.{camelName}Repository.find(param, {name: 1}, page, limit);
+        return {pascalName}.parseArray({camelName}s);
     }
 
     async getCountSearch(name?: string): Promise<number> {
@@ -30,34 +30,34 @@ class {camelName}Business implements I{camelName}Business {
         if (name)
             param.query.name = new RegExp(name, 'i');
 
-        return await this.{pascalName}Repository.getCount(param);
+        return await this.{camelName}Repository.getCount(param);
     }
 
-    async get(_id: string): Promise<{camelName} | null> {
+    async get(_id: string): Promise<{pascalName} | null> {
         if (!_id)
             return null;
 
-        let {pascalName} = await this.{pascalName}Repository.get(_id);
-        return {pascalName} && new {camelName}({pascalName});
+        let {camelName} = await this.{camelName}Repository.get(_id);
+        return {camelName} && new {pascalName}({camelName});
     }
 
-    async create(data: {camelName}Create): Promise<{camelName}> {
-        let {pascalName};
+    async create(data: {pascalName}Create): Promise<{pascalName}> {
+        let {camelName};
         if (validateName(data.name))
-            {pascalName} = await this.{pascalName}Repository.create(data);
+            {camelName} = await this.{camelName}Repository.create(data);
 
-        return {pascalName} && new {camelName}({pascalName});
+        return {camelName} && new {pascalName}({camelName});
     }
 
-    async update(_id: string, data: {camelName}Update): Promise<{camelName} | null> {
+    async update(_id: string, data: {pascalName}Update): Promise<{pascalName} | null> {
         if (validateName(data.name))
-            await this.{pascalName}Repository.update(_id, data);
+            await this.{camelName}Repository.update(_id, data);
 
         return await this.get(_id);
     }
 
     async delete(_id: string): Promise<boolean> {
-        return await this.{pascalName}Repository.delete(_id);
+        return await this.{camelName}Repository.delete(_id);
     }
 }
 
@@ -70,5 +70,5 @@ function validateName(name: string): boolean {
     return true;
 }
 
-Object.seal({camelName}Business);
-export default {camelName}Business;
+Object.seal({pascalName}Business);
+export default {pascalName}Business;

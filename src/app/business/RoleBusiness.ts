@@ -18,7 +18,7 @@ class RoleBusiness implements IRoleBusiness {
         return Role.parseArray(roles);
     }
 
-    async search(name?: string, page?: number, limit?: number): Promise<Role[]> {
+    async getRoles(name?: string, page?: number, limit?: number): Promise<Role[]> {
         let param = {
             query: <any>{}
         };
@@ -29,7 +29,7 @@ class RoleBusiness implements IRoleBusiness {
         return Role.parseArray(roles);
     }
 
-    async getCountSearch(name?: string): Promise<number> {
+    async countRoles(name?: string): Promise<number> {
         let param = {
             query: <any>{}
         };
@@ -47,7 +47,7 @@ class RoleBusiness implements IRoleBusiness {
         return role && new Role(role);
     }
 
-    async getByName(name: string): Promise<Role | null> {
+    async getRoleByName(name: string): Promise<Role | null> {
         if (!name)
             return null;
 
@@ -55,14 +55,16 @@ class RoleBusiness implements IRoleBusiness {
         return role && new Role(role);
     }
 
-    async create(data: RoleCreate): Promise<Role> {
+    async create(data: any): Promise<Role> {
         let role;
-        if (validateName(data.name)) {
-            role = await this.getByName(data.name);
+        let dataCreate = new RoleCreate(data);
+
+        if (validateName(dataCreate.name)) {
+            role = await this.getRoleByName(dataCreate.name);
             if (role)
                 throw new ErrorCommon(104, 'Name');
 
-            role = await this.roleRepository.create(data);
+            role = await this.roleRepository.create(dataCreate);
             // Load data roles in memory
             DataLoader.loadRoles();
         }
@@ -70,20 +72,22 @@ class RoleBusiness implements IRoleBusiness {
         return role && new Role(role);
     }
 
-    async update(_id: string, data: RoleUpdate): Promise<Role | null> {
-        let result;
-        if (validateName(data.name)) {
-            let role = await this.getByName(data.name);
+    async update(_id: string, data: any): Promise<Role | null> {
+        let role;
+        let dataUpdate = new RoleUpdate(data);
+
+        if (validateName(dataUpdate.name)) {
+            role = await this.getRoleByName(dataUpdate.name);
             if (role && role._id === _id)
                 throw new ErrorCommon(104, 'Name');
 
-            result = await this.roleRepository.findOneAndUpdate({_id}, data);
+            role = await this.roleRepository.findOneAndUpdate({_id}, dataUpdate);
 
             // Load data roles in memory
-            if (result)
+            if (role)
                 DataLoader.loadRoles();
         }
-        return result && new Role(result);
+        return role && new Role(role);
     }
 
     async updateClaims(_id: string, claims: string[]): Promise<boolean> {

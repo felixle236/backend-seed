@@ -3,40 +3,40 @@ let moduleName = process.env.MODULE_NAME;
 
 if (moduleName) {
     moduleName = moduleName.trim();
-    let pascalName = moduleName.substr(0, 1).toLowerCase() + moduleName.substr(1);
-    let camelName = moduleName.substr(0, 1).toUpperCase() + moduleName.substr(1);
+    let camelName = moduleName.substr(0, 1).toLowerCase() + moduleName.substr(1);
+    let pascalName = moduleName.substr(0, 1).toUpperCase() + moduleName.substr(1);
 
-    let schemaPath = `${__dirname}/../../../app/dataAccess/schemas/${camelName}Schema.ts`;
-    let schema = getFileContent(`${__dirname}/schema.tmp`, pascalName, camelName);
+    let schemaPath = `${__dirname}/../../../app/dataAccess/schemas/${pascalName}Schema.ts`;
+    let schema = getFileContent(`${__dirname}/schema.tmp`, camelName, pascalName);
 
-    let modelDirPath = `${__dirname}/../../../app/model/${pascalName}`;
-    let modelPath = `${__dirname}/../../../app/model/${pascalName}/${camelName}.ts`;
-    let model = getFileContent(`${__dirname}/model.tmp`, pascalName, camelName);
+    let modelDirPath = `${__dirname}/../../../app/model/${camelName}`;
+    let modelPath = `${__dirname}/../../../app/model/${camelName}/${pascalName}.ts`;
+    let model = getFileContent(`${__dirname}/model.tmp`, camelName, pascalName);
 
-    let modelCreatePath = `${__dirname}/../../../app/model/${pascalName}/${camelName}Create.ts`;
-    let modelCreate = getFileContent(`${__dirname}/modelCreate.tmp`, pascalName, camelName);
+    let modelCreatePath = `${__dirname}/../../../app/model/${camelName}/${pascalName}Create.ts`;
+    let modelCreate = getFileContent(`${__dirname}/modelCreate.tmp`, camelName, pascalName);
 
-    let modelUpdatePath = `${__dirname}/../../../app/model/${pascalName}/${camelName}Update.ts`;
-    let modelUpdate = getFileContent(`${__dirname}/modelUpdate.tmp`, pascalName, camelName);
+    let modelUpdatePath = `${__dirname}/../../../app/model/${camelName}/${pascalName}Update.ts`;
+    let modelUpdate = getFileContent(`${__dirname}/modelUpdate.tmp`, camelName, pascalName);
 
-    let modelInterfaceDirPath = `${__dirname}/../../../app/model/${pascalName}/interfaces`;
-    let modelInterfacePath = `${__dirname}/../../../app/model/${pascalName}/interfaces/I${camelName}.ts`;
-    let modelInterface = getFileContent(`${__dirname}/modelInterface.tmp`, pascalName, camelName);
+    let modelInterfaceDirPath = `${__dirname}/../../../app/model/${camelName}/interfaces`;
+    let modelInterfacePath = `${__dirname}/../../../app/model/${camelName}/interfaces/I${pascalName}.ts`;
+    let modelInterface = getFileContent(`${__dirname}/modelInterface.tmp`, camelName, pascalName);
 
-    let repositoryPath = `${__dirname}/../../../app/repository/${camelName}Repository.ts`;
-    let repository = getFileContent(`${__dirname}/repository.tmp`, pascalName, camelName);
+    let repositoryPath = `${__dirname}/../../../app/repository/${pascalName}Repository.ts`;
+    let repository = getFileContent(`${__dirname}/repository.tmp`, camelName, pascalName);
 
-    let businessPath = `${__dirname}/../../../app/business/${camelName}Business.ts`;
-    let business = getFileContent(`${__dirname}/business.tmp`, pascalName, camelName);
+    let businessPath = `${__dirname}/../../../app/business/${pascalName}Business.ts`;
+    let business = getFileContent(`${__dirname}/business.tmp`, camelName, pascalName);
 
-    let businessInterfacePath = `${__dirname}/../../../app/business/interfaces/I${camelName}Business.ts`;
-    let businessInterface = getFileContent(`${__dirname}/businessInterface.tmp`, pascalName, camelName);
+    let businessInterfacePath = `${__dirname}/../../../app/business/interfaces/I${pascalName}Business.ts`;
+    let businessInterface = getFileContent(`${__dirname}/businessInterface.tmp`, camelName, pascalName);
 
-    let controllerPath = `${__dirname}/../../../controllers/${camelName}Controller.ts`;
-    let controller = getFileContent(`${__dirname}/controller.tmp`, pascalName, camelName);
+    let controllerPath = `${__dirname}/../../../controllers/${pascalName}Controller.ts`;
+    let controller = getFileContent(`${__dirname}/controller.tmp`, camelName, pascalName);
 
-    let initialDataPath = `${__dirname}/../../initialData/${camelName}s.ts`;
-    let initialData = getFileContent(`${__dirname}/initialData.tmp`, pascalName, camelName);
+    let initialDataPath = `${__dirname}/../../initialData/${pascalName}s.ts`;
+    let initialData = getFileContent(`${__dirname}/initialData.tmp`, camelName, pascalName);
 
     if (!fs.existsSync(modelDirPath))
         fs.mkdirSync(modelDirPath);
@@ -55,6 +55,6 @@ if (moduleName) {
     fs.writeFileSync(initialDataPath, initialData);
 }
 
-function getFileContent(path, pascalName, camelName) {
-    return fs.readFileSync(path, 'utf8').replace(new RegExp('{pascalName}', 'g'), pascalName).replace(new RegExp('{camelName}', 'g'), camelName);
+function getFileContent(path, camelName, pascalName) {
+    return fs.readFileSync(path, 'utf8').replace(new RegExp('{camelName}', 'g'), camelName).replace(new RegExp('{pascalName}', 'g'), pascalName);
 }

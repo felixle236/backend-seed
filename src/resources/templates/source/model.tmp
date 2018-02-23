@@ -1,27 +1,28 @@
-import I{camelName} from './interfaces/I{camelName}'; // eslint-disable-line
+import I{pascalName} from './interfaces/I{pascalName}'; // eslint-disable-line
+import DataHelper from '../../../helpers/DataHelper';
 
-class {camelName} {
+class {pascalName} {
     _id: string;
     name: string;
 
     createdAt?: Date;
     updatedAt?: Date;
 
-    constructor(model: I{camelName}) {
+    constructor(model: I{pascalName}) {
         if (!model)
             return;
 
-        this._id = model._id && model._id.toString();
+        this._id = DataHelper.handleIdDataModel(model._id);
         this.name = model.name;
 
         this.createdAt = model.createdAt;
         this.updatedAt = model.updatedAt;
     }
 
-    static parseArray(list: I{camelName}[]): {camelName}[] {
-        return list.map(item => new {camelName}(item));
+    static parseArray(list: I{pascalName}[]): {pascalName}[] {
+        return list.map(item => new {pascalName}(item));
     }
 }
 
-Object.seal({camelName});
-export default {camelName};
+Object.seal({pascalName});
+export default {pascalName};

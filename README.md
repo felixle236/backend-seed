@@ -78,11 +78,11 @@ npm run start ----------// start with development environment.
 npm run start-with-data ----------// start for development & insert data test.
 npm run staging ----------// start with staging environment.
 npm run production ----------// start with production environment.
-grunt exec:generate:Customer ----------// Generate module "Customer": schema, model, repository, business, controller,... (without route loader)
+grunt exec:generate:Customer ----------// Generate module "Customer": schema, model, repository, business, controller,... (without route loader and business loader)
 ```
 
 * If execute "grunt" with an error "The term 'grunt' is not recognized as the name of a cmdlet" on Windows OS, execute this command with administrator: setx path "%PATH%;%APPDATA%\npm"
-* If execute "grunt drop-db" with an error (because you can not execute the mongo command), set the path for mongodb on Windows OS, execute this command with administrator: setx path "%PATH%;C:\Program Files\MongoDB\Server\[version]\bin"
+* If execute "npm run drop-db" with an error (because you can not execute the mongo command), set the path for mongodb on Windows OS, execute this command with administrator: setx path "%PATH%;C:\Program Files\MongoDB\Server\[version]\bin"
 * Set default cmd.exe (Windows - VS Code): Ctrl+Shift+P -> Type "Select Default Shell" -> Select "Command Prompt" -> Restart VS Code.
 
 ### Debug on Visual Code

@@ -1,8 +1,8 @@
 import * as mongoose from 'mongoose'; // eslint-disable-line
 import DataAccess from '../DataAccess';
-import I{camelName} from '../../model/{pascalName}/interfaces/I{camelName}'; // eslint-disable-line
+import I{pascalName} from '../../model/{camelName}/interfaces/I{pascalName}'; // eslint-disable-line
 
-class {camelName}Schema {
+class {pascalName}Schema {
     static get schema() {
         let schemaDefinition: mongoose.SchemaDefinition = {
             name: {
@@ -18,4 +18,4 @@ class {camelName}Schema {
     }
 }
 
-export default DataAccess.connection.model<I{camelName}>('{camelName}', {camelName}Schema.schema);
+export default DataAccess.connection.model<I{pascalName}>('{pascalName}', {pascalName}Schema.schema);

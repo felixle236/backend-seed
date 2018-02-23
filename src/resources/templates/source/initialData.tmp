@@ -1,7 +1,7 @@
-import {camelName}Create from '../../app/model/{pascalName}/{camelName}Create';
+import {pascalName}Create from '../../app/model/{camelName}/{pascalName}Create';
 
-export default function get{camelName}s(): {isRequired: boolean, data: {camelName}Create}[] {
+export default function get{pascalName}s(): {isRequired: boolean, data: {pascalName}Create}[] {
     return [
-        {isRequired: false, data: <{camelName}Create>{name: 'Test 1'}},
+        {isRequired: false, data: <{pascalName}Create>{name: 'Test 1'}},
     ];
 }

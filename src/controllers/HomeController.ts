@@ -15,7 +15,7 @@ class HomeController extends BaseController {
     }
 
     async getUsers(): Promise<any> {
-        return await this.userBusiness.search('', 1, 1000);
+        return await this.userBusiness.getUsers('', 1, 1000);
     }
 
     async getRoles(): Promise<any> {

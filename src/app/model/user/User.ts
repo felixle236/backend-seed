@@ -1,5 +1,6 @@
 import IUser from './interfaces/IUser'; // eslint-disable-line
 import {GenderType} from '../common/CommonType';
+import DataHelper from '../../../helpers/DataHelper';
 
 class User {
     _id: string;
@@ -20,7 +21,7 @@ class User {
         if (!model)
             return;
 
-        this._id = model._id && model._id.toString();
+        this._id = DataHelper.handleIdDataModel(model._id);
         this.name = model.name;
         this.email = model.email;
         this.avatar = model.avatar;

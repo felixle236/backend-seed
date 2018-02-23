@@ -1,9 +1,9 @@
-import I{camelName} from "./interfaces/I{camelName}"; // eslint-disable-line
+import I{pascalName} from "./interfaces/I{pascalName}"; // eslint-disable-line
 
-class {camelName}Update {
+class {pascalName}Update {
     name: string;
 
-    constructor(model: I{camelName}) {
+    constructor(model: I{pascalName}) {
         if (!model)
             return;
 
@@ -11,5 +11,5 @@ class {camelName}Update {
     }
 }
 
-Object.seal({camelName}Update);
-export default {camelName}Update;
+Object.seal({pascalName}Update);
+export default {pascalName}Update;

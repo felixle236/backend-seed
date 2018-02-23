@@ -82,7 +82,7 @@ class InitialData {
         for (let i = 0; i < list.length; i++) {
             let item = list[i];
 
-            if ((item.isRequired || this.isRequired) && !(await this.userBusiness.getByEmail(item.data.email.toLowerCase()))) {
+            if ((item.isRequired || this.isRequired) && !(await this.userBusiness.getUserByEmail(item.data.email.toLowerCase()))) {
                 try {
                     await this.userBusiness.create(item.data);
                     console.log(`User '${item.data.email}' has created.`);
@@ -102,7 +102,7 @@ class InitialData {
 
         for (let i = 0; i < userRoles.length; i++) {
             let userRole = userRoles[i];
-            let user = await this.userBusiness.getByEmail(userRole.data.email.toLowerCase());
+            let user = await this.userBusiness.getUserByEmail(userRole.data.email.toLowerCase());
 
             if ((userRole.isRequired || this.isRequired) && user) {
                 let permission = await this.userBusiness.getPermission(user._id);
