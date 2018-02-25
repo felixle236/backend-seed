@@ -1,7 +1,5 @@
 import BaseController from './base/BaseController';
 import I{pascalName}Business from '../app/business/interfaces/I{pascalName}Business';
-import {pascalName}Create from '../app/model/{camelName}/{pascalName}Create';
-import {pascalName}Update from '../app/model/{camelName}/{pascalName}Update';
 import BusinessLoader from '../system/BusinessLoader';
 import Authenticator from '../system/Authenticator';
 
