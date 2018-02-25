@@ -92,25 +92,25 @@ class BaseRepository<T extends mongoose.Document> implements IRead<T>, IWrite<T>
         return await this.model.aggregate(query).exec();
     }
 
-    async create(data: object): Promise<T> {
+    async create(data: any): Promise<T> {
         return <T>(await this.model.create(data).then(doc => doc ? doc.toJSON() : null));
     }
 
-    async createMultiple(data: object[]): Promise<T[]> {
+    async createMultiple(data: any[]): Promise<T[]> {
         return <T[]>(await this.model.create(data).then(docs => docs.map(doc => doc.toJSON())));
     }
 
-    async createOrUpdate(query: any, data: object): Promise<T | null> {
+    async createOrUpdate(query: any, data: any): Promise<T | null> {
         let options = {upsert: true, new: true, setDefaultsOnInsert: true};
         return <T>(await this.model.findOneAndUpdate(query, data, options).exec().then(doc => doc ? doc.toJSON() : null));
     }
 
-    async update(_id: string, data: object): Promise<boolean> {
+    async update(_id: string, data: any): Promise<boolean> {
         let result = await this.model.update({_id: DataHelper.toObjectId(_id)}, data).exec();
         return result && result.ok > 0;
     }
 
-    async findOneAndUpdate(query: object, data: object): Promise<T | null> {
+    async findOneAndUpdate(query: any, data: any): Promise<T | null> {
         return <T>(await this.model.findOneAndUpdate(query, data, {new: true}).exec().then(doc => doc ? doc.toJSON() : null));
     }
 

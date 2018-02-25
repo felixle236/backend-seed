@@ -12,7 +12,7 @@ class {pascalName}Business implements I{pascalName}Business {
         this.{camelName}Repository = new {pascalName}Repository();
     }
 
-    async search(name?: string, page?: number, limit?: number): Promise<{pascalName}[]> {
+    async get{pascalName}s(name?: string, page?: number, limit?: number): Promise<{pascalName}[]> {
         let param = {
             query: <any>{}
         };
@@ -23,7 +23,7 @@ class {pascalName}Business implements I{pascalName}Business {
         return {pascalName}.parseArray({camelName}s);
     }
 
-    async getCountSearch(name?: string): Promise<number> {
+    async count{pascalName}s(name?: string): Promise<number> {
         let param = {
             query: <any>{}
         };
@@ -41,19 +41,24 @@ class {pascalName}Business implements I{pascalName}Business {
         return {camelName} && new {pascalName}({camelName});
     }
 
-    async create(data: {pascalName}Create): Promise<{pascalName}> {
+    async create(data: any): Promise<{pascalName}> {
         let {camelName};
-        if (validateName(data.name))
-            {camelName} = await this.{camelName}Repository.create(data);
+        let dataCreate = new {pascalName}Create(data);
+
+        if (validateName(dataCreate.name))
+            {camelName} = await this.{camelName}Repository.create(dataCreate);
 
         return {camelName} && new {pascalName}({camelName});
     }
 
-    async update(_id: string, data: {pascalName}Update): Promise<{pascalName} | null> {
-        if (validateName(data.name))
-            await this.{camelName}Repository.update(_id, data);
+    async update(_id: string, data: any): Promise<{pascalName} | null> {
+        let {camelName};
+        let dataUpdate = new RoleUpdate(data);
 
-        return await this.get(_id);
+        if (validateName(dataUpdate.name))
+            {camelName} = await this.{camelName}Repository.findOneAndUpdate({_id}, dataUpdate);
+
+        return {camelName} && new {pascalName}({camelName});
     }
 
     async delete(_id: string): Promise<boolean> {

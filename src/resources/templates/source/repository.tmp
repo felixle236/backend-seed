@@ -1,20 +1,10 @@
 import I{pascalName} from '../model/{camelName}/interfaces/I{pascalName}'; // eslint-disable-line
 import {pascalName}Schema from '../dataAccess/schemas/{pascalName}Schema';
 import BaseRepository from './base/BaseRepository';
-import {pascalName}Create from '../model/{camelName}/{pascalName}Create'; // eslint-disable-line
-import {pascalName}Update from '../model/{camelName}/{pascalName}Update'; // eslint-disable-line
 
 class {pascalName}Repository extends BaseRepository<I{pascalName}> {
     constructor() {
         super({pascalName}Schema);
-    }
-
-    async create(data: {pascalName}Create): Promise<I{pascalName}> {
-        return await super.create(data);
-    }
-
-    async update(_id: string, data: {pascalName}Update): Promise<boolean> {
-        return await super.update(_id, data);
     }
 }
 

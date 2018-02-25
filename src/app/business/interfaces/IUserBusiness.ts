@@ -1,7 +1,5 @@
 import IBaseBusiness from './base/IBaseBusiness';
 import User from '../../model/user/User';
-import UserCreate from '../../model/user/UserCreate'; // eslint-disable-line
-import UserUpdate from '../../model/user/UserUpdate'; // eslint-disable-line
 import UserAuthentication from '../../model/user/UserAuthentication';
 import UserPermission from '../../model/user/UserPermission';
 

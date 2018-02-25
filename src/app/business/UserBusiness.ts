@@ -58,8 +58,13 @@ class UserBusiness implements IUserBusiness {
         if (!email || !validator.isEmail(email) || !password)
             throw new ErrorCommon(101, 'Email or password');
 
-        email = email.trim().toLowerCase();
-        let user = await this.userRepository.authenticate(email, hashPassword(password));
+        let param = {
+            query: {
+                email: email.trim().toLowerCase(),
+                password: hashPassword(password)
+            }
+        };
+        let user = await this.userRepository.findOne(param);
 
         if (!user)
             throw new ErrorCommon(108, 'Email or password');
@@ -73,7 +78,16 @@ class UserBusiness implements IUserBusiness {
     async getUserByToken(token: string): Promise<UserAuthentication | null> {
         if (!token)
             return null;
-        let user = await this.userRepository.getByToken(token);
+
+        let param = {
+            query: {
+                'token.accessToken': token,
+                'token.tokenExpire': {
+                    $gt: new Date()
+                }
+            }
+        };
+        let user = await this.userRepository.findOne(param);
         return user && new UserAuthentication(user);
     }
 
@@ -81,8 +95,12 @@ class UserBusiness implements IUserBusiness {
         if (!email)
             return null;
 
-        email = email.trim().toLowerCase();
-        let user = await this.userRepository.findOne({query: {email: email}});
+        let param = {
+            query: {
+                email: email.trim().toLowerCase()
+            }
+        };
+        let user = await this.userRepository.findOne(param);
         return user && new User(user);
     }
 
@@ -101,8 +119,15 @@ class UserBusiness implements IUserBusiness {
             throw new ErrorCommon(101, 'Email');
 
         email = email.trim().toLowerCase();
-        if (isCheckExists && await this.userRepository.checkEmailExists(email))
-            throw new ErrorCommon(104, 'Email');
+        if (isCheckExists) {
+            let param = {
+                query: {
+                    email
+                }
+            };
+            if (await this.userRepository.findOne(param))
+                throw new ErrorCommon(104, 'Email');
+        }
         if (!email.endsWith('@localhost.com') && !(await MailHelper.checkRealEmail(email)))
             throw new ErrorCommon(108, 'Email');
 
@@ -146,21 +171,19 @@ class UserBusiness implements IUserBusiness {
         token.accessToken = createAccessToken();
         token.tokenExpire = DateHelper.addDays(new Date(), Project.EXPIRE_DAYS);
 
-        await this.userRepository.updateUserToken(_id, token);
+        await this.userRepository.findOneAndUpdate({_id}, {token});
         Authenticator.removeAuthenticator(_id);
         return token;
     }
 
     async updateRoles(_id: string, roles: string[]): Promise<boolean> {
         Authenticator.removeAuthenticator(_id);
-        let result = await this.userRepository.updateRoles(_id, roles);
-        return result ? true : false;
+        return await this.userRepository.update(_id, {roles});
     }
 
     async updateClaims(_id: string, claims: string[]): Promise<boolean> {
         Authenticator.removeAuthenticator(_id);
-        let result = await this.userRepository.updateClaims(_id, claims);
-        return result ? true : false;
+        return await this.userRepository.update(_id, {claims});
     }
 
     async delete(_id: string): Promise<boolean> {

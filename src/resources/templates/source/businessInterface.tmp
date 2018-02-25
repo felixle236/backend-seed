@@ -1,13 +1,9 @@
 import IBaseBusiness from './base/IBaseBusiness';
 import {pascalName} from '../../model/{camelName}/{pascalName}';
-import {pascalName}Create from '../../model/{camelName}/{pascalName}Create'; // eslint-disable-line
-import {pascalName}Update from '../../model/{camelName}/{pascalName}Update'; // eslint-disable-line
 
 interface I{pascalName}Business extends IBaseBusiness<{pascalName}> {
-    search: (name?: string, page?: number, limit?: number) => Promise<{pascalName}[]>;
-    getCountSearch: (name?: string) => Promise<number>;
-    create: (data: {pascalName}Create) => Promise<{pascalName}>;
-    update: (_id: string, data: {pascalName}Update) => Promise<{pascalName} | null>;
+    get{pascalName}s: (name?: string, page?: number, limit?: number) => Promise<{pascalName}[]>;
+    count{pascalName}s: (name?: string) => Promise<number>;
 }
 
 export default I{pascalName}Business;

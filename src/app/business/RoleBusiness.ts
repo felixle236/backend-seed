@@ -91,13 +91,13 @@ class RoleBusiness implements IRoleBusiness {
     }
 
     async updateClaims(_id: string, claims: string[]): Promise<boolean> {
-        let result = await this.roleRepository.updateClaims(_id, claims);
+        let result = await this.roleRepository.update(_id, {claims});
 
         // Load data roles in memory
         if (result)
             DataLoader.loadRoles();
 
-        return result ? true : false;
+        return result;
     }
 
     async delete(_id: string): Promise<boolean> {
