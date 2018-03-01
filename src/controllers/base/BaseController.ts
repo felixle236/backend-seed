@@ -6,7 +6,6 @@ import LogHelper from '../../helpers/LogHelper';
 class BaseController {
     private router: express.Router;
     protected idRegex = /[0-9a-z]{24}/;
-    protected numRegex = /^[0-9]{1,9}$/;
     protected targets = ['params', 'query', 'body'];
     protected types = ['ID', 'NUM', 'BOOL', 'DATE', 'Y', 'M', 'D'];
 
@@ -23,14 +22,14 @@ class BaseController {
         return (req: express.Request, res: express.Response, next: express.NextFunction) => {
             if (!req.query.page)
                 req.query.page = 1;
-            else if (!this.numRegex.test(req.query.page) || Number(req.query.page) < 1)
+            else if (isNaN(req.query.page) || Number(req.query.page) < 1)
                 return this.sendError(req, res, new ErrorCommon(101, 'Request'));
             else
                 req.query.page = Number(req.query.page);
 
             if (!req.query.limit)
                 req.query.limit = maxRecords;
-            else if (!this.numRegex.test(req.query.limit) || Number(req.query.limit) < 1)
+            else if (isNaN(req.query.limit) || Number(req.query.limit) < 1)
                 return this.sendError(req, res, new ErrorCommon(101, 'Request'));
             else {
                 req.query.limit = Number(req.query.limit);
@@ -64,7 +63,7 @@ class BaseController {
                     return this.sendError(req, res, new ErrorCommon(101, 'Request'));
                 }
                 else if (['NUM'].includes(type)) {
-                    if (!this.numRegex.test(req[target][field])) {
+                    if (isNaN(req[target][field])) {
                         console.log(`Validate ${target} ${field} ${type}${required ? ' Required' : ''}: ${JSON.stringify(req[target][field])} (${typeof req[target][field]})`);
                         return this.sendError(req, res, new ErrorCommon(101, 'Request'));
                     }
@@ -88,7 +87,7 @@ class BaseController {
                     continue;
                 }
                 else if (['Y', 'M', 'D'].includes(type)) {
-                    if (!this.numRegex.test(req[target][field])) {
+                    if (isNaN(req[target][field])) {
                         console.log(`Validate ${target} ${field} ${type}${required ? ' Required' : ''}: ${JSON.stringify(req[target][field])} (${typeof req[target][field]})`);
                         return this.sendError(req, res, new ErrorCommon(101, 'Request'));
                     }
