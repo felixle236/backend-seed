@@ -182,8 +182,10 @@ class BaseController {
     }
 
     sendData(req: express.Request, res: express.Response, data: any) {
-        console.log('\n');
-        console.log('\x1b[36m', data, '\x1b[0m');
+        console.log('\n+ Request:');
+        console.log('  • Query:', '\x1b[35m', req.query, '\x1b[0m');
+        console.log('  • Body:', '\x1b[35m', req.body, '\x1b[0m');
+        console.log('+ Response:', '\x1b[36m', data, '\x1b[0m');
 
         if (!res.headersSent)
             res.send({data});
@@ -191,8 +193,10 @@ class BaseController {
 
     sendError(req: express.Request, res: express.Response, err) {
         err = err.code ? err : new ErrorSystem(err.message);
-        console.log('\n');
-        console.log('\x1b[31m', err, '\x1b[0m');
+        console.log('\n+ Request:');
+        console.log('  • Query:', '\x1b[35m', req.query, '\x1b[0m');
+        console.log('  • Body:', '\x1b[35m', req.body, '\x1b[0m');
+        console.log('+ Error:', '\x1b[31m', err, '\x1b[0m');
 
         if (err.code && !err.code.startsWith('COM'))
             LogHelper.writeLog(`${req.method} ${req.originalUrl}\n${err.message}\n`);

@@ -37,7 +37,7 @@ class User {
     }
 
     static parseArray(list: IUser[]): User[] {
-        return list.map(item => new User(item));
+        return list && Array.isArray(list) ? list.map(item => new User(item)) : [];
     }
 }
 

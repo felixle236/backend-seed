@@ -12,7 +12,7 @@ class MiddlewareLoader {
         if (process.env.NODE_ENV === 'Development')
             app.use(logger('dev'));
 
-        app.use(bodyParser.json());
+        app.use(bodyParser.json({limit: 1048576}));
         app.use(bodyParser.urlencoded({extended: false}));
         app.use(express.static(path.join(__dirname, '../../upload')));
 

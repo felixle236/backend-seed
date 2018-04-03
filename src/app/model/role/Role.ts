@@ -24,7 +24,7 @@ class Role {
     }
 
     static parseArray(list: IRole[]): Role[] {
-        return list.map(item => new Role(item));
+        return list && Array.isArray(list) ? list.map(item => new Role(item)) : [];
     }
 }
 
