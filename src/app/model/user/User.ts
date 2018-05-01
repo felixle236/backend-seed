@@ -4,7 +4,9 @@ import DataHelper from '../../../helpers/DataHelper';
 
 class User {
     _id: string;
-    name: string;
+    firstName: string;
+    lastName: string;
+    fullName: string;
     email: string;
     avatar?: string;
     gender?: GenderType;
@@ -13,6 +15,7 @@ class User {
     address?: string;
     culture?: string;
     currency?: string;
+    role?: any;
 
     createdAt?: Date;
     updatedAt?: Date;
@@ -22,15 +25,18 @@ class User {
             return;
 
         this._id = DataHelper.handleIdDataModel(model._id);
-        this.name = model.name;
+        this.firstName = model.firstName;
+        this.lastName = model.lastName;
+        this.fullName = model.fullName;
         this.email = model.email;
-        this.avatar = model.avatar;
+        this.avatar = DataHelper.handleFileDataModel(model.avatar);
         this.gender = model.gender;
         this.birthday = model.birthday;
         this.phone = model.phone;
         this.address = model.address;
         this.culture = model.culture;
         this.currency = model.currency;
+        this.role = DataHelper.handleIdDataModel(model.role);
 
         this.createdAt = model.createdAt;
         this.updatedAt = model.updatedAt;

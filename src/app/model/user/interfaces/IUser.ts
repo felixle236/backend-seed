@@ -3,7 +3,9 @@ import UserToken from '../UserToken';
 import {GenderType} from '../../common/CommonType';
 
 interface IUser extends IBaseModel {
-    name: string;
+    firstName: string;
+    lastName: string;
+    fullName: string;
     email: string;
     password?: string;
     avatar?: string;
@@ -13,10 +15,9 @@ interface IUser extends IBaseModel {
     address?: string;
     culture?: string;
     currency?: string;
-
+    role?: any;
     token?: UserToken;
-    roles?: string[];
-    claims?: string[];
+    claims: string[];
 }
 
 export default IUser;

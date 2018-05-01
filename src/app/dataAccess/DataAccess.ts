@@ -1,16 +1,20 @@
 import * as mongoose from 'mongoose';
 import Project from '../../config/Project';
+import {ErrorCommon} from '../model/common/Error';
 
 class DataAccess {
     static get connection(): mongoose.Connection {
         return mongoose.connection;
     }
 
-    static connect(uri?: string): mongoose.Connection {
+    static async connect(name?: string): Promise<mongoose.Connection> {
         (<any>mongoose).Promise = Promise;
 
-        if (!uri)
-            uri = Project.DB_CONN_URI;
+        if (!Project.DATABASES || !Project.DATABASES.length)
+            throw new ErrorCommon(11);
+
+        let db = Project.DATABASES.find(db => db.NAME === name) || Project.DATABASES.find(db => db.NAME === 'default') || Project.DATABASES[0];
+        let uri = `mongodb://${db.HOST}:${db.PORT}/${db.DB_NAME}`;
 
         let options = <any>{
             poolSize: 10, // default is 5
@@ -18,12 +22,12 @@ class DataAccess {
             reconnectInterval: 500 // Reconnect every 500ms
         };
 
-        if (process.env.NODE_ENV !== 'Development' && Project.DATABASE.USERNAME) {
-            options.user = Project.DATABASE.USERNAME;
-            options.pass = Project.DATABASE.PASSWORD;
+        if (db.USERNAME && db.PASSWORD) {
+            options.user = db.USERNAME;
+            options.pass = db.PASSWORD;
         }
 
-        mongoose.connect(uri, options);
+        await mongoose.connect(uri, options);
         return mongoose.connection;
     }
 
@@ -37,14 +41,12 @@ class DataAccess {
             default: Date.now
         };
         schemaDefinition.deletedAt = {
-            type: Date,
-            default: null
+            type: Date
         };
 
         let schema = new mongoose.Schema(schemaDefinition);
 
         schema.pre('update', function(this: any, next) {
-            // this.update({}, {$set: {updatedAt: new Date()}});
             this.updatedAt = Date.now; // eslint-disable-line
             next();
         });

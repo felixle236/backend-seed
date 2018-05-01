@@ -3,6 +3,7 @@ import BusinessLoader from '../system/BusinessLoader';
 import IUserBusiness from '../app/business/interfaces/IUserBusiness';
 import UserAuthentication from '../app/model/user/UserAuthentication'; // eslint-disable-line
 import Authenticator from '../system/Authenticator';
+import {RoleCode} from '../app/model/common/CommonType';
 
 class UserController extends BaseController {
     private userBusiness: IUserBusiness = BusinessLoader.userBusiness;
@@ -17,20 +18,20 @@ class UserController extends BaseController {
 
         this.post('/signin', this.signin.bind(this));
         this.post('/signup', this.signup.bind(this));
-        this.post('/', Authenticator.checkRoles('Administrator'), this.createUser.bind(this));
+        this.post('/', Authenticator.checkRoles(RoleCode.Administrator), this.createUser.bind(this));
 
-        this.put('/:_id', Authenticator.checkRoles('Administrator'), this.updateUser.bind(this));
+        this.put('/:_id', Authenticator.checkRoles(RoleCode.Administrator), this.updateUser.bind(this));
         this.put('/profile', Authenticator.isAuthenticated, this.updateProfile.bind(this));
 
-        this.delete('/:_id', Authenticator.checkRoles('Administrator'), this.deleteUser.bind(this));
+        this.delete('/:_id', Authenticator.checkRoles(RoleCode.Administrator), this.deleteUser.bind(this));
     }
 
     async getUsers(req): Promise<any> {
-        return await this.userBusiness.getUsers(req.query.name, req.query.page, req.query.limit);
+        return await this.userBusiness.getList(req.query.name, req.query.page, req.query.limit);
     }
 
     async countUsers(req): Promise<any> {
-        return await this.userBusiness.countUsers(req.query.name);
+        return await this.userBusiness.count(req.query.name);
     }
 
     async getUserById(req): Promise<any> {

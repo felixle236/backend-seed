@@ -41,88 +41,104 @@ class BaseController {
     }
 
     validateData(...options: {target?: string, required?: boolean, field: string, type: string}[]) {
+        let getValue = (data, field) => {
+            if (!data || !field)
+                return;
+            return field.split('.').reduce((a, b) => a[b], data);
+        };
+        let setValue = (data, field, value) => {
+            if (!data || !field)
+                return;
+            let arr = field.split('.');
+            while (arr.length > 1 && (data = data[arr.shift()]));
+            if (data)
+                data[arr.shift()] = value;
+        };
+
         return (req: express.Request, res: express.Response, next: express.NextFunction) => {
             for (let i = 0; i < options.length; i++) {
                 let option = options[i];
                 let target = option.target || (['GET', 'DELETE'].includes(req.method) ? 'query' : 'body');
                 let required = option.required;
                 let field = option.field;
+                let data = req[target];
+                let value = getValue(data, field);
                 let type = option.type;
 
-                if (!this.targets.includes(target) || !this.types.includes(type) || !field || (required && !req[target][field] && req[target][field] !== false)) {
-                    console.log(`Validate ${target} ${field} ${type}${required ? ' Required' : ''}: ${JSON.stringify(req[target][field])} (${typeof req[target][field]})`);
+                if (!this.targets.includes(target) || !this.types.includes(type) || !field || (required && !value && value !== false)) {
+                    console.log(`Validate ${target} ${field} ${type}${required ? ' Required' : ''}: ${JSON.stringify(value)} (${typeof value})`);
                     return this.sendError(req, res, new ErrorCommon(101, (field || 'Data') + ' format'));
                 }
 
-                if (!required && !req[target][field]) {
-                    req[target][field] = null;
+                if (!required && !value) {
+                    setValue(data, field, undefined);
                     continue;
                 }
-                else if (type === 'ID' && !this.idRegex.test(req[target][field])) {
-                    console.log(`Validate ${target} ${field} ${type}${required ? ' Required' : ''}: ${JSON.stringify(req[target][field])} (${typeof req[target][field]})`);
+                else if (type === 'ID' && !this.idRegex.test(value)) {
+                    console.log(`Validate ${target} ${field} ${type}${required ? ' Required' : ''}: ${JSON.stringify(value)} (${typeof value})`);
                     return this.sendError(req, res, new ErrorCommon(101, 'Request'));
                 }
                 else if (['NUM'].includes(type)) {
-                    if (isNaN(req[target][field])) {
-                        console.log(`Validate ${target} ${field} ${type}${required ? ' Required' : ''}: ${JSON.stringify(req[target][field])} (${typeof req[target][field]})`);
+                    if (isNaN(value)) {
+                        console.log(`Validate ${target} ${field} ${type}${required ? ' Required' : ''}: ${JSON.stringify(value)} (${typeof value})`);
                         return this.sendError(req, res, new ErrorCommon(101, 'Request'));
                     }
 
-                    req[target][field] = Number(req[target][field]);
+                    setValue(data, field, Number(value));
                     continue;
                 }
                 else if (['BOOL'].includes(type)) {
-                    req[target][field] = DataHelper.convertStringToBoolean(req[target][field]);
+                    setValue(data, field, DataHelper.convertStringToBoolean(value));
                     continue;
                 }
                 else if (type === 'DATE') {
-                    let date: any = new Date(req[target][field]);
+                    let date: any = new Date(value);
 
                     if (date === 'Invalid Date' || isNaN(date)) {
-                        console.log(`Validate ${target} ${field} ${type}${required ? ' Required' : ''}: ${JSON.stringify(req[target][field])} (${typeof req[target][field]})`);
+                        console.log(`Validate ${target} ${field} ${type}${required ? ' Required' : ''}: ${JSON.stringify(value)} (${typeof value})`);
                         return this.sendError(req, res, new ErrorCommon(101, 'Request'));
                     }
 
-                    req[target][field] = date;
+                    setValue(data, field, date);
                     continue;
                 }
                 else if (['Y', 'M', 'D'].includes(type)) {
-                    if (isNaN(req[target][field])) {
-                        console.log(`Validate ${target} ${field} ${type}${required ? ' Required' : ''}: ${JSON.stringify(req[target][field])} (${typeof req[target][field]})`);
+                    if (isNaN(value)) {
+                        console.log(`Validate ${target} ${field} ${type}${required ? ' Required' : ''}: ${JSON.stringify(value)} (${typeof value})`);
                         return this.sendError(req, res, new ErrorCommon(101, 'Request'));
                     }
 
                     if (type === 'Y') {
-                        let year = Number(req[target][field]);
+                        let year = Number(value);
 
                         if (year < 1970 || year > 9999) {
-                            console.log(`Validate ${target} ${field} ${type}${required ? ' Required' : ''}: ${JSON.stringify(req[target][field])} (${typeof req[target][field]})`);
+                            console.log(`Validate ${target} ${field} ${type}${required ? ' Required' : ''}: ${JSON.stringify(value)} (${typeof value})`);
                             return this.sendError(req, res, new ErrorCommon(101, 'Request'));
                         }
 
-                        req[target][field] = year;
+                        setValue(data, field, year);
                         continue;
                     }
                     else if (type === 'M') {
-                        let month = Number(req[target][field]);
+                        let month = Number(value);
 
                         if (month < 1 || month > 12) {
-                            console.log(`Validate ${target} ${field} ${type}${required ? ' Required' : ''}: ${JSON.stringify(req[target][field])} (${typeof req[target][field]})`);
+                            console.log(`Validate ${target} ${field} ${type}${required ? ' Required' : ''}: ${JSON.stringify(value)} (${typeof value})`);
                             return this.sendError(req, res, new ErrorCommon(101, 'Request'));
                         }
 
-                        req[target][field] = month;
+                        setValue(data, field, month);
                         continue;
                     }
                     else if (type === 'D') {
-                        let day = Number(req[target][field]);
+                        let day = Number(value);
 
                         if (day < 1 || day > 31) {
-                            console.log(`Validate ${target} ${field} ${type}${required ? ' Required' : ''}: ${JSON.stringify(req[target][field])} (${typeof req[target][field]})`);
+                            console.log(`Validate ${target} ${field} ${type}${required ? ' Required' : ''}: ${JSON.stringify(value)} (${typeof value})`);
                             return this.sendError(req, res, new ErrorCommon(101, 'Request'));
                         }
 
-                        req[target][field] = day;
+                        setValue(data, field, day);
                         continue;
                     }
                 }

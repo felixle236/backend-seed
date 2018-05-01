@@ -1,7 +1,4 @@
 {
-    // Use IntelliSense to learn about possible Node.js debug attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
         {
@@ -11,17 +8,16 @@
             "cwd": "${workspaceRoot}",
             "sourceMaps": true,
             "program": "${workspaceRoot}/src/server.ts",
-            "preLaunchTask": "build",
+            "preLaunchTask": "compile",
             "runtimeExecutable": null,
-            "runtimeArgs": [
-                "--nolazy"
-            ],
+            "runtimeArgs": ["-r", "ts-node/register"],
+            "protocol": "inspector",
             "outFiles": ["${workspaceRoot}/dest/**/*.js"],
             "env": {
                 "NODE_ENV": "Development",
-                "DEBUG_MODE": "true"
+                "SINGLE_THREAD": "true"
             },
-            "args": []
+            "args": ["${relativeFile}"]
         }
     ]
 }

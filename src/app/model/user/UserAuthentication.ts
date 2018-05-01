@@ -2,6 +2,7 @@ import IUser from '../../model/user/interfaces/IUser'; // eslint-disable-line
 import UserToken from './UserToken';
 import UserProfile from '../../model/user/UserProfile';
 import UserPermission from '../../model/user/UserPermission';
+import DataHelper from '../../../helpers/DataHelper';
 
 class UserAuthentication {
     _id: string;
@@ -13,7 +14,7 @@ class UserAuthentication {
         if (!model)
             return;
 
-        this._id = model._id && model._id.toString();
+        this._id = DataHelper.handleIdDataModel(model._id);
         this.profile = new UserProfile(model);
         this.permission = new UserPermission(model);
         this.token = new UserToken(model.token!);

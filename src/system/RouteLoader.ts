@@ -8,7 +8,7 @@ class RouteLoader {
     private app: express.Express = express();
 
     constructor() {
-        this.app.use('/api/', new HomeController().getRouter());
+        this.app.use('/', new HomeController().getRouter());
         this.app.use('/api/system', new SystemController().getRouter());
         this.app.use('/api/user', new UserController().getRouter());
         this.app.use('/api/role', new RoleController().getRouter());

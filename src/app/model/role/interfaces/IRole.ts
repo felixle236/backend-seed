@@ -1,9 +1,10 @@
 import IBaseModel from '../../common/interfaces/IBaseModel';
 
 interface IRole extends IBaseModel {
+    code: number;
     name: string;
-    order?: number;
-    claims?: string[];
+    level: number;
+    claims: string[];
 }
 
 export default IRole;

@@ -3,7 +3,9 @@ import {GenderType} from '../common/CommonType';
 import UserToken from './UserToken';
 
 class UserCreate {
-    name: string;
+    firstName: string;
+    lastName: string;
+    fullName: string;
     email: string;
     password?: string;
     avatar?: string;
@@ -19,7 +21,9 @@ class UserCreate {
         if (!model)
             return;
 
-        this.name = model.name;
+        this.firstName = model.firstName;
+        this.lastName = model.lastName;
+        this.fullName = model.firstName + ' ' + model.lastName;
         this.email = model.email;
         this.password = model.password;
         this.avatar = model.avatar;
@@ -29,7 +33,6 @@ class UserCreate {
         this.address = model.address;
         this.culture = model.culture;
         this.currency = model.currency;
-
         this.token = new UserToken(<any>{});
     }
 }

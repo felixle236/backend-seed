@@ -1,7 +1,6 @@
 module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-sync');
     grunt.loadNpmTasks('grunt-exec');
-    grunt.loadNpmTasks('grunt-contrib-watch');
 
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
@@ -27,23 +26,12 @@ module.exports = function(grunt) {
             }
         },
         exec: {
-            eslint: './node_modules/.bin/eslint --ext .ts --ext .js ./src',
-            build: './node_modules/.bin/tsc',
             generate: {
                 cmd: moduleName => {
                     process.env['MODULE_NAME'] = moduleName;
                     return 'node ./src/resources/templates/source/loader.js';
                 }
             } // grunt exec:generate:Customer
-        },
-        watch: {
-            scripts: {
-                files: ['src/**/*'],
-                tasks: ['exec:eslint', 'sync', 'exec:build']
-            }
         }
     });
-
-    grunt.registerTask('default', ['watch']);
-    grunt.registerTask('build', ['sync', 'exec:build']);
 };

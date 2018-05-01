@@ -1,6 +1,6 @@
 import {pascalName} from '../model/{camelName}/{pascalName}';
-import {pascalName}Create from '../model/{camelName}/{pascalName}Create'; // eslint-disable-line
-import {pascalName}Update from '../model/{camelName}/{pascalName}Update'; // eslint-disable-line
+import {pascalName}Create from '../model/{camelName}/{pascalName}Create';
+import {pascalName}Update from '../model/{camelName}/{pascalName}Update';
 import I{pascalName}Business from './interfaces/I{pascalName}Business'; // eslint-disable-line
 import {pascalName}Repository from '../repository/{pascalName}Repository';
 import {ErrorCommon} from '../model/common/Error';
@@ -12,7 +12,7 @@ class {pascalName}Business implements I{pascalName}Business {
         this.{camelName}Repository = new {pascalName}Repository();
     }
 
-    async get{pascalName}s(name?: string, page?: number, limit?: number): Promise<{pascalName}[]> {
+    async getList(name?: string, page?: number, limit?: number): Promise<{pascalName}[]> {
         let param = {
             query: <any>{}
         };
@@ -23,7 +23,7 @@ class {pascalName}Business implements I{pascalName}Business {
         return {pascalName}.parseArray({camelName}s);
     }
 
-    async count{pascalName}s(name?: string): Promise<number> {
+    async count(name?: string): Promise<number> {
         let param = {
             query: <any>{}
         };
@@ -33,36 +33,73 @@ class {pascalName}Business implements I{pascalName}Business {
         return await this.{camelName}Repository.getCount(param);
     }
 
-    async get(_id: string): Promise<{pascalName} | null> {
+    async get(_id: string): Promise<{pascalName} | undefined> {
         if (!_id)
-            return null;
+            return;
 
         let {camelName} = await this.{camelName}Repository.get(_id);
         return {camelName} && new {pascalName}({camelName});
     }
 
-    async create(data: any): Promise<{pascalName}> {
+    async get{pascalName}ByName(name: string): Promise<{pascalName} | undefined> {
+        if (!name)
+            return;
+
+        let {camelName} = await this.{camelName}Repository.findOne({query: {name: name.trim()}});
+        return {camelName} && new {pascalName}({camelName});
+    }
+
+    async create(data: any): Promise<{pascalName} | undefined> {
         let {camelName};
         let dataCreate = new {pascalName}Create(data);
 
-        if (validateName(dataCreate.name))
+        if (validateName(dataCreate.name)) {
+            {camelName} = await this.get{pascalName}ByName(dataCreate.name);
+            if ({camelName})
+                throw new ErrorCommon(104, 'Name');
+
             {camelName} = await this.{camelName}Repository.create(dataCreate);
+        }
 
         return {camelName} && new {pascalName}({camelName});
     }
 
-    async update(_id: string, data: any): Promise<{pascalName} | null> {
+    async update(_id: string, data: any): Promise<boolean> {
         let {camelName};
-        let dataUpdate = new RoleUpdate(data);
+        let dataUpdate = new {pascalName}Update(data);
 
-        if (validateName(dataUpdate.name))
+        if (validateName(dataUpdate.name)) {
+            {camelName} = await this.get{pascalName}ByName(dataUpdate.name);
+            if ({camelName} && {camelName}._id === _id)
+                throw new ErrorCommon(104, 'Name');
+
             {camelName} = await this.{camelName}Repository.findOneAndUpdate({_id}, dataUpdate);
-
-        return {camelName} && new {pascalName}({camelName});
+        }
+        return true;
     }
 
     async delete(_id: string): Promise<boolean> {
         return await this.{camelName}Repository.delete(_id);
+    }
+
+    async initial{pascalName}s(data: {isRequired: boolean, data: any}[], isRequired = false): Promise<boolean> {
+        if (!data || !Array.isArray(data))
+            throw new ErrorCommon(101, 'Data');
+
+        for (let i = 0; i < data.length; i++) {
+            let item = data[i];
+            if (item.isRequired || isRequired) {
+                await this.create(item.data).then({camelName} => {
+                    if ({camelName})
+                        console.log(`{pascalName} '${item.data.name}' has created.`);
+                }).catch(error => {
+                    if (error.code && !error.code.toString().startsWith('COM'))
+                        console.log(`{pascalName} '${item.data.name}' cannot create with error`, error);
+                });
+            }
+        }
+        console.log('\x1b[32m', 'Initialize {camelName}s have done.', '\x1b[0m');
+        return true;
     }
 }
 

@@ -1,4 +1,5 @@
 import * as mongoose from 'mongoose';
+import {ErrorSystem, ErrorCommon} from '../app/model/common/Error';
 
 class DataHelper {
     static toObjectId(_id: string): mongoose.Types.ObjectId {
@@ -9,7 +10,7 @@ class DataHelper {
         Object.keys(dataInput).forEach(key => {
             if (dataInput[key] === undefined)
                 delete dataInput[key];
-            else if (dataInput[key] == null || dataInput[key] === 'null')
+            else if (dataInput[key] === null || dataInput[key] === 'null')
                 dataInput[key] = undefined;
         });
     }
@@ -25,6 +26,22 @@ class DataHelper {
             return file.toString();
         }
         return undefined;
+    }
+
+    static handlePromiseRequest(promise): Promise<any> {
+        return new Promise<any>((resolve, reject) => {
+            promise.then(({data, error}) => {
+                if (error)
+                    reject(error);
+                else
+                    resolve(data);
+            }).catch(error => {
+                if (error.name === 'RequestError')
+                    reject(new ErrorCommon(10));
+                else
+                    reject(new ErrorSystem(error.message));
+            });
+        });
     }
 
     static applyTemplate(template, ...params) {

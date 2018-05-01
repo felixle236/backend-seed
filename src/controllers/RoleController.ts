@@ -2,6 +2,7 @@ import BaseController from './base/BaseController';
 import BusinessLoader from '../system/BusinessLoader';
 import IRoleBusiness from '../app/business/interfaces/IRoleBusiness';
 import Authenticator from '../system/Authenticator';
+import {RoleCode, Claim} from '../app/model/common/CommonType';
 
 class RoleController extends BaseController {
     private roleBusiness: IRoleBusiness = BusinessLoader.roleBusiness;
@@ -13,17 +14,17 @@ class RoleController extends BaseController {
         this.get('/count', this.countRoles.bind(this));
         this.get('/:_id', this.getRoleById.bind(this));
 
-        this.post('/', Authenticator.checkRoles('Administrator'), this.createRole.bind(this));
-        this.put('/:_id', Authenticator.checkRoles('Administrator'), this.updateRole.bind(this));
-        this.delete('/:_id', Authenticator.checkRoles('Administrator'), this.deleteRole.bind(this));
+        this.post('/', Authenticator.checkClaims(Claim.FULL_ACCESS), this.createRole.bind(this));
+        this.put('/:_id', Authenticator.checkRoles(RoleCode.Administrator), this.updateRole.bind(this));
+        this.delete('/:_id', Authenticator.checkRoles(RoleCode.Administrator), this.deleteRole.bind(this));
     }
 
     async getRoles(req): Promise<any> {
-        return await this.roleBusiness.getRoles(req.query.name, req.query.page, req.query.limit);
+        return await this.roleBusiness.getList(req.query.name, req.query.page, req.query.limit);
     }
 
     async countRoles(req): Promise<any> {
-        return await this.roleBusiness.countRoles(req.query.name);
+        return await this.roleBusiness.count(req.query.name);
     }
 
     async getRoleById(req): Promise<any> {

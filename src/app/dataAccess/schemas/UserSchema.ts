@@ -5,10 +5,21 @@ import IUser from '../../model/user/interfaces/IUser'; // eslint-disable-line
 class UserSchema {
     static get schema() {
         let schemaDefinition: mongoose.SchemaDefinition = {
-            name: {
+            firstName: {
                 type: String,
                 required: true,
-                trim: true,
+                min: 2,
+                max: 20
+            },
+            lastName: {
+                type: String,
+                required: true,
+                min: 2,
+                max: 20
+            },
+            fullName: {
+                type: String,
+                required: true,
                 min: 4,
                 max: 50
             },
@@ -16,15 +27,11 @@ class UserSchema {
                 type: String,
                 required: true,
                 unique: true,
-                trim: true,
                 max: 100
             },
             password: String,
             avatar: String,
-            gender: {
-                type: Number,
-                default: null
-            },
+            gender: Number,
             birthday: Date,
             phone: {
                 type: String,
@@ -44,16 +51,19 @@ class UserSchema {
                 type: String,
                 trim: true
             },
-            roles: {
-                type: [mongoose.Schema.Types.ObjectId],
+            role: {
+                type: mongoose.Schema.Types.ObjectId,
                 ref: 'Role'
             },
-            claims: [String],
-            token: {
+            token: new mongoose.Schema({
                 provider: Number,
                 providerName: String,
                 accessToken: String,
                 tokenExpire: Date
+            }, {_id: false}),
+            claims: {
+                type: [String],
+                default: []
             }
         };
 

@@ -1,14 +1,15 @@
 import IUser from '../../model/user/interfaces/IUser'; // eslint-disable-line
+import DataHelper from '../../../helpers/DataHelper';
 
 class UserPermission {
-    roles: string[];
-    claims?: string[];
+    role?: any;
+    claims: string[];
 
     constructor(model: IUser) {
         if (!model)
             return;
 
-        this.roles = model.roles ? model.roles.map(roleId => roleId.toString()) : [];
+        this.role = DataHelper.handleIdDataModel(model.role);
         this.claims = model.claims;
     }
 }

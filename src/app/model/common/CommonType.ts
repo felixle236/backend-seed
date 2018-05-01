@@ -1,18 +1,20 @@
-export enum ClusterRequestType {
-    LoadAllData = 1,
-    UpdateRole
-};
-Object.seal(ClusterRequestType);
-
 export enum GenderType {
-    Male,
+    Male = 1,
     Female
 };
-Object.seal(GenderType);
 
 export enum LoginProvider {
-    Local,
+    Local = 1,
     Google,
     Facebook
 };
-Object.seal(LoginProvider);
+
+export enum RoleCode {
+    Administrator = 1,
+    ProductManager = 2
+};
+
+export enum Claim {
+    FULL_ACCESS = 'FULL ACCESS',
+    ACCESS_PAGE_ADMIN = 'ACCESS PAGE ADMIN'
+};

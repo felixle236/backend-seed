@@ -20,7 +20,7 @@ class {pascalName} {
     }
 
     static parseArray(list: I{pascalName}[]): {pascalName}[] {
-        return list.map(item => new {pascalName}(item));
+        return list && Array.isArray(list) ? list.map(item => new {pascalName}(item)) : [];
     }
 }
 

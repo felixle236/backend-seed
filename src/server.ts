@@ -2,70 +2,65 @@ import * as express from 'express';
 import * as http from 'http';
 import * as cluster from 'cluster';
 import * as os from 'os';
+import createServerCaching from './serverCaching';
 import Project from './config/Project';
 import BusinessLoader from './system/BusinessLoader';
 import MiddlewareLoader from './system/MiddlewareLoader';
 import DataAccess from './app/dataAccess/DataAccess';
-import InitialData from './system/InitialData';
-import DataLoader from './system/DataLoader';
-
-const app = express();
-const port = Project.PORT;
-app.set('port', port);
-
-DataAccess.connect();
-BusinessLoader.init();
-app.use(MiddlewareLoader.configuration);
 const debug = require('debug')('express-mongodb:server');
 
-if (process.env.NODE_ENV === 'Development' && process.env.DEBUG_MODE) {
-    initData();
-    createHttpServer();
-    console.log('\x1b[32m', '\nhttp://localhost' + (port !== 80 ? ':' + port : '') + '\n', '\x1b[0m');
+if (process.env.NODE_ENV === 'Development' && process.env.SINGLE_THREAD) {
+    BusinessLoader.init();
+    DataAccess.connect().catch(error => console.log('Connect failed', error.message));
+
+    createServerCaching();
+    createServer();
+    console.log('\x1b[32m', '\nhttp://localhost' + (Project.PORT !== 80 ? ':' + Project.PORT : ''), '\x1b[0m');
 }
 else {
     if (cluster.isMaster) {
-        console.log('\x1b[32m', '\nhttp://localhost' + (port !== 80 ? ':' + port : '') + '\n', '\x1b[0m');
+        BusinessLoader.init();
+        DataAccess.connect().catch(error => console.log('Connect failed', error.message));
+        createServerCaching();
+
+        let numCPUs = os.cpus().length;
+
+        console.log('\x1b[32m', '\nhttp://localhost' + (Project.PORT !== 80 ? ':' + Project.PORT : ''), '\x1b[0m');
         console.log(`Master ${process.pid} is running`);
-        DataLoader.initMasterEvent(cluster);
 
-        initData().then(() => {
-            let numCPUs = os.cpus().length;
+        // Fork workers.
+        for (let i = 0; i < numCPUs; i++) {
+            cluster.fork();
+        }
 
-            // Fork workers.
-            for (let i = 0; i < numCPUs; i++) {
-                cluster.fork();
-            }
-            cluster.on('exit', (worker, code, signal) => {
-                cluster.fork();
-                console.log(`worker ${worker.process.pid} died`);
-            });
-            console.log(`Master ${process.pid} is started`);
+        cluster.on('exit', (worker, code, signal) => {
+            console.log(`worker ${worker.process.pid} died`);
+            cluster.fork();
         });
+        console.log(`Master ${process.pid} is started`);
     }
     else {
         // Workers can share any TCP connection
         // In this case it is an HTTP server
-        createHttpServer();
-        DataLoader.initWorkerEvent();
+        BusinessLoader.init();
+        DataAccess.connect().catch(error => console.log('Connect failed', error.message));
+
+        createServer();
         console.log(`Worker ${process.pid} is started`);
     }
 }
 
-async function initData(): Promise<void> {
-    try {
-        await (new InitialData()).init();
-        await DataLoader.loadAll();
-    }
-    catch (error) {
-        console.error(error);
-    }
+function createServer() {
+    let app = express();
+    app.use(MiddlewareLoader.configuration);
+    return createHttpServer(app, Project.PORT);
 }
 
-function createHttpServer() {
+function createHttpServer(app: express.Express, port: number) {
     /**
      * Create HTTP server.
      */
+    app.set('port', port);
     let server = http.createServer(app);
 
     /**
@@ -79,31 +74,31 @@ function createHttpServer() {
         let bind = typeof addr === 'string' ? 'pipe ' + addr : 'port ' + addr.port;
         debug('Listening on ' + bind);
     });
-}
 
-/**
- * Event listener for HTTP server "error" event.
- */
-function onError(error) {
-    if (error.syscall !== 'listen') {
-        throw error;
-    }
-
-    let bind = typeof port === 'string' ? 'Pipe ' + port : 'Port ' + port;
-
-    /* eslint-disable */
-    // handle specific listen errors with friendly messages
-    switch (error.code) {
-        case 'EACCES':
-            console.error(bind + ' requires elevated privileges');
-            process.exit(1);
-            break;
-        case 'EADDRINUSE':
-            console.error(bind + ' is already in use');
-            process.exit(1);
-            break;
-        default:
+    /**
+     * Event listener for HTTP server "error" event.
+     */
+    function onError(error) {
+        if (error.syscall !== 'listen')
             throw error;
+
+        let bind = typeof port === 'string' ? 'Pipe ' + port : 'Port ' + port;
+
+        /* eslint-disable */
+        // handle specific listen errors with friendly messages
+        switch (error.code) {
+            case 'EACCES':
+                console.error(bind + ' requires elevated privileges');
+                process.exit(1);
+                break;
+            case 'EADDRINUSE':
+                console.error(bind + ' is already in use');
+                process.exit(1);
+                break;
+            default:
+                throw error;
+        }
+        /* eslint-enable */
     }
-    /* eslint-enable */
+    return server;
 }

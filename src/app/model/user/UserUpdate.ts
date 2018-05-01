@@ -2,7 +2,9 @@ import IUser from './interfaces/IUser'; // eslint-disable-line
 import {GenderType} from '../common/CommonType';
 
 class UserUpdate {
-    name: string;
+    firstName: string;
+    lastName: string;
+    fullName: string;
     gender?: GenderType;
     birthday?: Date;
     phone?: string;
@@ -14,7 +16,9 @@ class UserUpdate {
         if (!model)
             return;
 
-        this.name = model.name;
+        this.firstName = model.firstName;
+        this.lastName = model.lastName;
+        this.fullName = model.firstName + ' ' + model.lastName;
         this.gender = model.gender;
         this.birthday = model.birthday;
         this.phone = model.phone;

@@ -1,0 +1,24 @@
+{
+    "check-coverage": false,
+    "lines": 70,
+    "watermarks": {
+      "lines": [70, 90],
+      "functions": [70, 90],
+      "branches": [70, 90],
+      "statements": [70, 90]
+    },
+    "extension": [
+        ".ts"
+    ],
+    "require": [
+        "ts-node/register"
+    ],
+    "reporter": [
+        "text",
+        "html"
+    ],
+    "sourceMap": true,
+    "instrument": true,
+    "all": false,
+    "cache": false
+}

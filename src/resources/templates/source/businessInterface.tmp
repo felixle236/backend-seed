@@ -2,8 +2,11 @@ import IBaseBusiness from './base/IBaseBusiness';
 import {pascalName} from '../../model/{camelName}/{pascalName}';
 
 interface I{pascalName}Business extends IBaseBusiness<{pascalName}> {
-    get{pascalName}s: (name?: string, page?: number, limit?: number) => Promise<{pascalName}[]>;
-    count{pascalName}s: (name?: string) => Promise<number>;
+    getList(name?: string, page?: number, limit?: number): Promise<{pascalName}[]>;
+    count(name?: string): Promise<number>;
+    get(_id: string): Promise<{pascalName} | undefined>;
+    create(data: any): Promise<{pascalName} | undefined>;
+    initial{pascalName}s(data: {isRequired: boolean, data: any}[], isRequired: boolean): Promise<boolean>;
 }
 
 export default I{pascalName}Business;

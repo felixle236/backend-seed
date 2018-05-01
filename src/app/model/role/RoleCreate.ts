@@ -1,15 +1,17 @@
 import IRole from './interfaces/IRole'; // eslint-disable-line
 
 class RoleCreate {
+    code: number;
     name: string;
-    order?: number;
+    level: number;
 
     constructor(model: IRole) {
         if (!model)
             return;
 
+        this.code = model.code;
         this.name = model.name;
-        this.order = model.order;
+        this.level = model.level;
     }
 }
 

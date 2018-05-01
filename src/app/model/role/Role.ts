@@ -3,9 +3,10 @@ import DataHelper from '../../../helpers/DataHelper';
 
 class Role {
     _id: string;
+    code: number;
     name: string;
-    order?: number;
-    claims?: string[];
+    level: number;
+    claims: string[];
 
     createdAt?: Date;
     updatedAt?: Date;
@@ -15,8 +16,9 @@ class Role {
             return;
 
         this._id = DataHelper.handleIdDataModel(model._id);
+        this.code = model.code;
         this.name = model.name;
-        this.order = model.order;
+        this.level = model.level;
         this.claims = model.claims;
 
         this.createdAt = model.createdAt;

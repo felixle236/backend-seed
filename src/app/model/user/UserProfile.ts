@@ -1,8 +1,10 @@
 import IUser from '../../model/user/interfaces/IUser'; // eslint-disable-line
 import {GenderType} from '../../model/common/CommonType';
+import DataHelper from '../../../helpers/DataHelper';
 
 class UserProfile {
-    name: string;
+    firstName: string;
+    lastName: string;
     email: string;
     avatar?: string;
     gender?: GenderType;
@@ -16,9 +18,10 @@ class UserProfile {
         if (!model)
             return;
 
-        this.name = model.name;
+        this.firstName = model.firstName;
+        this.lastName = model.lastName;
         this.email = model.email;
-        this.avatar = model.avatar;
+        this.avatar = DataHelper.handleFileDataModel(model.avatar);
         this.gender = model.gender;
         this.birthday = model.birthday;
         this.phone = model.phone;

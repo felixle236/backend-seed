@@ -2,16 +2,13 @@ import * as express from 'express';
 import * as path from 'path';
 import * as logger from 'morgan';
 import * as bodyParser from 'body-parser';
-import Authenticator from './Authenticator';
 import RouteLoader from './RouteLoader';
 
 class MiddlewareLoader {
     static get configuration() {
         let app = express();
 
-        if (process.env.NODE_ENV === 'Development')
-            app.use(logger('dev'));
-
+        app.use(logger('dev'));
         app.use(bodyParser.json({limit: 1048576}));
         app.use(bodyParser.urlencoded({extended: false}));
         app.use(express.static(path.join(__dirname, '../../upload')));
@@ -27,7 +24,6 @@ class MiddlewareLoader {
                 next();
         });
 
-        app.use(new Authenticator().getConfig());
         app.use(new RouteLoader().getRouters());
 
         // catch 404 and forward to error handler

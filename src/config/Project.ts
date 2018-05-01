@@ -1,21 +1,26 @@
-import Default from './env/Default';
+class Default {
+    static HOST: string = 'localhost';
+    static PORT: number = 3001;
+    static PORT_CACHING: number = 3000;
+    static PROJECT_NAME: string = 'Backend seed';
+    static AUTHENTICATION_EXPIRES: number = 15; // Days
+}
 
 interface IProject {
-    DOMAIN: string;
+    HOST: string;
     PORT: number;
+    PORT_CACHING: number;
     PROJECT_NAME: string;
-    EXPIRE_DAYS: number;
+    AUTHENTICATION_EXPIRES: number;
 
-    DATABASE: {
-        SERVER: string,
+    DATABASES: [{
+        NAME: string,
+        HOST: string,
+        PORT: number,
         DB_NAME: string,
-        DB_NAME_TEST: string,
         USERNAME: string,
         PASSWORD: string
-    };
-
-    DB_CONN_URI: string;
-    DB_CONN_URI_TEST: string;
+    }];
 
     SMTP: {
         AUTHENTICATOR: {

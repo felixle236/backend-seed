@@ -35,9 +35,6 @@ if (moduleName) {
     let controllerPath = `${__dirname}/../../../controllers/${pascalName}Controller.ts`;
     let controller = getFileContent(`${__dirname}/controller.tmp`, camelName, pascalName);
 
-    let initialDataPath = `${__dirname}/../../initialData/${pascalName}s.ts`;
-    let initialData = getFileContent(`${__dirname}/initialData.tmp`, camelName, pascalName);
-
     if (!fs.existsSync(modelDirPath))
         fs.mkdirSync(modelDirPath);
     if (!fs.existsSync(modelInterfaceDirPath))
@@ -52,7 +49,6 @@ if (moduleName) {
     fs.writeFileSync(businessPath, business);
     fs.writeFileSync(businessInterfacePath, businessInterface);
     fs.writeFileSync(controllerPath, controller);
-    fs.writeFileSync(initialDataPath, initialData);
 }
 
 function getFileContent(path, camelName, pascalName) {

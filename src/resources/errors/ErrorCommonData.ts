@@ -3,6 +3,13 @@ class ErrorCommonData {
     static COM002 = 'Router must have request handler function!';
     static COM003 = 'Bad request!';
     static COM004 = 'The password must have atleast 8 chars with one uppercase letter, one lower case letter, one digit and one special character!';
+    static COM005 = 'Unauthorized';
+    static COM006 = 'Forbidden';
+    static COM007 = 'Not found';
+    static COM008 = 'Method not Allowed';
+    static COM009 = 'Request timeout';
+    static COM010 = 'Server lost connection!';
+    static COM011 = 'Don\'t have any connection!';
 
     static COM101 = '{0} is invalid!';
     static COM102 = '{0} is not exists!';
