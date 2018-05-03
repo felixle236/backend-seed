@@ -7,6 +7,9 @@
       "branches": [70, 90],
       "statements": [70, 90]
     },
+    "exclude": [
+        "src/helpers"
+    ],
     "extension": [
         ".ts"
     ],

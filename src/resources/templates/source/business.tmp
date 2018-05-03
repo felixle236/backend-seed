@@ -30,7 +30,7 @@ class {pascalName}Business implements I{pascalName}Business {
         if (name)
             param.query.name = new RegExp(name, 'i');
 
-        return await this.{camelName}Repository.getCount(param);
+        return await this.{camelName}Repository.count(param);
     }
 
     async get(_id: string): Promise<{pascalName} | undefined> {
