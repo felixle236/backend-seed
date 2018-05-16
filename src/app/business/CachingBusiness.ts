@@ -23,7 +23,7 @@ class CachingBusiness implements ICachingBusiness {
                         console.log('CachingBusiness.fetchDataRole.1\n', error);
                         return resolve(false);
                     }
-                    console.log('\x1b[32m', '\nFetch data role caching done.\n', '\x1b[0m');
+                    console.log('\x1b[32m', '\nFetch data role caching done.', '\x1b[0m');
                     resolve(true);
                 });
             }).catch(error => {
