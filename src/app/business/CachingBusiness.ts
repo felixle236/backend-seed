@@ -23,7 +23,7 @@ class CachingBusiness implements ICachingBusiness {
                         console.log('CachingBusiness.fetchDataRole.1\n', error);
                         return resolve(false);
                     }
-                    console.log('\x1b[32m', '\nFetch data role caching done.', '\x1b[0m');
+                    console.log('\x1b[32m', '\nFetch data role caching done\n', '\x1b[0m');
                     resolve(true);
                 });
             }).catch(error => {
@@ -191,7 +191,7 @@ class CachingBusiness implements ICachingBusiness {
         });
     }
 
-    private deleteRole(_id: string): Promise<boolean> {
+    deleteRole(_id: string): Promise<boolean> {
         return new Promise<boolean>((resolve, reject) => {
             if (!_id)
                 return resolve(false);
@@ -206,7 +206,7 @@ class CachingBusiness implements ICachingBusiness {
         });
     }
 
-    private deleteRoles(): Promise<boolean> {
+    deleteRoles(): Promise<boolean> {
         return new Promise<boolean>((resolve, reject) => {
             this.roleRepository.remove({}, {multi: true}, (err, numRemoved) => {
                 if (err) {

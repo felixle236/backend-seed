@@ -7,7 +7,7 @@
         "eslint": "./node_modules/.bin/eslint --ext .ts --ext .js ./src",
         "test": "NODE_ENV=Development ./node_modules/.bin/nyc ./node_modules/.bin/mocha --exit ./src/test/**/*.ts",
         "build": "npm run eslint && ./node_modules/.bin/grunt sync && ./node_modules/.bin/tsc",
-        "start": "NODE_ENV=Development ./node_modules/.bin/ts-node ./src/server.ts",
+        "start": "NODE_ENV=Development SINGLE_THREAD=true ./node_modules/.bin/ts-node ./src/server.ts",
         "staging": "NODE_ENV=Staging node ./dest/server.js",
         "production": "NODE_ENV=Production node ./dest/server.js"
     },
