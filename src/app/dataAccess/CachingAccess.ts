@@ -7,7 +7,6 @@ class CachingAccess {
     };
 
     static init() {
-        CachingAccess.db.users.ensureIndex({fieldName: 'email', unique: true});
         CachingAccess.db.users.ensureIndex(<any>{fieldName: 'cachedAt', expireAfterSeconds: 1800});
 
         CachingAccess.db.roles.ensureIndex({fieldName: 'code', unique: true});

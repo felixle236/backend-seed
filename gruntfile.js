@@ -31,7 +31,7 @@ module.exports = function(grunt) {
                     process.env['MODULE_NAME'] = moduleName;
                     return 'node ./src/resources/templates/source/loader.js';
                 }
-            } // grunt exec:generate:Customer
+            } // ./node_modules/.bin/grunt exec:generate:Customer
         }
     });
 };

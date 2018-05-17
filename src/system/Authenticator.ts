@@ -4,7 +4,7 @@ import BusinessLoader from '../system/BusinessLoader';
 import CachingHelper from '../helpers/CachingHelper';
 
 class Authenticator {
-    static readonly userKey = 'authUser';
+    static readonly userKey = 'userAuth';
 
     static async addUserAuthenticated(userAuth: UserAuthentication): Promise<void> {
         await CachingHelper.post(`/user-auth`, userAuth);

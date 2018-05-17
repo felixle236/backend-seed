@@ -10,6 +10,8 @@ interface ICachingBusiness {
     getUserAuthenticationByToken(token: string): Promise<UserAuthentication | undefined>;
     createRole(data: any): Promise<boolean>;
     createUserAuthentication(data: any): Promise<boolean>;
+    deleteRole(_id: string): Promise<boolean>;
+    deleteRoles(): Promise<boolean>;
     deleteUserAuthentication(_id: string): Promise<boolean>;
 }
 

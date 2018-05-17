@@ -3,12 +3,15 @@ import {expect} from 'chai';
 import BusinessLoader from '../../system/BusinessLoader';
 import ICachingBusiness from '../../app/business/interfaces/ICachingBusiness'; // eslint-disable-line
 import IUserBusiness from '../../app/business/interfaces/IUserBusiness'; // eslint-disable-line
+import IRoleBusiness from '../../app/business/interfaces/IRoleBusiness'; // eslint-disable-line
 
 let cachingBusiness: ICachingBusiness;
+let roleBusiness: IRoleBusiness;
 let userBusiness: IUserBusiness;
 
 before(done => {
     cachingBusiness = BusinessLoader.cachingBusiness;
+    roleBusiness = BusinessLoader.roleBusiness;
     userBusiness = BusinessLoader.userBusiness;
     done();
 });
@@ -71,6 +74,19 @@ describe('Caching business testing', () => {
         expect(userAuth1).to.not.be.undefined;
     });
 
+    it('Delete role caching', async () => {
+        let result;
+        let roles = await cachingBusiness.getRoles();
+        if (roles.length)
+            result = await cachingBusiness.deleteRole(roles[0]._id);
+        expect(result).to.be.true;
+    });
+
+    it('Delete all roles caching', async () => {
+        let result = await cachingBusiness.deleteRoles();
+        expect(result).to.be.true;
+    });
+
     it('Create role caching by invalid data', async () => {
         let result = await cachingBusiness.createRole(<any>undefined);
         expect(result).to.be.false;
@@ -78,20 +94,9 @@ describe('Caching business testing', () => {
 
     it('Create role caching', async () => {
         let result;
-        let roles = await cachingBusiness.getRoles();
+        let roles = await roleBusiness.getAll();
         if (roles.length)
             result = await cachingBusiness.createRole(roles[0]);
-        expect(result).to.be.true;
-    });
-
-    it('Create user authenticated caching by invalid data', async () => {
-        let result = await cachingBusiness.createUserAuthentication(<any>undefined);
-        expect(result).to.be.false;
-    });
-
-    it('Create user authenticated caching', async () => {
-        let userAuth = await userBusiness.authenticate('felix.le.236@gmail.com', '123456');
-        let result = await cachingBusiness.createUserAuthentication(userAuth);
         expect(result).to.be.true;
     });
 
@@ -105,6 +110,17 @@ describe('Caching business testing', () => {
         let userAuth = await userBusiness.authenticate('felix.le.236@gmail.com', '123456');
         if (userAuth)
             result = await cachingBusiness.deleteUserAuthentication(userAuth._id);
+        expect(result).to.be.true;
+    });
+
+    it('Create user authenticated caching by invalid data', async () => {
+        let result = await cachingBusiness.createUserAuthentication(<any>undefined);
+        expect(result).to.be.false;
+    });
+
+    it('Create user authenticated caching', async () => {
+        let userAuth = await userBusiness.authenticate('felix.le.236@gmail.com', '123456');
+        let result = await cachingBusiness.createUserAuthentication(userAuth);
         expect(result).to.be.true;
     });
 });
