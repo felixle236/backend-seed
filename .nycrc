@@ -8,7 +8,9 @@
       "statements": [70, 90]
     },
     "exclude": [
-        "src/helpers"
+        "src/system",
+        "src/helpers",
+        "src/test"
     ],
     "extension": [
         ".ts"

@@ -16,7 +16,7 @@ class DataHelper {
     }
 
     static handleIdDataModel(data) {
-        return data && !data._id ? data.toString() : data;
+        return data && data._bsontype === 'ObjectID' ? data.toString() : data;
     }
 
     static handleFileDataModel(file) {
