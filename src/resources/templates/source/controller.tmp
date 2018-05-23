@@ -1,12 +1,9 @@
 import BaseController from './base/BaseController';
-import BusinessLoader from '../system/BusinessLoader';
-import I{pascalName}Business from '../app/business/interfaces/I{pascalName}Business';
+import {pascalName}Business from '../app/business/{pascalName}Business';
 import Authenticator from '../system/Authenticator';
 import {RoleCode, Claim} from '../app/model/common/CommonType';
 
 class {pascalName}Controller extends BaseController {
-    private {camelName}Business: I{pascalName}Business = BusinessLoader.{camelName}Business;
-
     constructor() {
         super();
 
@@ -20,27 +17,27 @@ class {pascalName}Controller extends BaseController {
     }
 
     async get{pascalName}s(req): Promise<any> {
-        return await this.{camelName}Business.getList(req.query.name, req.query.page, req.query.limit);
+        return await {pascalName}Business.instance.getList(req.query.name, req.query.page, req.query.limit);
     }
 
     async count{pascalName}s(req): Promise<any> {
-        return await this.{camelName}Business.count(req.query.name);
+        return await {pascalName}Business.instance.count(req.query.name);
     }
 
     async get{pascalName}ById(req): Promise<any> {
-        return await this.{camelName}Business.get(req.params._id);
+        return await {pascalName}Business.instance.get(req.params._id);
     }
 
     async create{pascalName}(req): Promise<any> {
-        return await this.{camelName}Business.create(req.body);
+        return await {pascalName}Business.instance.create(req.body);
     }
 
     async update{pascalName}(req): Promise<any> {
-        return await this.{camelName}Business.update(req.params._id, req.body);
+        return await {pascalName}Business.instance.update(req.params._id, req.body);
     }
 
     async delete{pascalName}(req): Promise<any> {
-        return await this.{camelName}Business.delete(req.params._id);
+        return await {pascalName}Business.instance.delete(req.params._id);
     }
 }
 

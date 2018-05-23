@@ -1,13 +1,10 @@
 import BaseController from './base/BaseController';
-import BusinessLoader from '../system/BusinessLoader';
-import IUserBusiness from '../app/business/interfaces/IUserBusiness';
+import UserBusiness from '../app/business/UserBusiness';
 import UserAuthentication from '../app/model/user/UserAuthentication'; // eslint-disable-line
 import Authenticator from '../system/Authenticator';
 import {RoleCode} from '../app/model/common/CommonType';
 
 class UserController extends BaseController {
-    private userBusiness: IUserBusiness = BusinessLoader.userBusiness;
-
     constructor() {
         super();
 
@@ -27,45 +24,45 @@ class UserController extends BaseController {
     }
 
     async getUsers(req): Promise<any> {
-        return await this.userBusiness.getList(req.query.name, req.query.page, req.query.limit);
+        return await UserBusiness.instance.getList(req.query.name, req.query.page, req.query.limit);
     }
 
     async countUsers(req): Promise<any> {
-        return await this.userBusiness.count(req.query.name);
+        return await UserBusiness.instance.count(req.query.name);
     }
 
     async getUserById(req): Promise<any> {
-        return await this.userBusiness.get(req.params._id);
+        return await UserBusiness.instance.get(req.params._id);
     }
 
     async getProfile(req): Promise<any> {
         let userAuth: UserAuthentication = req[Authenticator.userKey];
-        return await this.userBusiness.get(userAuth._id);
+        return await UserBusiness.instance.get(userAuth._id);
     }
 
     async signin(req): Promise<any> {
-        return await this.userBusiness.authenticate(req.body.email, req.body.password);
+        return await UserBusiness.instance.authenticate(req.body.email, req.body.password);
     }
 
     async signup(req): Promise<any> {
-        return await this.userBusiness.signup(req.body);
+        return await UserBusiness.instance.signup(req.body);
     }
 
     async createUser(req): Promise<any> {
-        return await this.userBusiness.create(req.body);
+        return await UserBusiness.instance.create(req.body);
     }
 
     async updateUser(req): Promise<any> {
-        return await this.userBusiness.update(req.params._id, req.body);
+        return await UserBusiness.instance.update(req.params._id, req.body);
     }
 
     async updateProfile(req): Promise<any> {
         let userAuth: UserAuthentication = req[Authenticator.userKey];
-        return await this.userBusiness.update(userAuth._id, req.body);
+        return await UserBusiness.instance.update(userAuth._id, req.body);
     }
 
     async deleteUser(req): Promise<any> {
-        return await this.userBusiness.delete(req.params._id);
+        return await UserBusiness.instance.delete(req.params._id);
     }
 }
 

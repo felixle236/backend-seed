@@ -1,12 +1,9 @@
 import BaseController from './base/BaseController';
-import BusinessLoader from '../system/BusinessLoader';
-import IRoleBusiness from '../app/business/interfaces/IRoleBusiness';
+import RoleBusiness from '../app/business/RoleBusiness';
 import Authenticator from '../system/Authenticator';
 import {RoleCode, Claim} from '../app/model/common/CommonType';
 
 class RoleController extends BaseController {
-    private roleBusiness: IRoleBusiness = BusinessLoader.roleBusiness;
-
     constructor() {
         super();
 
@@ -20,27 +17,27 @@ class RoleController extends BaseController {
     }
 
     async getRoles(req): Promise<any> {
-        return await this.roleBusiness.getList(req.query.name, req.query.page, req.query.limit);
+        return await RoleBusiness.instance.getList(req.query.name, req.query.page, req.query.limit);
     }
 
     async countRoles(req): Promise<any> {
-        return await this.roleBusiness.count(req.query.name);
+        return await RoleBusiness.instance.count(req.query.name);
     }
 
     async getRoleById(req): Promise<any> {
-        return await this.roleBusiness.get(req.params._id);
+        return await RoleBusiness.instance.get(req.params._id);
     }
 
     async createRole(req): Promise<any> {
-        return await this.roleBusiness.create(req.body);
+        return await RoleBusiness.instance.create(req.body);
     }
 
     async updateRole(req): Promise<any> {
-        return await this.roleBusiness.update(req.params._id, req.body);
+        return await RoleBusiness.instance.update(req.params._id, req.body);
     }
 
     async deleteRole(req): Promise<any> {
-        return await this.roleBusiness.delete(req.params._id);
+        return await RoleBusiness.instance.delete(req.params._id);
     }
 }
 

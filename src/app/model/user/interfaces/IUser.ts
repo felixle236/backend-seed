@@ -1,4 +1,4 @@
-import IBaseModel from '../../common/interfaces/IBaseModel';
+import IBaseModel from 'multi-layer-pattern/model/interfaces/IBaseModel';
 import UserToken from '../UserToken';
 import {GenderType} from '../../common/CommonType';
 

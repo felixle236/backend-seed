@@ -1,4 +1,4 @@
-import IBaseBusiness from './base/IBaseBusiness';
+import IBaseBusiness from 'multi-layer-pattern/business/interfaces/base/IBaseBusiness';
 import Role from '../../model/role/Role';
 
 interface IRoleBusiness extends IBaseBusiness<Role> {

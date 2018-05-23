@@ -1,16 +1,23 @@
+import IRoleBusiness from './interfaces/IRoleBusiness'; // eslint-disable-line
+import RoleRepository from '../repository/RoleRepository';
 import Role from '../model/role/Role';
 import RoleCreate from '../model/role/RoleCreate';
 import RoleUpdate from '../model/role/RoleUpdate';
-import IRoleBusiness from './interfaces/IRoleBusiness'; // eslint-disable-line
-import RoleRepository from '../repository/RoleRepository';
 import CachingHelper from '../../helpers/CachingHelper';
 import {ErrorCommon} from '../model/common/Error';
 
 class RoleBusiness implements IRoleBusiness {
+    private static _instance: IRoleBusiness;
     private roleRepository: RoleRepository;
 
-    constructor() {
+    private constructor() {
         this.roleRepository = new RoleRepository();
+    }
+
+    static get instance() {
+        if (!RoleBusiness._instance)
+            RoleBusiness._instance = new RoleBusiness();
+        return RoleBusiness._instance;
     }
 
     async getAll(): Promise<Role[]> {
@@ -228,5 +235,4 @@ function validateName(name: string): boolean {
     return true;
 }
 
-Object.seal(RoleBusiness);
 export default RoleBusiness;

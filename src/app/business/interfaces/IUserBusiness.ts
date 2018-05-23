@@ -1,4 +1,4 @@
-import IBaseBusiness from './base/IBaseBusiness';
+import IBaseBusiness from 'multi-layer-pattern/business/interfaces/base/IBaseBusiness';
 import User from '../../model/user/User';
 import UserAuthentication from '../../model/user/UserAuthentication';
 import UserPermission from '../../model/user/UserPermission';

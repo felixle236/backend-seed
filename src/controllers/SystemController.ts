@@ -1,5 +1,6 @@
 import BaseController from './base/BaseController';
-import BusinessLoader from '../system/BusinessLoader';
+import RoleBusiness from '../app/business/RoleBusiness';
+import UserBusiness from '../app/business/UserBusiness';
 import getRoles from '../resources/initialData/Roles';
 import getRoleClaims from '../resources/initialData/RoleClaims';
 import getUsers from '../resources/initialData/Users';
@@ -21,13 +22,13 @@ class SystemController extends BaseController {
         let initUsers = getUsers();
         let initUserRoles = getUserRoles();
 
-        await BusinessLoader.roleBusiness.initialRoles(initRoles, isRequired);
-        await BusinessLoader.roleBusiness.initialRoleClaims(initRoleClaims, isRequired);
+        await RoleBusiness.instance.initialRoles(initRoles, isRequired);
+        await RoleBusiness.instance.initialRoleClaims(initRoleClaims, isRequired);
         // Load data roles in caching
         await CachingHelper.post('/fetch-data-role');
 
-        await BusinessLoader.userBusiness.initialUsers(initUsers, isRequired);
-        await BusinessLoader.userBusiness.initialUserRoles(initUserRoles, isRequired);
+        await UserBusiness.instance.initialUsers(initUsers, isRequired);
+        await UserBusiness.instance.initialUserRoles(initUserRoles, isRequired);
 
         return true;
     }

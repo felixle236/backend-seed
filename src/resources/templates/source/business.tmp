@@ -1,15 +1,22 @@
+import I{pascalName}Business from './interfaces/I{pascalName}Business'; // eslint-disable-line
+import {pascalName}Repository from '../repository/{pascalName}Repository';
 import {pascalName} from '../model/{camelName}/{pascalName}';
 import {pascalName}Create from '../model/{camelName}/{pascalName}Create';
 import {pascalName}Update from '../model/{camelName}/{pascalName}Update';
-import I{pascalName}Business from './interfaces/I{pascalName}Business'; // eslint-disable-line
-import {pascalName}Repository from '../repository/{pascalName}Repository';
 import {ErrorCommon} from '../model/common/Error';
 
 class {pascalName}Business implements I{pascalName}Business {
+    private static _instance: I{pascalName}Business;
     private {camelName}Repository: {pascalName}Repository;
 
-    constructor() {
+    private constructor() {
         this.{camelName}Repository = new {pascalName}Repository();
+    }
+
+    static get instance() {
+        if (!{pascalName}Business._instance)
+            {pascalName}Business._instance = new {pascalName}Business();
+        return {pascalName}Business._instance;
     }
 
     async getList(name?: string, page?: number, limit?: number): Promise<{pascalName}[]> {
@@ -112,5 +119,4 @@ function validateName(name: string): boolean {
     return true;
 }
 
-Object.seal({pascalName}Business);
 export default {pascalName}Business;

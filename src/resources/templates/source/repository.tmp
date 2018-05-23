@@ -1,6 +1,6 @@
+import BaseRepository from 'multi-layer-pattern/repository/base/BaseRepository';
 import I{pascalName} from '../model/{camelName}/interfaces/I{pascalName}'; // eslint-disable-line
 import {pascalName}Schema from '../dataAccess/schemas/{pascalName}Schema';
-import BaseRepository from './base/BaseRepository';
 
 class {pascalName}Repository extends BaseRepository<I{pascalName}> {
     constructor() {

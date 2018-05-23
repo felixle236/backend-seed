@@ -1,14 +1,14 @@
 import 'mocha';
-import BusinessLoader from '../../system/BusinessLoader';
-import DataAccess from '../../app/dataAccess/DataAccess';
+import Project from '../../config/Project';
+import MongoDB from 'multi-layer-pattern/dataAccess/MongoDB';
 
 let connection;
 
 before(done => {
-    DataAccess.connect('test').then(async conn => {
+    const db = Project.DATABASES.find(db => db.NAME === 'test')!;
+    MongoDB.connect(db.HOST, db.PORT, db.DB_NAME, db.USERNAME, db.PASSWORD).then(async conn => {
         connection = conn;
         await connection.db.dropDatabase();
-        BusinessLoader.init();
 
         done();
     });

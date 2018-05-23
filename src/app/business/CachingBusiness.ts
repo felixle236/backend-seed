@@ -1,21 +1,28 @@
 import ICachingBusiness from './interfaces/ICachingBusiness'; // eslint-disable-line
+import RoleBusiness from './RoleBusiness';
 import CachingAccess from '../dataAccess/CachingAccess';
-import BusinessLoader from '../../system/BusinessLoader';
 import Role from '../model/role/Role';
 import UserAuthentication from '../model/user/UserAuthentication'; // eslint-disable-line
 
 class CachingBusiness implements ICachingBusiness {
+    private static _instance: ICachingBusiness;
     private roleRepository: any;
     private userRepository: any;
 
-    constructor() {
+    private constructor() {
         this.roleRepository = CachingAccess.db.roles;
         this.userRepository = CachingAccess.db.users;
     }
 
+    static get instance() {
+        if (!CachingBusiness._instance)
+            CachingBusiness._instance = new CachingBusiness();
+        return CachingBusiness._instance;
+    }
+
     fetchDataRole(): Promise<boolean> {
         return new Promise<boolean>(async (resolve, reject) => {
-            let roles = await BusinessLoader.roleBusiness.getAll();
+            let roles = await RoleBusiness.instance.getAll();
 
             this.deleteRoles().then(() => {
                 this.roleRepository.insert(roles, (error, result) => {
@@ -234,5 +241,4 @@ class CachingBusiness implements ICachingBusiness {
     }
 }
 
-Object.seal(CachingBusiness);
 export default CachingBusiness;

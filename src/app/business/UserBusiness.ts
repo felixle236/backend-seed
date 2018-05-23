@@ -2,7 +2,7 @@ import * as validator from 'validator';
 import * as crypto from 'crypto';
 import Project from '../../config/Project';
 import Authenticator from '../../system/Authenticator';
-import BusinessLoader from '../../system/BusinessLoader';
+import RoleBusiness from './RoleBusiness';
 import IUserBusiness from './interfaces/IUserBusiness'; // eslint-disable-line
 import UserRepository from '../repository/UserRepository';
 import User from '../model/user/User';
@@ -18,10 +18,17 @@ import {LoginProvider} from '../model/common/CommonType';
 import {ErrorCommon} from '../model/common/Error';
 
 class UserBusiness implements IUserBusiness {
+    private static _instance: IUserBusiness;
     private userRepository: UserRepository;
 
-    constructor() {
+    private constructor() {
         this.userRepository = new UserRepository();
+    }
+
+    static get instance() {
+        if (!UserBusiness._instance)
+            UserBusiness._instance = new UserBusiness();
+        return UserBusiness._instance;
     }
 
     async getList(name?: string, page?: number, limit?: number): Promise<User[]> {
@@ -264,7 +271,7 @@ class UserBusiness implements IUserBusiness {
     async initialUserRoles(data: {isRequired: boolean, data: any}[], isRequired = false): Promise<boolean> {
         if (!data || !Array.isArray(data))
             throw new ErrorCommon(101, 'Data');
-        let roles = await BusinessLoader.roleBusiness.getAll();
+        let roles = await RoleBusiness.instance.getAll();
 
         for (let i = 0; i < data.length; i++) {
             let item = data[i];
@@ -335,5 +342,4 @@ function createAccessToken() {
     return crypto.randomBytes(64).toString('hex').substr(0, 128);
 }
 
-Object.seal(UserBusiness);
 export default UserBusiness;

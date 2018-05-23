@@ -1,5 +1,5 @@
 import BaseController from './base/BaseController';
-import BusinessLoader from '../system/BusinessLoader';
+import CachingBusiness from '../app/business/CachingBusiness';
 
 class CachingController extends BaseController {
     constructor() {
@@ -19,39 +19,39 @@ class CachingController extends BaseController {
     }
 
     async getRoles(req): Promise<any> {
-        return await BusinessLoader.cachingBusiness.getRoles();
+        return await CachingBusiness.instance.getRoles();
     }
 
     async getRoleById(req): Promise<any> {
-        return await BusinessLoader.cachingBusiness.getRole(req.params._id);
+        return await CachingBusiness.instance.getRole(req.params._id);
     }
 
     async getRoleByCode(req): Promise<any> {
-        return await BusinessLoader.cachingBusiness.getRoleByCode(req.query.code);
+        return await CachingBusiness.instance.getRoleByCode(req.query.code);
     }
 
     async getUserAuthenticationByToken(req): Promise<any> {
-        return await BusinessLoader.cachingBusiness.getUserAuthenticationByToken(req.query.token);
+        return await CachingBusiness.instance.getUserAuthenticationByToken(req.query.token);
     }
 
     async getRolesByIds(req): Promise<any> {
-        return await BusinessLoader.cachingBusiness.getRolesByIds(req.body.ids);
+        return await CachingBusiness.instance.getRolesByIds(req.body.ids);
     }
 
     async fetchDataRole(req): Promise<any> {
-        return await BusinessLoader.cachingBusiness.fetchDataRole();
+        return await CachingBusiness.instance.fetchDataRole();
     }
 
     async createRole(req): Promise<any> {
-        return await BusinessLoader.cachingBusiness.createRole(req.body);
+        return await CachingBusiness.instance.createRole(req.body);
     }
 
     async createUserAuthentication(req): Promise<any> {
-        return await BusinessLoader.cachingBusiness.createUserAuthentication(req.body);
+        return await CachingBusiness.instance.createUserAuthentication(req.body);
     }
 
     async deleteUserAuthentication(req): Promise<any> {
-        return await BusinessLoader.cachingBusiness.deleteUserAuthentication(req.params._id);
+        return await CachingBusiness.instance.deleteUserAuthentication(req.params._id);
     }
 }
 

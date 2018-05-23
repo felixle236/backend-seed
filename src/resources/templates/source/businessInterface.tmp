@@ -1,4 +1,4 @@
-import IBaseBusiness from './base/IBaseBusiness';
+import IBaseBusiness from 'multi-layer-pattern/business/interfaces/base/IBaseBusiness';
 import {pascalName} from '../../model/{camelName}/{pascalName}';
 
 interface I{pascalName}Business extends IBaseBusiness<{pascalName}> {

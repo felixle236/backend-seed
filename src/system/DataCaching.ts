@@ -5,7 +5,7 @@ import * as bodyParser from 'body-parser';
 import {CronJob} from 'cron';
 import Project from '../config/Project';
 import CachingAccess from '../app/dataAccess/CachingAccess';
-import BusinessLoader from '../system/BusinessLoader';
+import CachingBusiness from '../app/business/CachingBusiness';
 import CachingController from '../controllers/CachingController';
 const debug = require('debug')('express-mongodb:server');
 
@@ -29,7 +29,7 @@ function initCronJob() {
     const cronRole = new CronJob({
         cronTime: '0 0 */1 * * *',
         onTick: async () => {
-            await BusinessLoader.cachingBusiness.fetchDataRole();
+            await CachingBusiness.instance.fetchDataRole();
         },
         runOnInit: true
     });

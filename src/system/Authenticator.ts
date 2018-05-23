@@ -1,6 +1,6 @@
 import * as express from 'express'; // eslint-disable-line
+import UserBusiness from '../app/business/UserBusiness';
 import UserAuthentication from '../app/model/user/UserAuthentication'; // eslint-disable-line
-import BusinessLoader from '../system/BusinessLoader';
 import CachingHelper from '../helpers/CachingHelper';
 
 class Authenticator {
@@ -22,7 +22,7 @@ class Authenticator {
             if (token) {
                 userAuth = await CachingHelper.get(`/user-auth-by-token?token=${token}`);
                 if (!userAuth) {
-                    userAuth = await BusinessLoader.userBusiness.getUserByToken(token);
+                    userAuth = await UserBusiness.instance.getUserByToken(token);
                     if (userAuth)
                         await Authenticator.addUserAuthenticated(userAuth);
                 }

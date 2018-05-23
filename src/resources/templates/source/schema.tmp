@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose'; // eslint-disable-line
-import DataAccess from '../DataAccess';
+import MongoDB from 'multi-layer-pattern/dataAccess/MongoDB';
 import I{pascalName} from '../../model/{camelName}/interfaces/I{pascalName}'; // eslint-disable-line
 
 class {pascalName}Schema {
@@ -14,8 +14,8 @@ class {pascalName}Schema {
             }
         };
 
-        return DataAccess.initSchema(schemaDefinition);
+        return MongoDB.initSchema(schemaDefinition);
     }
 }
 
-export default DataAccess.connection.model<I{pascalName}>('{pascalName}', {pascalName}Schema.schema);
+export default MongoDB.connection.model<I{pascalName}>('{pascalName}', {pascalName}Schema.schema);
