@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose';
-import MongoDB from 'multi-layer-pattern/dataAccess/MongoDB';
+import MongoAccess from 'multi-layer-pattern/dataAccess/MongoAccess';
 import IUser from '../../model/user/interfaces/IUser'; // eslint-disable-line
 
 class UserSchema {
@@ -67,8 +67,8 @@ class UserSchema {
             }
         };
 
-        return MongoDB.initSchema(schemaDefinition);
+        return MongoAccess.initSchema(schemaDefinition);
     }
 }
 
-export default MongoDB.connection.model<IUser>('User', UserSchema.schema);
+export default MongoAccess.connection.model<IUser>('User', UserSchema.schema);

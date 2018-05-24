@@ -3,13 +3,13 @@ import * as http from 'http';
 import * as cluster from 'cluster';
 import * as os from 'os';
 import Project from './config/Project';
-import MongoDB from 'multi-layer-pattern/dataAccess/MongoDB';
+import MongoAccess from 'multi-layer-pattern/dataAccess/MongoAccess';
 import createServerCaching from './system/DataCaching';
 import MiddlewareLoader from './system/MiddlewareLoader';
 const debug = require('debug')('express-mongodb:server');
 
 const db = Project.DATABASES.find(db => db.NAME === 'default')!;
-MongoDB.connect(db.HOST, db.PORT, db.DB_NAME, db.USERNAME, db.PASSWORD).catch(error => console.log('Connect failed', error.message));
+MongoAccess.connect(db.HOST, db.PORT, db.DB_NAME, db.USERNAME, db.PASSWORD).catch(error => console.log('Connect failed', error.message));
 
 if (process.env.SINGLE_THREAD) {
     createServerCaching();

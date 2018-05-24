@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose'; // eslint-disable-line
-import MongoDB from 'multi-layer-pattern/dataAccess/MongoDB';
+import MongoAccess from 'multi-layer-pattern/dataAccess/MongoAccess';
 import IRole from '../../model/role/interfaces/IRole'; // eslint-disable-line
 
 class RoleSchema {
@@ -29,8 +29,8 @@ class RoleSchema {
             }
         };
 
-        return MongoDB.initSchema(schemaDefinition);
+        return MongoAccess.initSchema(schemaDefinition);
     }
 }
 
-export default MongoDB.connection.model<IRole>('Role', RoleSchema.schema);
+export default MongoAccess.connection.model<IRole>('Role', RoleSchema.schema);
