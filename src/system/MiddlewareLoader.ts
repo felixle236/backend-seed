@@ -17,9 +17,10 @@ class MiddlewareLoader {
             res.setHeader('Access-Control-Allow-Origin', '*');
             res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
             res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept, Authorization');
+            res.setHeader('Access-Control-Max-Age', 86400);
 
             if (req.method === 'OPTIONS')
-                return res.end();
+                res.end();
             else
                 next();
         });
