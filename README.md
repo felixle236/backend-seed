@@ -1,11 +1,10 @@
 # backend-seed - Backend environment
 NodeJS - Typescript - MongoDB
 
-* Integrating user permission & good transmission in large numbers of users (Using data caching).
+* Integrating user permission & good transmission in large numbers of users.
 * Store common data in memory & share them between processes (if use cluster module) to improve performance.
 * Suitable for Web apps & APIs.
-* Integrating unit test & coverage.
-* Watch & debug on .ts files by Visual Code.
+* Run & debug on .ts files by Visual Code.
 * Reference structure from https://github.com/ErickWendel/NodeJSWithTypescript
 
 ### Patterns and Principles
@@ -21,10 +20,8 @@ NodeJS - Typescript - MongoDB
 - ExpressJS
 - MongoDB
 - Mongoose
-- NeDB
 - ESLint
 - Mocha
-- IstanbulJS
 - Grunt
 - Visual Code tool
 
@@ -32,16 +29,12 @@ NodeJS - Typescript - MongoDB
 
 ```s
 npm install
-or
-npm i
 ```
 
 ### Structure
 
 ```sh
-- |-- .nyc_output
 - |-- .vscode
-- |-- coverage
 - |-- dest-----------------------------// Built from the src directory.
 - |-- node_modules
 - |-- src-----------------------------// Source of development.
@@ -54,24 +47,21 @@ npm i
 - |------ controllers
 - |------ helpers
 - |------ resources
-- |------------ errors----------------// Error data.
 - |------------ initialData------------// Data default or test.
 - |------------ templates
 - |------------------ source----------// Template files for generate module.
 - |------ system
 - |------------ Authenticator.ts
-- |------------ DataCaching.ts
+- |------------ DataLoader.ts---------// Memory data.
+- |------------ InitialData.ts----------// Check & insert data default or test.
 - |------------ MiddlewareLoader.ts
 - |------------ RouteLoader.ts
 - |------ test
 - |------ server.ts
-- |------ serverCaching.ts
 - |-- upload--------------------------// Upload directory.
 - |-- .eslintrc.js
 - |-- .gitignore
-- |-- .nycrc
 - |-- gruntfile.js
-- |-- LICENSE
 - |-- package.json
 - |-- tsconfig.json
 ```
@@ -81,13 +71,19 @@ npm i
 ```s
 npm run watch ----------// watch.
 npm run eslint
+npm run drop-db ----------// drop database for development.
 npm run test ----------// run unit test.
 npm run build
 npm run start ----------// start with development environment.
+npm run start-with-data ----------// start for development & insert data test.
 npm run staging ----------// start with staging environment.
 npm run production ----------// start with production environment.
 grunt exec:generate:Customer ----------// Generate module "Customer": schema, model, repository, business, controller,... (without route loader and business loader)
 ```
+
+* If execute "grunt" with an error "The term 'grunt' is not recognized as the name of a cmdlet" on Windows OS, execute this command with administrator: setx path "%PATH%;%APPDATA%\npm"
+* If execute "npm run drop-db" with an error (because you can not execute the mongo command), set the path for mongodb on Windows OS, execute this command with administrator: setx path "%PATH%;C:\Program Files\MongoDB\Server\[version]\bin"
+* Set default cmd.exe (Windows - VS Code): Ctrl+Shift+P -> Type "Select Default Shell" -> Select "Command Prompt" -> Restart VS Code.
 
 ### Debug on Visual Code
 

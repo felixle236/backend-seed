@@ -1,8 +1,8 @@
 import * as path from 'path';
 import * as fs from 'fs';
 
-class FileHelper {
-    static getDirectories = function(sourcePath: string): Promise<string[]> {
+export default class FileHelper {
+    public static getDirectories = function(sourcePath: string): Promise<string[]> {
         return new Promise<string[]>((resolve, reject) => {
             fs.readdir(sourcePath, (err, list) => {
                 if (err)
@@ -13,11 +13,7 @@ class FileHelper {
         });
     }
 
-    static getDirectoriesSync = function(sourcePath: string): string[] {
-        return fs.readdirSync(sourcePath).filter(item => fs.statSync(path.join(sourcePath, item)).isDirectory());
-    }
-
-    static getFiles = function(sourcePath: string): Promise<string[]> {
+    public static getFiles = function(sourcePath: string): Promise<string[]> {
         return new Promise<string[]>((resolve, reject) => {
             fs.readdir(sourcePath, (err, list) => {
                 if (err)
@@ -28,10 +24,11 @@ class FileHelper {
         });
     }
 
-    static getFilesSync = function(sourcePath: string): string[] {
-        return fs.readdirSync(sourcePath).filter(item => !fs.statSync(path.join(sourcePath, item)).isDirectory());
+    public static getImportFiles = function(directory: string): any {
+        let files = fs.readdirSync(directory).filter(item => ['.ts', '.js'].includes(path.extname(item)) && !fs.statSync(path.join(directory, item)).isDirectory());
+        return files.map(file => {
+            let fileImport = require(path.join(directory, file));
+            return fileImport.default || fileImport;
+        });
     }
 }
-
-Object.seal(FileHelper);
-export default FileHelper;

@@ -1,70 +1,59 @@
-import BaseController from './base/BaseController';
-import UserBusiness from '../app/business/UserBusiness';
-import UserAuthentication from '../app/model/user/UserAuthentication'; // eslint-disable-line
-import Authenticator from '../system/Authenticator';
-import {RoleCode} from '../app/model/common/CommonType';
+import {Service, Inject} from 'typedi'; // eslint-disable-line
+import {JsonController, Authorized, CurrentUser, Param, QueryParam, Body, Get, Post, Put, Patch, Delete} from 'routing-controllers'; // eslint-disable-line
+import IUserBusiness from '../application/businesses/interfaces/IUserBusiness';
+import UserBusiness from '../application/businesses/UserBusiness';
+import IUser from '../application/models/user/interfaces/IUser'; // eslint-disable-line
+import UserClaim from '../resources/permissions/UserClaim'; // eslint-disable-line
 
-class UserController extends BaseController {
-    constructor() {
-        super();
+@Service()
+@JsonController('/users')
+export default class UserController {
+    @Inject(() => UserBusiness)
+    private userBusiness: IUserBusiness;
 
-        this.get('/list', this.validatePagination(10), this.getUsers.bind(this));
-        this.get('/count', this.countUsers.bind(this));
-        this.get('/:_id', this.getUserById.bind(this));
-        this.get('/profile', Authenticator.isAuthenticated, this.getProfile.bind(this));
-
-        this.post('/signin', this.signin.bind(this));
-        this.post('/signup', this.signup.bind(this));
-        this.post('/', Authenticator.checkRoles(RoleCode.Administrator), this.createUser.bind(this));
-
-        this.put('/:_id', Authenticator.checkRoles(RoleCode.Administrator), this.updateUser.bind(this));
-        this.put('/profile', Authenticator.isAuthenticated, this.updateProfile.bind(this));
-
-        this.delete('/:_id', Authenticator.checkRoles(RoleCode.Administrator), this.deleteUser.bind(this));
+    @Get('/')
+    @Authorized(UserClaim.GET)
+    public find(@CurrentUser({required: true}) currentUser: IUser, @QueryParam('keyword') keyword: string, @QueryParam('page') page: number, @QueryParam('limit') limit: number) {
+        return this.userBusiness.find(keyword, page, limit);
     }
 
-    async getUsers(req): Promise<any> {
-        return await UserBusiness.instance.getList(req.query.name, req.query.page, req.query.limit);
+    @Get('/:id')
+    public get(@Param("id") id: string) {
+        return this.userBusiness.get(id);
     }
 
-    async countUsers(req): Promise<any> {
-        return await UserBusiness.instance.count(req.query.name);
+    @Post('/authenticate')
+    public authenticate(@Body({required: true}) data: any) {
+        return this.userBusiness.authenticate(data.email, data.password);
     }
 
-    async getUserById(req): Promise<any> {
-        return await UserBusiness.instance.get(req.params._id);
+    @Post('/signup')
+    public signup(@Body({required: true}) data: any) {
+        return this.userBusiness.signup(data);
     }
 
-    async getProfile(req): Promise<any> {
-        let userAuth: UserAuthentication = req[Authenticator.userKey];
-        return await UserBusiness.instance.get(userAuth._id);
+    // @Put('/')
+    // public updateProfile(@Body({required: true}) data: any) {
+    //     return this.userBusiness.updateProfile(id, data);
+    // }
+
+    @Put('/:id')
+    public update(@Param("id") id: string, @Body({required: true}) data: any) {
+        return this.userBusiness.update(id, data);
     }
 
-    async signin(req): Promise<any> {
-        return await UserBusiness.instance.authenticate(req.body.email, req.body.password);
+    @Patch('/password')
+    public updatePassword(@Param('id') id: string, @Body({required: true}) data: any) {
+        return this.userBusiness.updatePassword(id, data.password, data.newPassword);
     }
 
-    async signup(req): Promise<any> {
-        return await UserBusiness.instance.signup(req.body);
+    @Patch('/:id/role')
+    public updateRole(@Param('id') id: string, @Body({required: true}) data: any) {
+        return this.userBusiness.updateRole(id, data.role);
     }
 
-    async createUser(req): Promise<any> {
-        return await UserBusiness.instance.create(req.body);
-    }
-
-    async updateUser(req): Promise<any> {
-        return await UserBusiness.instance.update(req.params._id, req.body);
-    }
-
-    async updateProfile(req): Promise<any> {
-        let userAuth: UserAuthentication = req[Authenticator.userKey];
-        return await UserBusiness.instance.update(userAuth._id, req.body);
-    }
-
-    async deleteUser(req): Promise<any> {
-        return await UserBusiness.instance.delete(req.params._id);
+    @Delete("/:id")
+    public delete(@Param("id") id: string) {
+        return this.userBusiness.delete(id);
     }
 }
-
-Object.seal(UserController);
-export default UserController;

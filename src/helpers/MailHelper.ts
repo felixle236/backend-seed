@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as nodeMailer from 'nodemailer';
 import * as emailExistence from 'email-existence';
-import Project from '../config/Project';
+import config from '../configuration';
 
 /**
  * Need config google account before use it
@@ -9,18 +9,18 @@ import Project from '../config/Project';
  * https://accounts.google.com/b/0/DisplayUnlockCaptcha
  */
 
-class MailHelper {
+export default class MailHelper {
     private static transporter: nodeMailer.Transporter = nodeMailer.createTransport({
         service: 'gmail',
         auth: {
-            user: Project.SMTP.AUTHENTICATOR.USERNAME,
-            pass: Project.SMTP.AUTHENTICATOR.PASSWORD
+            user: config.SMTP.AUTHENTICATOR.USERNAME,
+            pass: config.SMTP.AUTHENTICATOR.PASSWORD
         }
     });
 
-    static async sendMail(email: string, subject: string, text?: string, html?: string): Promise<nodeMailer.SentMessageInfo> {
-        return await this.transporter.sendMail({
-            from: `${Project.SMTP.SENDER.NAME} <${Project.SMTP.SENDER.EMAIL}>`, // sender address
+    public static sendMail(email: string, subject: string, text?: string, html?: string): Promise<nodeMailer.SentMessageInfo> {
+        return this.transporter.sendMail({
+            from: `${config.SMTP.SENDER.NAME} <${config.SMTP.SENDER.EMAIL}>`, // sender address
             to: email, // list of receivers
             subject: subject, // Subject line
             text: text, // plain text body
@@ -28,8 +28,8 @@ class MailHelper {
         });
     }
 
-    static async sendMailAdvanced(fromEmail: string, fromName: string, emails: string | string[], subject: string, text?: string, html?: string): Promise<nodeMailer.SentMessageInfo> {
-        return await MailHelper.transporter.sendMail({
+    public static sendMailAdvanced(fromEmail: string, fromName: string, emails: string | string[], subject: string, text?: string, html?: string): Promise<nodeMailer.SentMessageInfo> {
+        return MailHelper.transporter.sendMail({
             from: `${fromName} <${fromEmail}>`, // sender address
             to: Array.isArray(emails) && emails.length > 0 ? emails.join(', ') : emails, // list of receivers
             subject: subject, // Subject line
@@ -38,7 +38,7 @@ class MailHelper {
         });
     }
 
-    static loadMailTemplate(path, param) {
+    public static loadMailTemplate(path, param) {
         let content = fs.readFileSync(path, 'utf8');
         if (param) {
             Object.keys(param).forEach(key => {
@@ -48,7 +48,7 @@ class MailHelper {
         return content;
     }
 
-    static checkRealEmail(email: string): Promise<boolean> {
+    public static checkRealEmail(email: string): Promise<boolean> {
         return new Promise((resolve, reject) => {
             emailExistence.check(email, (error, response) => {
                 if (error) {
@@ -60,6 +60,3 @@ class MailHelper {
         });
     }
 }
-
-Object.seal(MailHelper);
-export default MailHelper;

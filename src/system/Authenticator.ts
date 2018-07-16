@@ -1,80 +1,60 @@
-import * as express from 'express'; // eslint-disable-line
-import UserBusiness from '../app/business/UserBusiness';
-import UserAuthentication from '../app/model/user/UserAuthentication'; // eslint-disable-line
+import {Container} from 'typedi';
+import {Action} from 'routing-controllers'; // eslint-disable-line
+import IUserBusiness from '../application/businesses/interfaces/IUserBusiness'; // eslint-disable-line
+import UserBusiness from '../application/businesses/UserBusiness';
+import IPermissionBusiness from '../application/businesses/interfaces/IPermissionBusiness'; // eslint-disable-line
+import PermissionBusiness from '../application/businesses/PermissionBusiness';
+import IUser from '../application/models/user/interfaces/IUser'; // eslint-disable-line
 import CachingHelper from '../helpers/CachingHelper';
+const userBusiness: IUserBusiness = Container.get(UserBusiness);
+const permissionBusiness: IPermissionBusiness = Container.get(PermissionBusiness);
 
-class Authenticator {
-    static readonly userKey = 'userAuth';
-
-    static async addUserAuthenticated(userAuth: UserAuthentication): Promise<void> {
-        await CachingHelper.post(`/user-auth`, userAuth);
-    }
-
-    static async removeUserAuthenticated(userId: string): Promise<void> {
-        await CachingHelper.delete(`/user-auth/${userId}`);
-    }
-
-    static async getUserAuthentication(req: express.Request): Promise<UserAuthentication | undefined> {
-        let userAuth;
-        let token = <string>req.headers['authorization'];
-
-        try {
-            if (token) {
-                userAuth = await CachingHelper.get(`/user-auth-by-token?token=${token}`);
-                if (!userAuth) {
-                    userAuth = await UserBusiness.instance.getUserByToken(token);
-                    if (userAuth)
-                        await Authenticator.addUserAuthenticated(userAuth);
-                }
-            }
-        }
-        catch (err) {
-            console.error(err.message);
-        }
-        req[Authenticator.userKey] = userAuth;
-        return userAuth;
-    }
-
-    static isAuthenticated(req: express.Request, res: express.Response, next: express.NextFunction) {
-        Authenticator.getUserAuthentication(req).then(userAuth => {
-            if (userAuth)
-                next();
-            else {
-                res.status(401);
-                res.send({error: {message: 'Unauthorized'}});
-            }
+export default class Authenticator {
+    public static createUserCaching(user: IUser): Promise<IUser | undefined> {
+        return CachingHelper.post('/user', user).catch(error => {
+            console.log('Create user caching', error); // eslint-disable-line
         });
     }
 
-    static checkRoles(...roleCodes: number[]): express.RequestHandler {
-        return (req: express.Request, res: express.Response, next: express.NextFunction) => {
-            Authenticator.getUserAuthentication(req).then(userAuth => {
-                if (userAuth && userAuth.permission && userAuth.permission.role && roleCodes.length && roleCodes.find(roleCode => userAuth!.permission.role.code === roleCode))
-                    next();
-                else
-                    Authenticator.accessDenied(res);
-            });
-        };
+    public static deleteUserCaching(id: string): Promise<boolean> {
+        return CachingHelper.delete(`/user/${id}`).catch(error => {
+            console.log('Delete user caching', error); // eslint-disable-line
+            return false;
+        });
     }
 
-    static checkClaims(...claims: string[]): express.RequestHandler {
-        return (req: express.Request, res: express.Response, next: express.NextFunction) => {
-            Authenticator.getUserAuthentication(req).then(userAuth => {
-                if (userAuth) {
-                    let userClaims: string[] = userAuth.permission.claims || [];
-                    if (claims.find(claim => userClaims.includes(claim)))
-                        return next();
-                }
-                Authenticator.accessDenied(res);
-            });
-        };
+    public static async authorizationChecker(action: Action, claims: number[]) {
+        let token = action.request.headers['authorization'];
+        if (!token) return false;
+
+        let user = await CachingHelper.get(`/user-by-token?token=${token}`).catch(error => {
+            console.log('Get user caching by token', error); // eslint-disable-line
+        });
+        if (!user) {
+            user = await userBusiness.getUserByToken(token).catch(() => undefined);
+            if (user) await Authenticator.createUserCaching(user);
+        }
+
+        if (user && user.role) {
+            user.id = user._id.toString();
+            user.role.id = user.role._id.toString();
+            action.request.user = user;
+
+            if (!claims.length)
+                return true;
+            else {
+                let claim = claims[0];
+                let result = await CachingHelper.post('/check-permission', {role: user.role.id, claim}).catch(error => {
+                    console.log('Check permission caching', error); // eslint-disable-line
+                    return permissionBusiness.checkPermission(user.role.id, claim);
+                });
+                if (result) return true;
+            }
+        }
+        return false;
     }
 
-    static accessDenied(res: express.Response): void {
-        res.status(403);
-        res.send({error: {message: 'Access denied!'}});
+    public static currentUserChecker(action: Action) {
+        return action.request.user;
     }
 }
-
-Object.seal(Authenticator);
-export default Authenticator;

@@ -1,4 +1,7 @@
 {
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
         {
@@ -6,18 +9,17 @@
             "request": "launch",
             "name": "DEBUG",
             "cwd": "${workspaceRoot}",
-            "sourceMaps": true,
-            "program": "${workspaceRoot}/src/server.ts",
-            "preLaunchTask": "compile",
+            "program": "${workspaceRoot}/src/app.ts",
             "runtimeExecutable": null,
+            "preLaunchTask": "Compile",
+            "sourceMaps": true,
             "runtimeArgs": ["-r", "ts-node/register"],
             "protocol": "inspector",
             "outFiles": ["${workspaceRoot}/dest/**/*.js"],
+            "args": ["${relativeFile}"],
             "env": {
-                "NODE_ENV": "Development",
-                "SINGLE_THREAD": "true"
-            },
-            "args": ["${relativeFile}"]
+                "NODE_ENV": "development"
+            }
         }
     ]
 }

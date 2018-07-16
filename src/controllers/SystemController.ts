@@ -1,38 +1,43 @@
-import BaseController from './base/BaseController';
-import RoleBusiness from '../app/business/RoleBusiness';
-import UserBusiness from '../app/business/UserBusiness';
-import getRoles from '../resources/initialData/Roles';
-import getRoleClaims from '../resources/initialData/RoleClaims';
-import getUsers from '../resources/initialData/Users';
-import getUserRoles from '../resources/initialData/UserRoles';
-import CachingHelper from '../helpers/CachingHelper';
+import {Service, Inject} from 'typedi'; // eslint-disable-line
+import {JsonController, Body, Post} from 'routing-controllers'; // eslint-disable-line
+import IRoleBusiness from '../application/businesses/interfaces/IRoleBusiness';
+import RoleBusiness from '../application/businesses/RoleBusiness';
+import IUserBusiness from '../application/businesses/interfaces/IUserBusiness';
+import UserBusiness from '../application/businesses/UserBusiness';
+import PermissionBusiness from '../application/businesses/PermissionBusiness';
+import IPermissionBusiness from '../application/businesses/interfaces/IPermissionBusiness';
+import getRoles from '../resources/initialization/Roles';
+import getPermissions from '../resources/initialization/Permissions';
+import getUsers from '../resources/initialization/Users';
 
-class SystemController extends BaseController {
-    constructor() {
-        super();
+@Service()
+@JsonController('/systems')
+export default class SystemController {
+    @Inject(() => RoleBusiness)
+    private roleBusiness: IRoleBusiness;
+    @Inject(() => UserBusiness)
+    private userBusiness: IUserBusiness;
+    @Inject(() => PermissionBusiness)
+    private permissionBusiness: IPermissionBusiness;
 
-        this.post('/init-data', this.initData.bind(this));
+    @Post("/init-roles")
+    public async initRoles(@Body() isRequired: boolean) {
+        let initRoles = getRoles();
+        await this.roleBusiness.initialRoles(initRoles, isRequired);
+        return true;
     }
 
-    async initData(req): Promise<any> {
-        let isRequired = process.env.NODE_ENV !== 'Production' && req.body.isRequired === true;
-
-        let initRoles = getRoles();
-        let initRoleClaims = getRoleClaims();
+    @Post("/init-users")
+    public async initUsers(@Body() isRequired: boolean) {
         let initUsers = getUsers();
-        let initUserRoles = getUserRoles();
+        await this.userBusiness.initialUsers(initUsers, isRequired);
+        return true;
+    }
 
-        await RoleBusiness.instance.initialRoles(initRoles, isRequired);
-        await RoleBusiness.instance.initialRoleClaims(initRoleClaims, isRequired);
-        // Load data roles in caching
-        await CachingHelper.post('/fetch-data-role');
-
-        await UserBusiness.instance.initialUsers(initUsers, isRequired);
-        await UserBusiness.instance.initialUserRoles(initUserRoles, isRequired);
-
+    @Post("/init-permissions")
+    public async initPermissions(@Body() isRequired: boolean) {
+        let initPermissions = getPermissions();
+        await this.permissionBusiness.initialPermissions(initPermissions, isRequired);
         return true;
     }
 }
-
-Object.seal(SystemController);
-export default SystemController;

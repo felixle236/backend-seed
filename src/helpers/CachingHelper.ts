@@ -1,51 +1,47 @@
 import * as request from 'request-promise';
-import Project from '../config/Project';
-import DataHelper from './DataHelper';
+import config from '../configuration';
 
-class CachingHelper {
-    static get(url): Promise<any> {
-        return DataHelper.handlePromiseRequest(request({
+export default class CachingHelper {
+    public static get(url): Promise<any> {
+        return request({
             method: 'GET',
-            uri: `http://${Project.HOST}:${Project.PORT_CACHING}/api/caching` + url,
+            uri: `http://${config.HOST}:${config.PORT_CACHING}/api/cachings` + url,
             json: true
-        }));
+        });
     }
 
-    static post(url, data?: any): Promise<any> {
-        return DataHelper.handlePromiseRequest(request({
+    public static post(url, data?: any): Promise<any> {
+        return request({
             method: 'POST',
-            uri: `http://${Project.HOST}:${Project.PORT_CACHING}/api/caching` + url,
+            uri: `http://${config.HOST}:${config.PORT_CACHING}/api/cachings` + url,
             body: data,
             json: true
-        }));
+        });
     }
 
-    static put(url, data: any): Promise<any> {
-        return DataHelper.handlePromiseRequest(request({
+    public static put(url, data: any): Promise<any> {
+        return request({
             method: 'PUT',
-            uri: `http://${Project.HOST}:${Project.PORT_CACHING}/api/caching` + url,
+            uri: `http://${config.HOST}:${config.PORT_CACHING}/api/cachings` + url,
             body: data,
             json: true
-        }));
+        });
     }
 
-    static patch(url, data: any): Promise<any> {
-        return DataHelper.handlePromiseRequest(request({
+    public static patch(url, data: any): Promise<any> {
+        return request({
             method: 'PATCH',
-            uri: `http://${Project.HOST}:${Project.PORT_CACHING}/api/caching` + url,
+            uri: `http://${config.HOST}:${config.PORT_CACHING}/api/cachings` + url,
             body: data,
             json: true
-        }));
+        });
     }
 
-    static delete(url): Promise<any> {
-        return DataHelper.handlePromiseRequest(request({
+    public static delete(url): Promise<any> {
+        return request({
             method: 'DELETE',
-            uri: `http://${Project.HOST}:${Project.PORT_CACHING}/api/caching` + url,
+            uri: `http://${config.HOST}:${config.PORT_CACHING}/api/cachings` + url,
             json: true
-        }));
+        });
     }
 }
-
-Object.seal(CachingHelper);
-export default CachingHelper;

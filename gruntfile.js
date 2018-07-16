@@ -15,7 +15,7 @@ module.exports = function(grunt) {
                     src: [], // ['**/*', '!**/*.ts'],
                     dest: 'dest'
                 }],
-                verbose: true, // Default: false
+                verbose: false, // Default: false
                 pretend: false, // Don't do any disk operations - just write log. Default: false
                 failOnError: true, // Fail the task when copying is not possible. Default: false
                 ignoreInDest: [

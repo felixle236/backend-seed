@@ -1,5 +1,5 @@
 module.exports = {
-    extends: 'google',
+    extends: 'standard',
     parser: 'typescript-eslint-parser',
     env: {
         commonjs: true,
@@ -7,35 +7,29 @@ module.exports = {
         node: true,
         mocha: true
     },
+    parserOptions: {
+        ecmaVersion: 8,
+        sourceType: 'module',
+        ecmaFeatures: {}
+    },
     rules: {
         'indent': ['error', 4],
         'semi': ['error', 'always'],
-        'require-jsdoc': 'off',
-        'valid-jsdoc': 'off',
-        'max-len': 'off',
-        'curly': 'off',
-        'arrow-parens': 'off',
-        'comma-dangle': 'off',
-        'linebreak-style': 'off',
-        'yoda': 'error',
-        'space-infix-ops': 'error',
-        'switch-colon-spacing': ['error', {'before': false, 'after': true}],
-        'key-spacing': ['error', {'beforeColon': false, 'afterColon': true}],
+        'require-jsdoc': 'error',
+        'curly': ['error', 'multi-or-nest'],
         'eqeqeq': ['error', 'always', {'null': 'ignore'}],
         'no-multiple-empty-lines': ['error', { 'max': 1, 'maxEOF': 1 }],
-        'keyword-spacing': ['error', {'before': true, 'after': true}],
-        'arrow-spacing': ['error', {'before': true, 'after': true}],
-        'brace-style': ['error', 'stroustrup'],
-        'object-curly-spacing': ['error', 'never', {'objectsInObjects': false, 'arraysInObjects': false}],
         'space-before-function-paren': ['error', {
             'anonymous': 'never',
             'named': 'never',
             'asyncArrow': 'always'
         }]
     },
-    parserOptions: {
-        ecmaVersion: 7,
-        sourceType: 'module',
-        ecmaFeatures: {}
+    overrides: {
+        files: ['**/*.ts'],
+        parser: 'typescript-eslint-parser',
+        rules: {
+            'no-undef': 'off'
+        }
     }
 };

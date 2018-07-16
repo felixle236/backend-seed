@@ -1,56 +1,49 @@
 import * as mongoose from 'mongoose';
-import {ErrorSystem, ErrorCommon} from '../app/model/common/Error';
 
-class DataHelper {
-    static toObjectId(_id: string): mongoose.Types.ObjectId {
-        return mongoose.Types.ObjectId.createFromHexString(_id && _id.toString());
+export default class DataHelper {
+    public static isObjectId(id: any): boolean {
+        return id && id._bsontype === 'ObjectID';
     }
 
-    static handleDataModelInput(dataInput): void {
-        Object.keys(dataInput).forEach(key => {
-            if (dataInput[key] === undefined)
-                delete dataInput[key];
-            else if (dataInput[key] === null || dataInput[key] === 'null')
-                dataInput[key] = undefined;
-        });
+    public static toObjectId(id: any): mongoose.Schema.Types.ObjectId {
+        return typeof id === 'string' ? mongoose.Types.ObjectId.createFromHexString(id) : id;
     }
 
-    static handleIdDataModel(data) {
-        return data && data._bsontype === 'ObjectID' ? data.toString() : data;
+    public static handleDataModel<T>(data: any, Type: {new(d: any): T}): string | T {
+        if (!data)
+            return '';
+        if (DataHelper.isObjectId(data))
+            return data.toString();
+        if (Type)
+            return new Type(data);
+        return '';
     }
 
-    static handleFileDataModel(file) {
+    public static handleFileModel(file): string {
         if (file) {
+            if (DataHelper.isObjectId(file))
+                return file.toString();
             if (file.url)
                 return file.url;
-            return file.toString();
         }
-        return undefined;
+        return file;
     }
 
-    static handlePromiseRequest(promise): Promise<any> {
-        return new Promise<any>((resolve, reject) => {
-            promise.then(({data, error}) => {
-                if (error)
-                    reject(error);
-                else
-                    resolve(data);
-            }).catch(error => {
-                if (error.name === 'RequestError')
-                    reject(new ErrorCommon(10));
-                else
-                    reject(new ErrorSystem(error.message));
-            });
-        });
+    public static filterDataInput<T>(entity: T, data: any, fields: string[]): T {
+        for (let i = 0; i < fields.length; i++) {
+            if (data.hasOwnProperty(fields[i]) && data[fields[i]] !== undefined)
+                entity[fields[i]] = data[fields[i]];
+        }
+        return entity;
     }
 
-    static applyTemplate(template, ...params) {
+    public static applyTemplate(template: string, ...params): string {
         return template.replace(/{(\d+)}/g, (match, number) => {
             return params[number] || match;
         });
     }
 
-    static convertToCurrency(value: number, option): string {
+    public static convertToCurrency(value: number, option): string {
         if (typeof value !== 'number')
             return '';
 
@@ -64,7 +57,7 @@ class DataHelper {
         return value.toLocaleString(option.format, {style: 'currency', currency: option.currency});
     }
 
-    static convertStringToBoolean(val: string): boolean {
+    public static convertStringToBoolean(val: string): boolean {
         if (!val)
             return false;
         val = val.toString();
@@ -76,6 +69,3 @@ class DataHelper {
         }
     }
 }
-
-Object.seal(DataHelper);
-export default DataHelper;

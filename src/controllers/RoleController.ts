@@ -1,45 +1,41 @@
-import BaseController from './base/BaseController';
-import RoleBusiness from '../app/business/RoleBusiness';
-import Authenticator from '../system/Authenticator';
-import {RoleCode, Claim} from '../app/model/common/CommonType';
+import {Service, Inject} from 'typedi'; // eslint-disable-line
+import {JsonController, Param, QueryParam, Body, Get, Post, Put, Delete} from 'routing-controllers'; // eslint-disable-line
+import IRoleBusiness from '../application/businesses/interfaces/IRoleBusiness';
+import RoleBusiness from '../application/businesses/RoleBusiness';
 
-class RoleController extends BaseController {
-    constructor() {
-        super();
+@Service()
+@JsonController('/roles')
+export default class RoleController {
+    @Inject(() => RoleBusiness)
+    private roleBusiness: IRoleBusiness;
 
-        this.get('/list', this.validatePagination(10), this.getRoles.bind(this));
-        this.get('/count', this.countRoles.bind(this));
-        this.get('/:_id', this.getRoleById.bind(this));
-
-        this.post('/', Authenticator.checkClaims(Claim.FULL_ACCESS), this.createRole.bind(this));
-        this.put('/:_id', Authenticator.checkRoles(RoleCode.Administrator), this.updateRole.bind(this));
-        this.delete('/:_id', Authenticator.checkRoles(RoleCode.Administrator), this.deleteRole.bind(this));
+    @Get('/')
+    public find(@QueryParam('keyword') keyword: string, @QueryParam('page') page: number, @QueryParam('limit') limit: number) {
+        return this.roleBusiness.find(keyword, page, limit);
     }
 
-    async getRoles(req): Promise<any> {
-        return await RoleBusiness.instance.getList(req.query.name, req.query.page, req.query.limit);
+    @Get('/:id')
+    public get(@Param('id') id: string) {
+        return this.roleBusiness.get(id);
     }
 
-    async countRoles(req): Promise<any> {
-        return await RoleBusiness.instance.count(req.query.name);
+    @Get('/role-by-code')
+    public getRoleByCode(@QueryParam('code') code: number) {
+        return this.roleBusiness.getRoleByCode(code);
     }
 
-    async getRoleById(req): Promise<any> {
-        return await RoleBusiness.instance.get(req.params._id);
+    @Post('/')
+    public create(@Body({required: true}) data: any) {
+        return this.roleBusiness.create(data);
     }
 
-    async createRole(req): Promise<any> {
-        return await RoleBusiness.instance.create(req.body);
+    @Put('/:id')
+    public update(@Param('id') id: string, @Body({required: true}) data: any) {
+        return this.roleBusiness.update(id, data);
     }
 
-    async updateRole(req): Promise<any> {
-        return await RoleBusiness.instance.update(req.params._id, req.body);
-    }
-
-    async deleteRole(req): Promise<any> {
-        return await RoleBusiness.instance.delete(req.params._id);
+    @Delete('/:id')
+    public delete(@Param('id') id: string) {
+        return this.roleBusiness.delete(id);
     }
 }
-
-Object.seal(RoleController);
-export default RoleController;
