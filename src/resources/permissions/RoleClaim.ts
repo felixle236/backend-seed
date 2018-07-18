@@ -1,4 +1,6 @@
-// Start from 2000
+/**
+ * Start from 2000
+ */
 export default {
     GET: 2101,
     CREATE: 2201,

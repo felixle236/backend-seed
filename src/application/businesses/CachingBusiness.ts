@@ -58,7 +58,9 @@ export default class CachingBusiness implements ICachingBusiness {
         return new Promise<IUser>((resolve, reject) => {
             if (!data || !data._id) return reject(new ValidationError(1));
 
-            if (data.token && typeof data.token.tokenExpire === 'string') data.token.tokenExpire = new Date(data.token.tokenExpire);
+            data = JSON.parse(JSON.stringify(data));
+            if (data.token && data.token.tokenExpire)
+                data.token.tokenExpire = new Date(data.token.tokenExpire);
 
             CachingAccess.users.findOne({_id: data._id}, async (error, user: any) => {
                 if (error) return reject(error);

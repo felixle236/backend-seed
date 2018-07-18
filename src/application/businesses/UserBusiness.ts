@@ -10,6 +10,7 @@ import RoleBusiness from './RoleBusiness';
 import IUser from '../models/user/interfaces/IUser'; // eslint-disable-line
 import UserView from '../models/user/UserView';
 import UserToken from '../models/user/UserToken';
+import UserProfile from '../models/user/UserProfile';
 import UserAuthentication from '../models/user/UserAuthentication';
 import {LoginProvider, RoleCode, GenderType} from '../models/common/CommonType';
 import {ValidationError} from '../models/common/Error';
@@ -60,7 +61,7 @@ export default class UserBusiness implements IUserBusiness {
         return user && new UserView(user);
     }
 
-    public getUserByToken(token: string): Promise<IUser | undefined> {
+    public async getUserByToken(token: string): Promise<IUser | undefined> {
         if (!token)
             throw new ValidationError(1);
 
@@ -75,7 +76,16 @@ export default class UserBusiness implements IUserBusiness {
             populate: ['avatar', 'role']
         };
 
-        return this.userRepository.findOne(param);
+        let user = await this.userRepository.findOne(param);
+        return user;
+    }
+
+    public async getProfile(id: string): Promise<UserProfile | undefined> {
+        if (!validator.isMongoId(id))
+            throw new ValidationError(1);
+
+        let user = await this.userRepository.get(id, ['avatar']);
+        return user && new UserProfile(user);
     }
 
     public async authenticate(email: string, password: string): Promise<UserAuthentication> {
@@ -92,7 +102,6 @@ export default class UserBusiness implements IUserBusiness {
         };
 
         let user = await this.userRepository.findOne(param);
-
         if (!user)
             throw new ValidationError(103, 'Email or password');
 
@@ -274,23 +283,6 @@ export default class UserBusiness implements IUserBusiness {
         return token;
     }
 
-    public async updateRole(id: string, roleId: string): Promise<boolean> {
-        if (!validator.isMongoId(id) || !validator.isMongoId(roleId))
-            throw new ValidationError(1);
-
-        let user = await this.userRepository.get(id);
-        if (!user)
-            throw new ValidationError(104, 'user');
-
-        let role = await this.roleBusiness.get(roleId);
-        if (!role)
-            throw new ValidationError(104, 'role');
-
-        await this.userRepository.update(id, {role: DataHelper.toObjectId(role.id)});
-        await Authenticator.deleteUserCaching(id);
-        return true;
-    }
-
     public async delete(id: string): Promise<boolean> {
         if (!validator.isMongoId(id))
             throw new ValidationError(1);
@@ -307,7 +299,7 @@ export default class UserBusiness implements IUserBusiness {
     public async initialUsers(data: {isRequired: boolean, data: any}[], isRequired = false): Promise<boolean> {
         if (!data || !Array.isArray(data))
             throw new ValidationError(1);
-        let roles = await this.roleBusiness.findAll();
+        let roles = await this.roleBusiness.getAll();
 
         for (let i = 0; i < data.length; i++) {
             let item = data[i];
@@ -316,15 +308,11 @@ export default class UserBusiness implements IUserBusiness {
                 if (role)
                     item.data.role = role.id;
 
-                await this.create(item.data).then(user => {
-                    if (user)
-                        console.log(`User '${user.email}' has created.`); // eslint-disable-line
-                }).catch(error => {
+                await this.create(item.data).catch(error => {
                     console.log(`User '${item.data.email}' cannot create with error`, error); // eslint-disable-line
                 });
             }
         }
-        console.log('\x1b[32m', 'Initialize users have done.', '\x1b[0m'); // eslint-disable-line
         return true;
     }
 }

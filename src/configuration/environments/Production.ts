@@ -5,7 +5,7 @@ export default {
         NAME: 'default',
         HOST: 'localhost',
         PORT: 27017,
-        DB_NAME: 'backend_seed_production',
+        DB_NAME: 'backend_seed',
         USERNAME: '',
         PASSWORD: ''
     }, {

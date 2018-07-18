@@ -29,11 +29,10 @@ export default class PermissionBusiness implements IPermissionBusiness {
 
         let param = {
             query: {
-                role,
+                role: DataHelper.toObjectId(role),
                 claim
             }
         };
-
         let permission = await this.permissionRepository.findOne(param);
         return !!permission;
     }
@@ -75,7 +74,7 @@ export default class PermissionBusiness implements IPermissionBusiness {
     public async initialPermissions(data: {isRequired: boolean, data: any}[], isRequired = false): Promise<boolean> {
         if (!data || !Array.isArray(data))
             throw new ValidationError(1);
-        let roles = await this.roleBusiness.findAll();
+        let roles = await this.roleBusiness.getAll();
 
         for (let i = 0; i < data.length; i++) {
             let item = data[i];
@@ -83,17 +82,13 @@ export default class PermissionBusiness implements IPermissionBusiness {
                 let role = roles.find(role => role.code === item.data.roleCode);
                 if (role) {
                     item.data.role = role.id;
-                    await this.create(item.data).then(permission => {
-                        if (permission)
-                            console.log(`Permission '${role!.name} - ${permission.claim}' has created.`); // eslint-disable-line
-                    }).catch(error => {
+                    await this.create(item.data).catch(error => {
                         console.log(`Permission '${role!.name} - ${item.data.claim}' cannot create with error`, error); // eslint-disable-line
                     });
                 }
             }
         }
         await CachingHelper.post('/fetch-permission');
-        console.log('\x1b[32m', 'Initialize permissions have done.', '\x1b[0m'); // eslint-disable-line
         return true;
     }
 }

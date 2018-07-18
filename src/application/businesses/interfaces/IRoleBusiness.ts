@@ -3,7 +3,7 @@ import RoleLookup from '../../models/role/RoleLookup';
 import ResultList from '../../models/common/ResultList';
 
 interface IRoleBusiness {
-    findAll(): Promise<RoleView[]>;
+    getAll(): Promise<RoleView[]>;
     find(keyword?: string, page?: number, limit?: number): Promise<ResultList<RoleView>>;
     lookup(keyword?: string, page?: number, limit?: number): Promise<ResultList<RoleLookup>>;
     get(id: string): Promise<RoleView | undefined>;

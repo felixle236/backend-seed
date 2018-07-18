@@ -71,7 +71,7 @@ export default class BaseRepository<T extends mongoose.Document> implements IRea
     public count(param?: any): Promise<number> {
         return new Promise<number>((resolve, reject) => {
             param = this.validateParam(param);
-            this.model.find(param.query).count((err, count) => {
+            this.model.count(param.query, (err, count) => {
                 if (err) return reject(err);
                 resolve(count);
             });

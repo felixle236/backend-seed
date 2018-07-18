@@ -13,13 +13,20 @@ export default class UserController {
 
     @Get('/')
     @Authorized(UserClaim.GET)
-    public find(@CurrentUser({required: true}) currentUser: IUser, @QueryParam('keyword') keyword: string, @QueryParam('page') page: number, @QueryParam('limit') limit: number) {
+    public find(@QueryParam('keyword') keyword: string, @QueryParam('page') page: number, @QueryParam('limit') limit: number) {
         return this.userBusiness.find(keyword, page, limit);
     }
 
     @Get('/:id')
+    @Authorized(UserClaim.GET)
     public get(@Param("id") id: string) {
         return this.userBusiness.get(id);
+    }
+
+    @Get('/profile')
+    @Authorized()
+    public getProfile(@CurrentUser({required: true}) currentUser: IUser) {
+        return this.userBusiness.getProfile(currentUser.id);
     }
 
     @Post('/authenticate')
@@ -32,27 +39,26 @@ export default class UserController {
         return this.userBusiness.signup(data);
     }
 
-    // @Put('/')
-    // public updateProfile(@Body({required: true}) data: any) {
-    //     return this.userBusiness.updateProfile(id, data);
-    // }
-
     @Put('/:id')
+    @Authorized(UserClaim.UPDATE)
     public update(@Param("id") id: string, @Body({required: true}) data: any) {
         return this.userBusiness.update(id, data);
     }
 
-    @Patch('/password')
-    public updatePassword(@Param('id') id: string, @Body({required: true}) data: any) {
-        return this.userBusiness.updatePassword(id, data.password, data.newPassword);
+    @Put('/profile')
+    @Authorized()
+    public updateProfile(@CurrentUser({required: true}) currentUser: IUser, @Body({required: true}) data: any) {
+        return this.userBusiness.update(currentUser.id, data);
     }
 
-    @Patch('/:id/role')
-    public updateRole(@Param('id') id: string, @Body({required: true}) data: any) {
-        return this.userBusiness.updateRole(id, data.role);
+    @Patch('/password')
+    @Authorized()
+    public updatePassword(@CurrentUser({required: true}) currentUser: IUser, @Body({required: true}) data: any) {
+        return this.userBusiness.updatePassword(currentUser.id, data.password, data.newPassword);
     }
 
     @Delete("/:id")
+    @Authorized(UserClaim.DELETE)
     public delete(@Param("id") id: string) {
         return this.userBusiness.delete(id);
     }

@@ -15,7 +15,7 @@ export default class RoleBusiness implements IRoleBusiness {
     @Inject()
     private roleRepository: RoleRepository;
 
-    public async findAll(): Promise<RoleView[]> {
+    public async getAll(): Promise<RoleView[]> {
         let roles = await this.roleRepository.findAll();
         return RoleView.parseArray(roles);
     }
@@ -145,6 +145,16 @@ export default class RoleBusiness implements IRoleBusiness {
         ]);
         this.validate(role);
 
+        let param = {
+            query: {
+                _id: {$ne: DataHelper.toObjectId(role.id)},
+                name: new RegExp(`^${role.name}$`, 'i'),
+                deletedAt: {$exists: false}
+            }
+        };
+        if (await this.roleRepository.findOne(param))
+            throw new ValidationError(105, 'name');
+
         await this.roleRepository.update(id, role);
         return true;
     }
@@ -168,15 +178,11 @@ export default class RoleBusiness implements IRoleBusiness {
         for (let i = 0; i < data.length; i++) {
             let item = data[i];
             if (item.isRequired || isRequired) {
-                await this.create(item.data).then(role => {
-                    if (role)
-                        console.log(`Role '${role.name}' has created.`); // eslint-disable-line
-                }).catch(error => {
+                await this.create(item.data).catch(error => {
                     console.log(`Role '${item.data.name}' cannot create with error`, error); // eslint-disable-line
                 });
             }
         }
-        console.log('\x1b[32m', 'Initialize roles have done.', '\x1b[0m'); // eslint-disable-line
         return true;
     }
 }
