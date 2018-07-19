@@ -1,11 +1,12 @@
 import {Service, Inject} from 'typedi'; // eslint-disable-line
-import {JsonController, Param, QueryParam, Body, BodyParam, Get, Post, Delete} from 'routing-controllers'; // eslint-disable-line
+import {JsonController, UseBefore, Param, QueryParam, Body, BodyParam, Get, Post, Delete, NotAcceptableError} from 'routing-controllers'; // eslint-disable-line
 import ICachingBusiness from '../application/businesses/interfaces/ICachingBusiness';
 import CachingBusiness from '../application/businesses/CachingBusiness';
 import IUser from '../application/models/user/interfaces/IUser'; // eslint-disable-line
 
 @Service()
 @JsonController('/cachings')
+@UseBefore((req, res, next) => next((!req.socket.remoteAddress || !req.socket.remoteAddress.includes('127.0.0.1')) && new NotAcceptableError()))
 export default class CachingController {
     @Inject(() => CachingBusiness)
     private cachingBusiness: ICachingBusiness;

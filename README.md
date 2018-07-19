@@ -2,16 +2,17 @@
 NodeJS - Typescript - MongoDB
 
 * Integrating user permission & good transmission in large numbers of users.
-* Cache data in memory & share them between processes (if using the cluster module) to improve performance.
+* Cache data in memory & share them between processes (if using the cluster module) to improve performance (like the caching service). Can only be called on localhost, cannot call from outside.
 * Suitable for Web apps & APIs.
 * Run & debug on .ts files by Visual Code.
 * Unit test & coverage.
+* Generate module.
 
 ### Patterns and Principles
 
-- Generic Repository Pattern
-- Singleton Pattern
 - Multi-layer Architecture Pattern
+- Singleton Pattern
+- Generic Repository Pattern
 
 ### Tools
 
