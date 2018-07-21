@@ -3,7 +3,7 @@ import {Middleware, ExpressErrorMiddlewareInterface} from 'routing-controllers';
 
 @Middleware({type: 'after'})
 export class ErrorMiddleware implements ExpressErrorMiddlewareInterface {
-    public error(err: Error, req: Request, res: Response, next: NextFunction) {
+    error(err: Error, req: Request, res: Response, next: NextFunction) {
         next(err);
     }
 }

@@ -12,27 +12,27 @@ export default class CachingController {
     private cachingBusiness: ICachingBusiness;
 
     @Get('/user-by-token')
-    public getUserByToken(@QueryParam('token') token: string) {
+    getUserByToken(@QueryParam('token') token: string) {
         return this.cachingBusiness.getUserByToken(token);
     }
 
     @Post('/fetch-permission')
-    public fetchPermissionCaching() {
+    fetchPermissionCaching() {
         return this.cachingBusiness.fetchPermissionCaching();
     }
 
     @Post('/check-permission')
-    public checkPermission(@BodyParam('role') role: string, @BodyParam('claim') claim: number) {
+    checkPermission(@BodyParam('role') role: string, @BodyParam('claim') claim: number) {
         return this.cachingBusiness.checkPermission(role, claim);
     }
 
     @Post('/user')
-    public createUser(@Body({required: true}) data: IUser) {
+    createUser(@Body({required: true}) data: IUser) {
         return this.cachingBusiness.createUser(data);
     }
 
     @Delete('/user/:id')
-    public deleteUser(@Param('id') id: string) {
+    deleteUser(@Param('id') id: string) {
         return this.cachingBusiness.deleteUser(id);
     }
 }

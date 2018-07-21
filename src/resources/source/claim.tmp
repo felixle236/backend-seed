@@ -1,0 +1,9 @@
+/**
+ * Start from _000
+ */
+export default {
+    GET: _101,
+    CREATE: _201,
+    UPDATE: _301,
+    DELETE: _401
+};

@@ -1,0 +1,48 @@
+import {Service, Inject} from 'typedi'; // eslint-disable-line
+import {JsonController, Authorized, Param, QueryParam, Body, Get, Post, Put, Delete} from 'routing-controllers'; // eslint-disable-line
+import I{pascalName}Business from '../application/businesses/interfaces/I{pascalName}Business';
+import {pascalName}Business from '../application/businesses/{pascalName}Business';
+import {pascalName}Claim from '../resources/permissions/{pascalName}Claim'; // eslint-disable-line
+
+@Service()
+@JsonController('/{camelName}s')
+export default class {pascalName}Controller {
+    @Inject(() => {pascalName}Business)
+    private {camelName}Business: I{pascalName}Business;
+
+    @Get('/')
+    @Authorized({pascalName}Claim.GET)
+    find(@QueryParam('keyword') keyword: string, @QueryParam('page') page: number, @QueryParam('limit') limit: number) {
+        return this.{camelName}Business.find(keyword, page, limit);
+    }
+
+    @Get('/:id')
+    @Authorized({pascalName}Claim.GET)
+    get(@Param('id') id: string) {
+        return this.{camelName}Business.get(id);
+    }
+
+    @Get('/{camelName}-by-code')
+    @Authorized({pascalName}Claim.GET)
+    get{pascalName}ByCode(@QueryParam('code') code: number) {
+        return this.{camelName}Business.get{pascalName}ByCode(code);
+    }
+
+    @Post('/')
+    @Authorized({pascalName}Claim.CREATE)
+    create(@Body({required: true}) data: any) {
+        return this.{camelName}Business.create(data);
+    }
+
+    @Put('/:id')
+    @Authorized({pascalName}Claim.UPDATE)
+    update(@Param('id') id: string, @Body({required: true}) data: any) {
+        return this.{camelName}Business.update(id, data);
+    }
+
+    @Delete('/:id')
+    @Authorized({pascalName}Claim.DELETE)
+    delete(@Param('id') id: string) {
+        return this.{camelName}Business.delete(id);
+    }
+}

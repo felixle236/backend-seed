@@ -3,7 +3,7 @@ import MongoAccess from '../dataAccess/MongoAccess';
 import IUser from '../models/user/interfaces/IUser'; // eslint-disable-line
 
 class UserSchema {
-    public static get schema() {
+    static get schema() {
         let schemaDefinition: mongoose.SchemaDefinition = {
             firstName: {
                 type: String,

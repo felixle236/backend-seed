@@ -6,14 +6,14 @@ const cachingDatabase = {
 };
 
 export default class CachingAccess {
-    public static get users(): Datastore {
+    static get users(): Datastore {
         return cachingDatabase.users;
     };
-    public static get permissions(): Datastore {
+    static get permissions(): Datastore {
         return cachingDatabase.permissions;
     };
 
-    public static createDBConnection() {
+    static createDBConnection() {
         cachingDatabase.users.ensureIndex({fieldName: 'expirationDate', expireAfterSeconds: 1200} as Datastore.EnsureIndexOptions);
 
         cachingDatabase.permissions.ensureIndex({fieldName: 'role'} as Datastore.EnsureIndexOptions);

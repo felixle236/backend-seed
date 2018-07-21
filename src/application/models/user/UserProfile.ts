@@ -3,18 +3,18 @@ import {GenderType} from '../common/CommonType';
 import DataHelper from '../../../helpers/DataHelper';
 
 export default class UserProfile {
-    public firstName: string;
-    public lastName: string;
-    public email: string;
-    public avatar?: string;
-    public gender?: GenderType;
-    public birthday?: Date;
-    public phone?: string;
-    public address?: string;
-    public culture?: string;
-    public currency?: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    avatar?: string;
+    gender?: GenderType;
+    birthday?: Date;
+    phone?: string;
+    address?: string;
+    culture?: string;
+    currency?: string;
 
-    public constructor(data: IUser | undefined) {
+    constructor(data: IUser | undefined) {
         if (!data)
             return;
 

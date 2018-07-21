@@ -1,12 +1,12 @@
 import {LoginProvider} from '../common/CommonType';
 
 export default class UserToken {
-    public provider: LoginProvider;
-    public providerName: string;
-    public accessToken: string;
-    public tokenExpire: Date;
+    provider: LoginProvider;
+    providerName: string;
+    accessToken: string;
+    tokenExpire: Date;
 
-    public constructor(model: UserToken | undefined) {
+    constructor(model: UserToken | undefined) {
         if (!model)
             return;
 

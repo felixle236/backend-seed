@@ -1,0 +1,14 @@
+import {pascalName}View from '../../models/{camelName}/{pascalName}View';
+import ResultList from '../../models/common/ResultList';
+
+interface I{pascalName}Business {
+    find(keyword?: string, page?: number, limit?: number): Promise<ResultList<{pascalName}View>>;
+    get(id: string): Promise<{pascalName}View | undefined>;
+    get{pascalName}ByCode(code: number): Promise<{pascalName}View | undefined>;
+    create(data: any): Promise<{pascalName}View | undefined>;
+    update(id: string, data: any): Promise<boolean>;
+    delete(id: string): Promise<boolean>;
+    initial{pascalName}s(data: {isRequired: boolean, data: any}[], isRequired: boolean): Promise<boolean>;
+}
+
+export default I{pascalName}Business;

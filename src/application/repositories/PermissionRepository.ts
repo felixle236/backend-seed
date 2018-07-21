@@ -5,7 +5,7 @@ import IPermission from '../models/permission/interfaces/IPermission'; // eslint
 
 @Service()
 export default class PermissionRepository extends BaseRepository<IPermission> {
-    public constructor() {
+    constructor() {
         super(PermissionSchema);
     }
 }

@@ -10,20 +10,20 @@ const userBusiness: IUserBusiness = Container.get(UserBusiness);
 const permissionBusiness: IPermissionBusiness = Container.get(PermissionBusiness);
 
 export default class Authenticator {
-    public static createUserCaching(user: IUser): Promise<IUser | undefined> {
+    static createUserCaching(user: IUser): Promise<IUser | undefined> {
         return CachingHelper.post('/user', user).catch(error => {
             console.log('Create user caching', error); // eslint-disable-line
         });
     }
 
-    public static deleteUserCaching(id: string): Promise<boolean> {
+    static deleteUserCaching(id: string): Promise<boolean> {
         return CachingHelper.delete(`/user/${id}`).catch(error => {
             console.log('Delete user caching', error); // eslint-disable-line
             return false;
         });
     }
 
-    public static async authorizationChecker(action: Action, claims: number[]) {
+    static async authorizationChecker(action: Action, claims: number[]) {
         let token = action.request.headers['authorization'];
         if (!token) return false;
 
@@ -54,7 +54,7 @@ export default class Authenticator {
         return false;
     }
 
-    public static currentUserChecker(action: Action) {
+    static currentUserChecker(action: Action) {
         return action.request.user;
     }
 }

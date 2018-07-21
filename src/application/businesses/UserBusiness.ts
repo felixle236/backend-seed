@@ -26,9 +26,8 @@ export default class UserBusiness implements IUserBusiness {
     @Inject(() => RoleBusiness)
     private roleBusiness: IRoleBusiness;
 
-    public async find(keyword?: string, page?: number, limit?: number): Promise<ResultList<UserView>> {
+    async find(keyword?: string, page?: number, limit?: number): Promise<ResultList<UserView>> {
         let resultList = new ResultList<UserView>(page, limit);
-
         let param = {
             query: {
                 deletedAt: {$exists: false}
@@ -53,7 +52,7 @@ export default class UserBusiness implements IUserBusiness {
         return resultList;
     }
 
-    public async get(id: string): Promise<UserView | undefined> {
+    async get(id: string): Promise<UserView | undefined> {
         if (!validator.isMongoId(id))
             throw new ValidationError(1);
 
@@ -61,7 +60,7 @@ export default class UserBusiness implements IUserBusiness {
         return user && new UserView(user);
     }
 
-    public async getUserByToken(token: string): Promise<IUser | undefined> {
+    async getUserByToken(token: string): Promise<IUser | undefined> {
         if (!token)
             throw new ValidationError(1);
 
@@ -75,12 +74,10 @@ export default class UserBusiness implements IUserBusiness {
             },
             populate: ['avatar', 'role']
         };
-
-        let user = await this.userRepository.findOne(param);
-        return user;
+        return await this.userRepository.findOne(param);
     }
 
-    public async getProfile(id: string): Promise<UserProfile | undefined> {
+    async getProfile(id: string): Promise<UserProfile | undefined> {
         if (!validator.isMongoId(id))
             throw new ValidationError(1);
 
@@ -88,7 +85,7 @@ export default class UserBusiness implements IUserBusiness {
         return user && new UserProfile(user);
     }
 
-    public async authenticate(email: string, password: string): Promise<UserAuthentication> {
+    async authenticate(email: string, password: string): Promise<UserAuthentication> {
         if (!validator.isEmail(email) || !password)
             throw new ValidationError(1);
 
@@ -103,7 +100,7 @@ export default class UserBusiness implements IUserBusiness {
 
         let user = await this.userRepository.findOne(param);
         if (!user)
-            throw new ValidationError(103, 'Email or password');
+            throw new ValidationError(103, 'email address or password');
 
         if (!user.token || user.token.provider !== LoginProvider.System || !user.token.accessToken || !user.token.tokenExpire || user.token.tokenExpire.getTime() < Date.now())
             user.token = await this.updateUserToken(user.id, new UserToken({provider: LoginProvider.System} as any));
@@ -169,7 +166,7 @@ export default class UserBusiness implements IUserBusiness {
         return password ? crypto.createHash('md5').update('$$' + password).digest('hex') : '';
     }
 
-    public async signup(data: any): Promise<UserAuthentication | undefined> {
+    async signup(data: any): Promise<UserAuthentication | undefined> {
         if (!data)
             throw new ValidationError(1);
 
@@ -215,10 +212,10 @@ export default class UserBusiness implements IUserBusiness {
         if (!validator.isMongoId(user.role))
             throw new ValidationError(101, 'role');
 
-        return this.userRepository.create(user);
+        return await this.userRepository.create(user);
     }
 
-    public async update(id: string, data: any): Promise<boolean> {
+    async update(id: string, data: any): Promise<boolean> {
         if (!validator.isMongoId(id) || !data)
             throw new ValidationError(1);
 
@@ -247,7 +244,7 @@ export default class UserBusiness implements IUserBusiness {
         return true;
     }
 
-    public async updatePassword(id: string, password: string, newPassword: string): Promise<boolean> {
+    async updatePassword(id: string, password: string, newPassword: string): Promise<boolean> {
         if (!validator.isMongoId(id) || !password || !newPassword)
             throw new ValidationError(1);
 
@@ -283,7 +280,7 @@ export default class UserBusiness implements IUserBusiness {
         return token;
     }
 
-    public async delete(id: string): Promise<boolean> {
+    async delete(id: string): Promise<boolean> {
         if (!validator.isMongoId(id))
             throw new ValidationError(1);
 
@@ -296,7 +293,7 @@ export default class UserBusiness implements IUserBusiness {
         return true;
     }
 
-    public async initialUsers(data: {isRequired: boolean, data: any}[], isRequired = false): Promise<boolean> {
+    async initialUsers(data: {isRequired: boolean, data: any}[], isRequired = false): Promise<boolean> {
         if (!data || !Array.isArray(data))
             throw new ValidationError(1);
         let roles = await this.roleBusiness.getAll();

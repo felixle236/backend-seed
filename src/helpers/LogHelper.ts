@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 
 class LogHelper {
-    public static writeLog(message: string): Promise<void> {
+    static writeLog(message: string): Promise<void> {
         return new Promise<void>((resolve, reject) => {
             fs.appendFile('./logs.txt', `${(new Date()).toLocaleString()} : ${message}\n`, 'utf8', err => {
                 if (err)

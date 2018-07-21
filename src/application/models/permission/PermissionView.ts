@@ -3,11 +3,11 @@ import RoleLookup from '../role/RoleLookup';
 import DataHelper from '../../../helpers/DataHelper';
 
 export default class PermissionView {
-    public id: string;
-    public role: string | RoleLookup;
-    public claim: number;
+    id: string;
+    role: string | RoleLookup;
+    claim: number;
 
-    public constructor(data: IPermission | undefined) {
+    constructor(data: IPermission | undefined) {
         if (!data)
             return;
 
@@ -16,7 +16,7 @@ export default class PermissionView {
         this.claim = data.claim;
     }
 
-    public static parseArray(list: IPermission[]) {
+    static parseArray(list: IPermission[]): PermissionView[] {
         return list && Array.isArray(list) ? list.map(item => new PermissionView(item)) : [];
     }
 }

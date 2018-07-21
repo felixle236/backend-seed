@@ -1,0 +1,11 @@
+import {Service} from 'typedi'; // eslint-disable-line
+import BaseRepository from './base/BaseRepository';
+import {pascalName}Schema from '../schemas/{pascalName}Schema';
+import I{pascalName} from '../models/{camelName}/interfaces/I{pascalName}'; // eslint-disable-line
+
+@Service()
+export default class {pascalName}Repository extends BaseRepository<I{pascalName}> {
+    constructor() {
+        super({pascalName}Schema);
+    }
+}

@@ -5,7 +5,7 @@ import IRole from '../models/role/interfaces/IRole'; // eslint-disable-line
 
 @Service()
 export default class RoleRepository extends BaseRepository<IRole> {
-    public constructor() {
+    constructor() {
         super(RoleSchema);
     }
 }

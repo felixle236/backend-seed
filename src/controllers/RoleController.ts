@@ -12,37 +12,43 @@ export default class RoleController {
 
     @Get('/')
     @Authorized(RoleClaim.GET)
-    public find(@QueryParam('keyword') keyword: string, @QueryParam('page') page: number, @QueryParam('limit') limit: number) {
+    find(@QueryParam('keyword') keyword: string, @QueryParam('page') page: number, @QueryParam('limit') limit: number) {
         return this.roleBusiness.find(keyword, page, limit);
+    }
+
+    @Get('/lookup')
+    @Authorized(RoleClaim.GET)
+    lookup(@QueryParam('keyword') keyword: string, @QueryParam('page') page: number, @QueryParam('limit') limit: number) {
+        return this.roleBusiness.lookup(keyword, page, limit);
     }
 
     @Get('/:id')
     @Authorized(RoleClaim.GET)
-    public get(@Param('id') id: string) {
+    get(@Param('id') id: string) {
         return this.roleBusiness.get(id);
     }
 
     @Get('/role-by-code')
     @Authorized(RoleClaim.GET)
-    public getRoleByCode(@QueryParam('code') code: number) {
+    getRoleByCode(@QueryParam('code') code: number) {
         return this.roleBusiness.getRoleByCode(code);
     }
 
     @Post('/')
     @Authorized(RoleClaim.CREATE)
-    public create(@Body({required: true}) data: any) {
+    create(@Body({required: true}) data: any) {
         return this.roleBusiness.create(data);
     }
 
     @Put('/:id')
     @Authorized(RoleClaim.UPDATE)
-    public update(@Param('id') id: string, @Body({required: true}) data: any) {
+    update(@Param('id') id: string, @Body({required: true}) data: any) {
         return this.roleBusiness.update(id, data);
     }
 
     @Delete('/:id')
     @Authorized(RoleClaim.DELETE)
-    public delete(@Param('id') id: string) {
+    delete(@Param('id') id: string) {
         return this.roleBusiness.delete(id);
     }
 }

@@ -1,11 +1,11 @@
 import * as mongoose from 'mongoose';
 
 export default class MongoAccess {
-    public static get connection(): mongoose.Connection {
+    static get connection(): mongoose.Connection {
         return mongoose.connection;
     }
 
-    public static createDBConnection(host: string, port: number, dbName: string, username?: string, password?: string): Promise<mongoose.Connection> {
+    static createDBConnection(host: string, port: number, dbName: string, username?: string, password?: string): Promise<mongoose.Connection> {
         (mongoose as any).Promise = Promise;
         let uri = `mongodb://${host}:${port}/${dbName}`;
 
@@ -20,7 +20,7 @@ export default class MongoAccess {
         return mongoose.connect(uri, options).then(mongo => mongo.connection);
     }
 
-    public static initSchema(schemaDefinition: mongoose.SchemaDefinition, isUseFlag: boolean = true): mongoose.Schema {
+    static initSchema(schemaDefinition: mongoose.SchemaDefinition, isUseFlag: boolean = true): mongoose.Schema {
         if (isUseFlag) {
             schemaDefinition.createdAt = {
                 type: Date,

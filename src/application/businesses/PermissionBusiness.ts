@@ -18,12 +18,12 @@ export default class PermissionBusiness implements IPermissionBusiness {
     @Inject(() => RoleBusiness)
     private roleBusiness: IRoleBusiness;
 
-    public async getAll(): Promise<PermissionView[]> {
+    async getAll(): Promise<PermissionView[]> {
         let permissions = await this.permissionRepository.findAll();
         return PermissionView.parseArray(permissions);
     }
 
-    public async checkPermission(role: string, claim: number): Promise<boolean> {
+    async checkPermission(role: string, claim: number): Promise<boolean> {
         if (!validator.isMongoId(role) || !claim || !validator.isNumber(claim))
             throw new ValidationError(1);
 
@@ -47,7 +47,7 @@ export default class PermissionBusiness implements IPermissionBusiness {
             throw new ValidationError(102, 'claim');
     }
 
-    public async create(data: any): Promise<PermissionView | undefined> {
+    async create(data: any): Promise<PermissionView | undefined> {
         if (!data)
             throw new ValidationError(1);
 
@@ -71,7 +71,7 @@ export default class PermissionBusiness implements IPermissionBusiness {
         return permission && new PermissionView(permission);
     }
 
-    public async initialPermissions(data: {isRequired: boolean, data: any}[], isRequired = false): Promise<boolean> {
+    async initialPermissions(data: {isRequired: boolean, data: any}[], isRequired = false): Promise<boolean> {
         if (!data || !Array.isArray(data))
             throw new ValidationError(1);
         let roles = await this.roleBusiness.getAll();

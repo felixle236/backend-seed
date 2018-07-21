@@ -11,7 +11,7 @@ export default class CachingBusiness implements ICachingBusiness {
     @Inject(() => PermissionBusiness)
     private permissionBusiness: IPermissionBusiness; // eslint-disable-line
 
-    public fetchPermissionCaching(): Promise<number> {
+    fetchPermissionCaching(): Promise<number> {
         return new Promise<number>((resolve, reject) => {
             CachingAccess.permissions.remove({}, {multi: true}, async (error, numRemoved) => {
                 if (error) return reject(error);
@@ -26,7 +26,7 @@ export default class CachingBusiness implements ICachingBusiness {
         });
     }
 
-    public checkPermission(role: string, claim: number): Promise<boolean> {
+    checkPermission(role: string, claim: number): Promise<boolean> {
         return new Promise<boolean>((resolve, reject) => {
             CachingAccess.permissions.findOne({
                 role,
@@ -38,7 +38,7 @@ export default class CachingBusiness implements ICachingBusiness {
         });
     }
 
-    public getUserByToken(token: string): Promise<IUser | undefined> {
+    getUserByToken(token: string): Promise<IUser | undefined> {
         return new Promise<IUser | undefined>((resolve, reject) => {
             if (!token) return reject(new ValidationError(1));
 
@@ -54,7 +54,7 @@ export default class CachingBusiness implements ICachingBusiness {
         });
     }
 
-    public createUser(data: any): Promise<IUser> {
+    createUser(data: any): Promise<IUser> {
         return new Promise<IUser>((resolve, reject) => {
             if (!data || !data._id) return reject(new ValidationError(1));
 
@@ -82,7 +82,7 @@ export default class CachingBusiness implements ICachingBusiness {
         });
     }
 
-    public deleteUser(_id: string): Promise<boolean> {
+    deleteUser(_id: string): Promise<boolean> {
         return new Promise<boolean>((resolve, reject) => {
             if (!_id) return reject(new ValidationError(1));
 

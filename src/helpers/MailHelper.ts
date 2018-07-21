@@ -18,7 +18,7 @@ export default class MailHelper {
         }
     });
 
-    public static sendMail(email: string, subject: string, text?: string, html?: string): Promise<nodeMailer.SentMessageInfo> {
+    static sendMail(email: string, subject: string, text?: string, html?: string): Promise<nodeMailer.SentMessageInfo> {
         return this.transporter.sendMail({
             from: `${config.SMTP.SENDER.NAME} <${config.SMTP.SENDER.EMAIL}>`, // sender address
             to: email, // list of receivers
@@ -28,7 +28,7 @@ export default class MailHelper {
         });
     }
 
-    public static sendMailAdvanced(fromEmail: string, fromName: string, emails: string | string[], subject: string, text?: string, html?: string): Promise<nodeMailer.SentMessageInfo> {
+    static sendMailAdvanced(fromEmail: string, fromName: string, emails: string | string[], subject: string, text?: string, html?: string): Promise<nodeMailer.SentMessageInfo> {
         return MailHelper.transporter.sendMail({
             from: `${fromName} <${fromEmail}>`, // sender address
             to: Array.isArray(emails) && emails.length > 0 ? emails.join(', ') : emails, // list of receivers
@@ -38,7 +38,7 @@ export default class MailHelper {
         });
     }
 
-    public static loadMailTemplate(path, param) {
+    static loadMailTemplate(path, param) {
         let content = fs.readFileSync(path, 'utf8');
         if (param) {
             Object.keys(param).forEach(key => {
@@ -48,7 +48,7 @@ export default class MailHelper {
         return content;
     }
 
-    public static checkRealEmail(email: string): Promise<boolean> {
+    static checkRealEmail(email: string): Promise<boolean> {
         return new Promise((resolve, reject) => {
             emailExistence.check(email, (error, response) => {
                 if (error) {

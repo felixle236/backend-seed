@@ -1,14 +1,14 @@
 import IRole from './interfaces/IRole'; // eslint-disable-line
 
 export default class RoleView {
-    public id: string;
-    public code: number;
-    public name: string;
-    public level: number;
-    public createdAt: Date;
-    public updatedAt: Date;
+    id: string;
+    code: number;
+    name: string;
+    level: number;
+    createdAt: Date;
+    updatedAt: Date;
 
-    public constructor(data: IRole | undefined) {
+    constructor(data: IRole | undefined) {
         if (!data)
             return;
 
@@ -20,7 +20,7 @@ export default class RoleView {
         this.updatedAt = data.updatedAt;
     }
 
-    public static parseArray(list: IRole[]) {
+    static parseArray(list: IRole[]): RoleView[] {
         return list && Array.isArray(list) ? list.map(item => new RoleView(item)) : [];
     }
 }

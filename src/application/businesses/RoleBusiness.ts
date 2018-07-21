@@ -15,24 +15,27 @@ export default class RoleBusiness implements IRoleBusiness {
     @Inject()
     private roleRepository: RoleRepository;
 
-    public async getAll(): Promise<RoleView[]> {
+    async getAll(): Promise<RoleView[]> {
         let roles = await this.roleRepository.findAll();
         return RoleView.parseArray(roles);
     }
 
-    public async find(keyword?: string, page?: number, limit?: number): Promise<ResultList<RoleView>> {
+    async find(keyword?: string, page?: number, limit?: number): Promise<ResultList<RoleView>> {
         let resultList = new ResultList<RoleView>(page, limit);
-
         let param = {
             query: {
                 deletedAt: {$exists: false}
+            },
+            order: {
+                level: 1,
+                name: 1
             },
             page,
             limit
         };
 
         if (keyword)
-            (param.query as any).name = new RegExp(keyword, 'i');
+            (param.query as any).name = new RegExp(keyword.trim(), 'i');
 
         let roles = await this.roleRepository.find(param);
         resultList.results = RoleView.parseArray(roles);
@@ -40,19 +43,22 @@ export default class RoleBusiness implements IRoleBusiness {
         return resultList;
     }
 
-    public async lookup(keyword?: string, page?: number, limit?: number): Promise<ResultList<RoleLookup>> {
+    async lookup(keyword?: string, page?: number, limit?: number): Promise<ResultList<RoleLookup>> {
         let resultList = new ResultList<RoleLookup>(page, limit);
-
         let param = {
             query: {
                 deletedAt: {$exists: false}
+            },
+            order: {
+                level: 1,
+                name: 1
             },
             page,
             limit
         };
 
         if (keyword)
-            (param.query as any).name = new RegExp(keyword, 'i');
+            (param.query as any).name = new RegExp(keyword.trim(), 'i');
 
         let roles = await this.roleRepository.find(param);
         resultList.results = RoleLookup.parseArray(roles);
@@ -60,7 +66,7 @@ export default class RoleBusiness implements IRoleBusiness {
         return resultList;
     }
 
-    public async get(id: string): Promise<RoleView | undefined> {
+    async get(id: string): Promise<RoleView | undefined> {
         if (!validator.isMongoId(id))
             throw new ValidationError(1);
 
@@ -68,7 +74,7 @@ export default class RoleBusiness implements IRoleBusiness {
         return role && new RoleView(role);
     }
 
-    public async getRoleByCode(code: number): Promise<RoleView | undefined> {
+    async getRoleByCode(code: number): Promise<RoleView | undefined> {
         if (!code)
             throw new ValidationError(1);
 
@@ -103,7 +109,7 @@ export default class RoleBusiness implements IRoleBusiness {
             throw new ValidationError(102, 'level');
     }
 
-    public async create(data: any): Promise<RoleView | undefined> {
+    async create(data: any): Promise<RoleView | undefined> {
         if (!data)
             throw new ValidationError(1);
 
@@ -131,7 +137,7 @@ export default class RoleBusiness implements IRoleBusiness {
         return role && new RoleView(role);
     }
 
-    public async update(id: string, data: any): Promise<boolean> {
+    async update(id: string, data: any): Promise<boolean> {
         if (!validator.isMongoId(id) || !data)
             throw new ValidationError(1);
 
@@ -159,7 +165,7 @@ export default class RoleBusiness implements IRoleBusiness {
         return true;
     }
 
-    public async delete(id: string): Promise<boolean> {
+    async delete(id: string): Promise<boolean> {
         if (!validator.isMongoId(id))
             throw new ValidationError(1);
 
@@ -171,7 +177,7 @@ export default class RoleBusiness implements IRoleBusiness {
         return true;
     }
 
-    public async initialRoles(data: {isRequired: boolean, data: any}[], isRequired = false): Promise<boolean> {
+    async initialRoles(data: {isRequired: boolean, data: any}[], isRequired = false): Promise<boolean> {
         if (!data || !Array.isArray(data))
             throw new ValidationError(1);
 

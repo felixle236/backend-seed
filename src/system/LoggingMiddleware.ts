@@ -3,7 +3,7 @@ import {Middleware, ExpressMiddlewareInterface} from 'routing-controllers'; // e
 
 @Middleware({type: 'before'})
 export class LoggingMiddleware implements ExpressMiddlewareInterface {
-    public use(req: Request, res: Response, next: NextFunction): void {
+    use(req: Request, res: Response, next: NextFunction): void {
         next();
     }
 }

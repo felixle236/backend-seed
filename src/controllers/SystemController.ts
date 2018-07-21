@@ -23,25 +23,22 @@ export default class SystemController {
 
     @Post("/init-roles")
     // @Authorized(SystemClaim.INIT_DATA)
-    public async initRoles(@Body() isRequired: boolean) {
+    initRoles(@Body() isRequired: boolean) {
         let initRoles = getRoles();
-        await this.roleBusiness.initialRoles(initRoles, isRequired);
-        return true;
+        return this.roleBusiness.initialRoles(initRoles, isRequired);
     }
 
     @Post("/init-users")
     // @Authorized(SystemClaim.INIT_DATA)
-    public async initUsers(@Body() isRequired: boolean) {
+    initUsers(@Body() isRequired: boolean) {
         let initUsers = getUsers();
-        await this.userBusiness.initialUsers(initUsers, isRequired);
-        return true;
+        return this.userBusiness.initialUsers(initUsers, isRequired);
     }
 
     @Post("/init-permissions")
     // @Authorized(SystemClaim.INIT_DATA)
-    public async initPermissions(@Body() isRequired: boolean) {
+    initPermissions(@Body() isRequired: boolean) {
         let initPermissions = getPermissions();
-        await this.permissionBusiness.initialPermissions(initPermissions, isRequired);
-        return true;
+        return this.permissionBusiness.initialPermissions(initPermissions, isRequired);
     }
 }

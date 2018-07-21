@@ -1,9 +1,9 @@
 export default class Pagination {
-    public page: number;
-    public limit: number;
-    public total: number;
+    page: number;
+    limit: number;
+    total: number;
 
-    public constructor(page?: number, limit?: number) {
+    constructor(page?: number, limit?: number) {
         if (!page || isNaN(page))
             page = 1;
         if (!limit || isNaN(limit))
@@ -14,7 +14,7 @@ export default class Pagination {
         this.total = 0;
     }
 
-    public skip(): number {
+    skip(): number {
         return (this.page - 1) * this.limit;
     }
 }

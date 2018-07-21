@@ -4,22 +4,22 @@ import {GenderType} from '../common/CommonType';
 import DataHelper from '../../../helpers/DataHelper';
 
 export default class UserView {
-    public id: string;
-    public firstName: string;
-    public lastName: string;
-    public email: string;
-    public avatar?: string;
-    public gender?: GenderType;
-    public birthday?: Date;
-    public phone?: string;
-    public address?: string;
-    public culture?: string;
-    public currency?: string;
-    public role: string | RoleLookup;
-    public createdAt: Date;
-    public updatedAt: Date;
+    id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    avatar?: string;
+    gender?: GenderType;
+    birthday?: Date;
+    phone?: string;
+    address?: string;
+    culture?: string;
+    currency?: string;
+    role: string | RoleLookup;
+    createdAt: Date;
+    updatedAt: Date;
 
-    public constructor(data: IUser | undefined) {
+    constructor(data: IUser | undefined) {
         if (!data)
             return;
 
@@ -39,7 +39,7 @@ export default class UserView {
         this.updatedAt = data.updatedAt;
     }
 
-    public static parseArray(list: IUser[]) {
+    static parseArray(list: IUser[]): UserView[] {
         return list && Array.isArray(list) ? list.map(item => new UserView(item)) : [];
     }
 }

@@ -5,12 +5,12 @@ import UserProfile from './UserProfile';
 import DataHelper from '../../../helpers/DataHelper';
 
 export default class UserAuthentication {
-    public id: string;
-    public profile: UserProfile;
-    public role: string | RoleLookup;
-    public token: UserToken;
+    id: string;
+    profile: UserProfile;
+    role: string | RoleLookup;
+    token: UserToken;
 
-    public constructor(data: IUser | undefined) {
+    constructor(data: IUser | undefined) {
         if (!data)
             return;
 

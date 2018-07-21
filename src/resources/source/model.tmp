@@ -1,0 +1,24 @@
+import I{pascalName} from './interfaces/I{pascalName}'; // eslint-disable-line
+
+export default class {pascalName}View {
+    id: string;
+    code: number;
+    name: string;
+    createdAt: Date;
+    updatedAt: Date;
+
+    constructor(data: I{pascalName} | undefined) {
+        if (!data)
+            return;
+
+        this.id = data.id;
+        this.code = data.code;
+        this.name = data.name;
+        this.createdAt = data.createdAt;
+        this.updatedAt = data.updatedAt;
+    }
+
+    static parseArray(list: I{pascalName}[]): {pascalName}View[] {
+        return list && Array.isArray(list) ? list.map(item => new {pascalName}View(item)) : [];
+    }
+}

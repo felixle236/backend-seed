@@ -1,16 +1,28 @@
 import 'mocha';
 import {expect} from 'chai';
 import {Container} from 'typedi';
+import MongoAccess from '../../application/dataAccess/MongoAccess';
 import IRoleBusiness from '../../application/businesses/interfaces/IRoleBusiness'; // eslint-disable-line
 import RoleBusiness from '../../application/businesses/RoleBusiness';
 import IPermissionBusiness from '../../application/businesses/interfaces/IPermissionBusiness'; // eslint-disable-line
 import PermissionBusiness from '../../application/businesses/PermissionBusiness';
 import RoleClaim from '../../resources/permissions/RoleClaim';
+import getRoles from '../../resources/initialization/Roles';
 import getPermissions from '../../resources/initialization/Permissions';
 let roleBusiness: IRoleBusiness = Container.get(RoleBusiness);
 let permissionBusiness: IPermissionBusiness = Container.get(PermissionBusiness);
 
 describe('Permission business testing', () => {
+    before(async () => {
+        let roles = getRoles();
+        await roleBusiness.initialRoles(roles, true);
+    });
+
+    after(async () => {
+        await MongoAccess.connection.db.dropCollection('permissions');
+        await MongoAccess.connection.db.dropCollection('roles');
+    });
+
     it('Initial permissions with data input invalid', () => {
         permissionBusiness.initialPermissions(undefined as any, true).catch(error => {
             expect(error.httpCode).to.eq(400);

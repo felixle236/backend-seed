@@ -5,7 +5,7 @@ import IUser from '../models/user/interfaces/IUser'; // eslint-disable-line
 
 @Service()
 export default class UserRepository extends BaseRepository<IUser> {
-    public constructor() {
+    constructor() {
         super(UserSchema);
     }
 }

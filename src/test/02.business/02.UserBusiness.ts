@@ -1,12 +1,27 @@
 import 'mocha';
 import {expect} from 'chai';
 import {Container} from 'typedi';
+import MongoAccess from '../../application/dataAccess/MongoAccess';
+import IRoleBusiness from '../../application/businesses/interfaces/IRoleBusiness'; // eslint-disable-line
+import RoleBusiness from '../../application/businesses/RoleBusiness';
 import IUserBusiness from '../../application/businesses/interfaces/IUserBusiness'; // eslint-disable-line
 import UserBusiness from '../../application/businesses/UserBusiness';
 import getUsers from '../../resources/initialization/Users';
+import getRoles from '../../resources/initialization/Roles';
+let roleBusiness: IRoleBusiness = Container.get(RoleBusiness);
 let userBusiness: IUserBusiness = Container.get(UserBusiness);
 
 describe('User business testing', () => {
+    before(async () => {
+        let roles = getRoles();
+        await roleBusiness.initialRoles(roles, true);
+    });
+
+    after(async () => {
+        await MongoAccess.connection.db.dropCollection('users');
+        await MongoAccess.connection.db.dropCollection('roles');
+    });
+
     it('Initial users with data input invalid', () => {
         userBusiness.initialUsers(null as any, true).catch(error => {
             expect(error.httpCode).to.eq(400);

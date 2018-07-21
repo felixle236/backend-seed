@@ -1,0 +1,159 @@
+import {Container, Service, Inject} from 'typedi'; // eslint-disable-line
+import {Validator} from 'class-validator';
+import I{pascalName}Business from './interfaces/I{pascalName}Business'; // eslint-disable-line
+import {pascalName}Repository from '../repositories/{pascalName}Repository';
+import I{pascalName} from '../models/{camelName}/interfaces/I{pascalName}'; // eslint-disable-line
+import {pascalName}View from '../models/{camelName}/{pascalName}View';
+import {ValidationError} from '../models/common/Error';
+import ResultList from '../models/common/ResultList';
+import DataHelper from '../../helpers/DataHelper';
+const validator = Container.get(Validator);
+
+@Service()
+export default class {pascalName}Business implements I{pascalName}Business {
+    @Inject()
+    private {camelName}Repository: {pascalName}Repository;
+
+    async getAll(): Promise<{pascalName}View[]> {
+        let {camelName}s = await this.{camelName}Repository.findAll();
+        return {pascalName}View.parseArray({camelName}s);
+    }
+
+    async find(keyword?: string, page?: number, limit?: number): Promise<ResultList<{pascalName}View>> {
+        let resultList = new ResultList<{pascalName}View>(page, limit);
+        let param = {
+            query: {
+                deletedAt: {$exists: false}
+            },
+            page,
+            limit
+        };
+
+        if (keyword)
+            (param.query as any).name = new RegExp(keyword.trim(), 'i');
+
+        let {camelName}s = await this.{camelName}Repository.find(param);
+        resultList.results = {pascalName}View.parseArray({camelName}s);
+        resultList.pagination.total = await this.{camelName}Repository.count(param);
+        return resultList;
+    }
+
+    async get(id: string): Promise<{pascalName}View | undefined> {
+        if (!validator.isMongoId(id))
+            throw new ValidationError(1);
+
+        let {camelName} = await this.{camelName}Repository.get(id);
+        return {camelName} && new {pascalName}View({camelName});
+    }
+
+    async get{pascalName}ByCode(code: number): Promise<{pascalName}View | undefined> {
+        if (!code)
+            throw new ValidationError(1);
+
+        let param = {
+            query: {
+                code,
+                deletedAt: {$exists: false}
+            }
+        };
+
+        let {camelName} = await this.{camelName}Repository.findOne(param);
+        return {camelName} && new {pascalName}View({camelName});
+    }
+
+    private validate({camelName}: I{pascalName}) {
+        if (!{camelName})
+            throw new ValidationError(1);
+
+        if (!{camelName}.code)
+            throw new ValidationError(101, 'code');
+        if (!validator.isNumber({camelName}.code) || {camelName}.code < 1 || {camelName}.code > 100)
+            throw new ValidationError(102, 'code');
+
+        if (!{camelName}.name)
+            throw new ValidationError(101, 'name');
+        if ({camelName}.name.length > 30)
+            throw new ValidationError(202, 'name', 30);
+    }
+
+    async create(data: any): Promise<{pascalName}View | undefined> {
+        if (!data)
+            throw new ValidationError(1);
+
+        let {camelName}: any = DataHelper.filterDataInput({}, data, [
+            'code',
+            'name'
+        ]);
+        this.validate({camelName});
+
+        if (await this.{camelName}Repository.findOne({query: {code: {camelName}.code}}))
+            throw new ValidationError(105, 'code');
+
+        let param = {
+            query: {
+                name: new RegExp(`^${{camelName}.name}$`, 'i'),
+                deletedAt: {$exists: false}
+            }
+        };
+
+        if (await this.{camelName}Repository.findOne(param))
+            throw new ValidationError(105, 'name');
+
+        {camelName} = await this.{camelName}Repository.create({camelName});
+        return {camelName} && new {pascalName}View({camelName});
+    }
+
+    async update(id: string, data: any): Promise<boolean> {
+        if (!validator.isMongoId(id) || !data)
+            throw new ValidationError(1);
+
+        let {camelName} = await this.{camelName}Repository.get(id);
+        if (!{camelName})
+            throw new ValidationError(104, '{camelName}');
+
+        DataHelper.filterDataInput({camelName}, data, [
+            'name'
+        ]);
+        this.validate({camelName});
+
+        let param = {
+            query: {
+                _id: {$ne: DataHelper.toObjectId({camelName}.id)},
+                name: new RegExp(`^${{camelName}.name}$`, 'i'),
+                deletedAt: {$exists: false}
+            }
+        };
+        if (await this.{camelName}Repository.findOne(param))
+            throw new ValidationError(105, 'name');
+
+        await this.{camelName}Repository.update(id, {camelName});
+        return true;
+    }
+
+    async delete(id: string): Promise<boolean> {
+        if (!validator.isMongoId(id))
+            throw new ValidationError(1);
+
+        let {camelName} = await this.{camelName}Repository.get(id);
+        if (!{camelName})
+            throw new ValidationError(104, '{camelName}');
+
+        await this.{camelName}Repository.delete(id);
+        return true;
+    }
+
+    async initial{pascalName}s(data: {isRequired: boolean, data: any}[], isRequired = false): Promise<boolean> {
+        if (!data || !Array.isArray(data))
+            throw new ValidationError(1);
+
+        for (let i = 0; i < data.length; i++) {
+            let item = data[i];
+            if (item.isRequired || isRequired) {
+                await this.create(item.data).catch(error => {
+                    console.log(`{pascalName} '${item.data.name}' cannot create with error`, error); // eslint-disable-line
+                });
+            }
+        }
+        return true;
+    }
+}

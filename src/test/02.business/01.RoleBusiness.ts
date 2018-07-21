@@ -1,12 +1,17 @@
 import 'mocha';
 import {expect} from 'chai';
 import {Container} from 'typedi';
+import MongoAccess from '../../application/dataAccess/MongoAccess';
 import IRoleBusiness from '../../application/businesses/interfaces/IRoleBusiness'; // eslint-disable-line
 import RoleBusiness from '../../application/businesses/RoleBusiness';
 import getRoles from '../../resources/initialization/Roles';
 let roleBusiness: IRoleBusiness = Container.get(RoleBusiness);
 
 describe('Role business testing', () => {
+    after(async () => {
+        await MongoAccess.connection.db.dropCollection('roles');
+    });
+
     it('Initial roles with data input invalid', () => {
         roleBusiness.initialRoles(undefined as any, true).catch(error => {
             expect(error.httpCode).to.eq(400);
@@ -31,6 +36,16 @@ describe('Role business testing', () => {
 
     it('Find roles with name', async () => {
         let data = await roleBusiness.find('test', 1, 1);
+        expect(data && Array.isArray(data.results) && data.pagination && data.pagination.total === data.results.length).to.eq(true);
+    });
+
+    it('Lookup roles without param', async () => {
+        let data = await roleBusiness.lookup();
+        expect(data && Array.isArray(data.results) && data.pagination && data.pagination.total === data.results.length).to.eq(true);
+    });
+
+    it('Lookup roles with name', async () => {
+        let data = await roleBusiness.lookup('test', 1, 1);
         expect(data && Array.isArray(data.results) && data.pagination && data.pagination.total === data.results.length).to.eq(true);
     });
 

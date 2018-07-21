@@ -1,5 +1,5 @@
 export default class DateHelper {
-    public static convertStartDate(date: string | Date): Date | undefined {
+    static convertStartDate(date: string | Date): Date | undefined {
         if (!date)
             return undefined;
         let d;
@@ -12,7 +12,7 @@ export default class DateHelper {
         return new Date(d.getFullYear(), d.getMonth(), d.getDate());
     }
 
-    public static convertEndDate(date: string | Date): Date | undefined {
+    static convertEndDate(date: string | Date): Date | undefined {
         if (!date)
             return undefined;
         let d;
@@ -28,32 +28,32 @@ export default class DateHelper {
         return DateHelper.addSeconds(d, -1);
     }
 
-    public static addSeconds(date: Date, seconds: number): Date {
+    static addSeconds(date: Date, seconds: number): Date {
         date.setSeconds(date.getSeconds() + seconds);
         return date;
     }
 
-    public static addMinutes(date: Date, minutes: number): Date {
+    static addMinutes(date: Date, minutes: number): Date {
         date.setMinutes(date.getMinutes() + minutes);
         return date;
     }
 
-    public static addHours(date: Date, hours: number): Date {
+    static addHours(date: Date, hours: number): Date {
         date.setHours(date.getHours() + hours);
         return date;
     }
 
-    public static addDays(date: Date, days: number): Date {
+    static addDays(date: Date, days: number): Date {
         date.setDate(date.getDate() + days);
         return date;
     }
 
-    public static addMonths(date: Date, months: number): Date {
+    static addMonths(date: Date, months: number): Date {
         date.setMonth(date.getMonth() + months);
         return date;
     }
 
-    public static addYears(date: Date, years: number): Date {
+    static addYears(date: Date, years: number): Date {
         date.setFullYear(date.getFullYear() + years);
         return date;
     }

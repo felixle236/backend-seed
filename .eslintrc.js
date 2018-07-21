@@ -18,6 +18,7 @@ module.exports = {
         'require-jsdoc': 'error',
         'curly': ['error', 'multi-or-nest'],
         'eqeqeq': ['error', 'always', {'null': 'ignore'}],
+        'no-return-await': 'off',
         'no-multiple-empty-lines': ['error', { 'max': 1, 'maxEOF': 1 }],
         'space-before-function-paren': ['error', {
             'anonymous': 'never',

@@ -1,0 +1,8 @@
+import IBaseModel from '../../common/interfaces/IBaseModel';
+
+interface I{pascalName} extends IBaseModel {
+    code: number;
+    name: string;
+}
+
+export default I{pascalName};

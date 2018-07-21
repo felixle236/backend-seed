@@ -3,7 +3,7 @@ import MongoAccess from '../dataAccess/MongoAccess';
 import IPermission from '../models/permission/interfaces/IPermission'; // eslint-disable-line
 
 class PermissionSchema {
-    public static get schema() {
+    static get schema() {
         let schemaDefinition: mongoose.SchemaDefinition = {
             role: {
                 type: mongoose.Schema.Types.ObjectId,
