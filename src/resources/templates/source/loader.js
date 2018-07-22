@@ -14,8 +14,8 @@ if (moduleName) {
     let schema = getFileContent(`${__dirname}/schema.tmp`, camelName, pascalName);
 
     let modelDirPath = `${__dirname}/../../../application/models/${camelName}`;
-    let modelPath = `${__dirname}/../../../application/models/${camelName}/${pascalName}.ts`;
-    let model = getFileContent(`${__dirname}/model.tmp`, camelName, pascalName);
+    let modelViewPath = `${__dirname}/../../../application/models/${camelName}/${pascalName}View.ts`;
+    let modelView = getFileContent(`${__dirname}/model.tmp`, camelName, pascalName);
 
     let repositoryPath = `${__dirname}/../../../application/repositories/${pascalName}Repository.ts`;
     let repository = getFileContent(`${__dirname}/repository.tmp`, camelName, pascalName);
@@ -32,6 +32,12 @@ if (moduleName) {
     let claimPath = `${__dirname}/../../../resources/permissions/${pascalName}Claim.ts`;
     let claim = getFileContent(`${__dirname}/claim.tmp`, camelName, pascalName);
 
+    let initializationPath = `${__dirname}/../../../resources/initialization/${pascalName}s.ts`;
+    let initialization = getFileContent(`${__dirname}/initialization.tmp`, camelName, pascalName);
+
+    let businessTestingPath = `${__dirname}/../../../test/02.businesses/${pascalName}Business.ts`;
+    let businessTesting = getFileContent(`${__dirname}/businessTesting.tmp`, camelName, pascalName);
+
     if (!fs.existsSync(modelDirPath))
         fs.mkdirSync(modelDirPath);
     if (!fs.existsSync(modelInterfaceDirPath))
@@ -39,12 +45,14 @@ if (moduleName) {
 
     fs.writeFileSync(modelInterfacePath, modelInterface);
     fs.writeFileSync(schemaPath, schema);
-    fs.writeFileSync(modelPath, model);
+    fs.writeFileSync(modelViewPath, modelView);
     fs.writeFileSync(repositoryPath, repository);
     fs.writeFileSync(businessInterfacePath, businessInterface);
     fs.writeFileSync(businessPath, business);
     fs.writeFileSync(controllerPath, controller);
     fs.writeFileSync(claimPath, claim);
+    fs.writeFileSync(initializationPath, initialization);
+    fs.writeFileSync(businessTestingPath, businessTesting);
 }
 
 /**

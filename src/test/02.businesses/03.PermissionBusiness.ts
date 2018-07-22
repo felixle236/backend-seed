@@ -58,17 +58,17 @@ describe('Permission business testing', () => {
         }
     });
 
-    it('Create new permission with invalid data', async () => {
-        await permissionBusiness.create(undefined).catch(error => {
+    it('Create new permission with data invalid', () => {
+        permissionBusiness.create(undefined).catch(error => {
             expect(error.httpCode).to.eq(400);
         });
     });
 
-    it('Create new permission without role', async () => {
+    it('Create new permission without role', () => {
         let permissionCreate = {
             claim: 100000
         };
-        await permissionBusiness.create(permissionCreate).catch(error => {
+        permissionBusiness.create(permissionCreate).catch(error => {
             expect(error.httpCode).to.eq(400);
         });
     });
@@ -85,7 +85,7 @@ describe('Permission business testing', () => {
         }
     });
 
-    it('Create new permission', async () => {
+    it('Create new permission successfully', async () => {
         let roles = await roleBusiness.getAll();
         if (roles.length) {
             let permissionCreate = {
@@ -97,7 +97,7 @@ describe('Permission business testing', () => {
         }
     });
 
-    it('Create new permission with duplicate', async () => {
+    it('Create new permission with duplication', async () => {
         let roles = await roleBusiness.getAll();
         if (roles.length) {
             let permissionCreate = {

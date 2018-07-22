@@ -1,0 +1,11 @@
+/**
+ * Get init {camelName} list
+ * @returns {*} List {camelName}
+ */
+export default function get{pascalName}s(): {isRequired: boolean, data: any}[] {
+    return [
+        {isRequired: true, data: {code: 1, name: '{pascalName} 1'}},
+        {isRequired: false, data: {code: 2, name: '{pascalName} 2'}},
+        {isRequired: false, data: {code: 3, name: '{pascalName} 3'}}
+    ];
+}

@@ -14,11 +14,6 @@ export default class {pascalName}Business implements I{pascalName}Business {
     @Inject()
     private {camelName}Repository: {pascalName}Repository;
 
-    async getAll(): Promise<{pascalName}View[]> {
-        let {camelName}s = await this.{camelName}Repository.findAll();
-        return {pascalName}View.parseArray({camelName}s);
-    }
-
     async find(keyword?: string, page?: number, limit?: number): Promise<ResultList<{pascalName}View>> {
         let resultList = new ResultList<{pascalName}View>(page, limit);
         let param = {

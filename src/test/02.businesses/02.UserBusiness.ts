@@ -44,7 +44,7 @@ describe('User business testing', () => {
         expect(data && Array.isArray(data.results) && data.pagination && data.pagination.total === data.results.length).to.eq(true);
     });
 
-    it('Get user by invalid id', () => {
+    it('Get user by id invalid', () => {
         userBusiness.get('123').catch(error => {
             expect(error.httpCode).to.eq(400);
         });
@@ -58,7 +58,7 @@ describe('User business testing', () => {
         }
     });
 
-    it('Get user profile by invalid id', () => {
+    it('Get user profile by id invalid', () => {
         userBusiness.getProfile('123').catch(error => {
             expect(error.httpCode).to.eq(400);
         });
@@ -72,8 +72,8 @@ describe('User business testing', () => {
         }
     });
 
-    it('Get user by invalid token', async () => {
-        await userBusiness.getUserByToken('').catch(error => {
+    it('Get user by invalid token', () => {
+        userBusiness.getUserByToken('').catch(error => {
             expect(error.httpCode).to.eq(400);
         });
     });
@@ -92,7 +92,7 @@ describe('User business testing', () => {
         });
     });
 
-    it('Signin with invalid email', () => {
+    it('Signin with email invalid', () => {
         userBusiness.authenticate('admin@', '123456').catch(error => {
             expect(error.httpCode).to.eq(400);
         });
@@ -115,8 +115,68 @@ describe('User business testing', () => {
         expect(!!userAuth).to.eq(true);
     });
 
-    it('Signup with invalid data', () => {
+    it('Signup with data invalid', () => {
         userBusiness.signup(undefined).catch(error => {
+            expect(error.httpCode).to.eq(400);
+        });
+    });
+
+    it('Signup without first name', () => {
+        let userCreate = {
+            firstName: '',
+            lastName: 'Le',
+            email: 'felix.le.236@gmail.com',
+            password: '123456'
+        };
+        userBusiness.signup(userCreate).catch(error => {
+            expect(error.httpCode).to.eq(400);
+        });
+    });
+
+    it('Signup without last name', () => {
+        let userCreate = {
+            firstName: 'Felix',
+            lastName: '',
+            email: 'felix.le.236@gmail.com',
+            password: '123456'
+        };
+        userBusiness.signup(userCreate).catch(error => {
+            expect(error.httpCode).to.eq(400);
+        });
+    });
+
+    it('Signup without email', () => {
+        let userCreate = {
+            firstName: 'Felix',
+            lastName: 'Le',
+            email: '',
+            password: '123456'
+        };
+        userBusiness.signup(userCreate).catch(error => {
+            expect(error.httpCode).to.eq(400);
+        });
+    });
+
+    it('Signup without email invalid', () => {
+        let userCreate = {
+            firstName: 'Felix',
+            lastName: 'Le',
+            email: 'felix.le.236@',
+            password: '123456'
+        };
+        userBusiness.signup(userCreate).catch(error => {
+            expect(error.httpCode).to.eq(400);
+        });
+    });
+
+    it('Signup without password', () => {
+        let userCreate = {
+            firstName: 'Felix',
+            lastName: 'Le',
+            email: 'felix.le.236@gmail.com',
+            password: ''
+        };
+        userBusiness.signup(userCreate).catch(error => {
             expect(error.httpCode).to.eq(400);
         });
     });
@@ -144,13 +204,7 @@ describe('User business testing', () => {
         });
     });
 
-    it('Update user with invalid id', () => {
-        userBusiness.update('', undefined).catch(error => {
-            expect(error.httpCode).to.eq(400);
-        });
-    });
-
-    it('Update user with invalid data', async () => {
+    it('Update user with data invalid', async () => {
         let data = await userBusiness.find('', 1, 1);
         if (data && data.results && data.results.length) {
             await userBusiness.update(data.results[0].id, undefined).catch(error => {
@@ -159,8 +213,24 @@ describe('User business testing', () => {
         }
     });
 
+    it('Update user without id', () => {
+        userBusiness.update('', undefined).catch(error => {
+            expect(error.httpCode).to.eq(400);
+        });
+    });
+
+    it('Update user with id not exists', async () => {
+        let data = await userBusiness.find();
+        if (data && data.results && data.results.length) {
+            let userUpdate = data.results[0];
+            await userBusiness.update('5b4dbf5b968d3a484eb5810a', userUpdate).catch(error => {
+                expect(error.httpCode).to.eq(400);
+            });
+        }
+    });
+
     it('Update user without first name', async () => {
-        let data = await userBusiness.find('', 1, 1);
+        let data = await userBusiness.find();
         if (data && data.results && data.results.length) {
             let user = data.results[0];
             delete user.firstName;
@@ -216,8 +286,8 @@ describe('User business testing', () => {
         }
     });
 
-    it('Update password with data invalid', async () => {
-        await userBusiness.updatePassword('', '', '').catch(error => {
+    it('Update password with data invalid', () => {
+        userBusiness.updatePassword('', '', '').catch(error => {
             expect(error.httpCode).to.eq(400);
         });
     });
@@ -241,13 +311,19 @@ describe('User business testing', () => {
         }
     });
 
-    it('Delete user with invalid id', () => {
+    it('Delete user without id', () => {
         userBusiness.delete('').catch(error => {
             expect(error.httpCode).to.eq(400);
         });
     });
 
-    it('Delete user', async () => {
+    it('Delete user with id not exists', () => {
+        userBusiness.delete('5b4dbf5b968d3a484eb5810a').catch(error => {
+            expect(error.httpCode).to.eq(400);
+        });
+    });
+
+    it('Delete user successfully', async () => {
         let userAuth = await userBusiness.authenticate('felix.le.236@gmail.com', '123456');
         if (userAuth) {
             let result = await userBusiness.delete(userAuth.id);

@@ -59,8 +59,8 @@ describe('Caching business testing', () => {
         }
     });
 
-    it('Get user caching by invalid token', async () => {
-        await cachingBusiness.getUserByToken('').catch(error => {
+    it('Get user caching by token invalid', () => {
+        cachingBusiness.getUserByToken('').catch(error => {
             expect(error.httpCode).to.eq(400);
         });
     });
@@ -82,13 +82,13 @@ describe('Caching business testing', () => {
         }
     });
 
-    it('Create user caching with invalid data', async () => {
-        await cachingBusiness.createUser(undefined).catch(error => {
+    it('Create user caching with data invalid', () => {
+        cachingBusiness.createUser(undefined).catch(error => {
             expect(error.httpCode).to.eq(400);
         });
     });
 
-    it('Create user caching', async () => {
+    it('Create user caching successfully', async () => {
         let userAuth = await userBusiness.authenticate('admin@localhost.com', '123456');
         if (userAuth) {
             let user = await userBusiness.getUserByToken(userAuth.token.accessToken);
@@ -99,13 +99,19 @@ describe('Caching business testing', () => {
         }
     });
 
-    it('Delete user caching with invalid id', async () => {
-        await cachingBusiness.deleteUser('').catch(error => {
+    it('Delete user caching without id', () => {
+        cachingBusiness.deleteUser('').catch(error => {
             expect(error.httpCode).to.eq(400);
         });
     });
 
-    it('Delete user caching', async () => {
+    it('Delete user caching with id not exists', () => {
+        cachingBusiness.deleteUser('5b4dbf5b968d3a484eb5810a').catch(error => {
+            expect(error.httpCode).to.eq(400);
+        });
+    });
+
+    it('Delete user caching successfully', async () => {
         let userAuth = await userBusiness.authenticate('admin@localhost.com', '123456');
         if (userAuth) {
             let user = await userBusiness.getUserByToken(userAuth.token.accessToken);

@@ -1,0 +1,213 @@
+import 'mocha';
+import {expect} from 'chai';
+import {Container} from 'typedi';
+import MongoAccess from '../../application/dataAccess/MongoAccess';
+import I{pascalName}Business from '../../application/businesses/interfaces/I{pascalName}Business'; // eslint-disable-line
+import {pascalName}Business from '../../application/businesses/{pascalName}Business';
+import get{pascalName}s from '../../resources/initialization/{pascalName}s';
+let {camelName}Business: I{pascalName}Business = Container.get({pascalName}Business);
+
+describe('{pascalName} business testing', () => {
+    after(async () => {
+        await MongoAccess.connection.db.dropCollection('{camelName}s');
+    });
+
+    it('Initial {camelName}s with data input invalid', () => {
+        {camelName}Business.initial{pascalName}s(undefined as any, true).catch(error => {
+            expect(error.httpCode).to.eq(400);
+        });
+    });
+
+    it('Initial {camelName}s', async () => {
+        let init{pascalName}s = get{pascalName}s();
+        let result = await {camelName}Business.initial{pascalName}s(init{pascalName}s, true);
+        expect(result).to.eq(true);
+    });
+
+    it('Find {camelName}s without param', async () => {
+        let data = await {camelName}Business.find();
+        expect(data && Array.isArray(data.results) && data.pagination && data.pagination.total === data.results.length).to.eq(true);
+    });
+
+    it('Find {camelName}s with name', async () => {
+        let data = await {camelName}Business.find('test', 1, 1);
+        expect(data && Array.isArray(data.results) && data.pagination && data.pagination.total === data.results.length).to.eq(true);
+    });
+
+    it('Get {camelName} by id invalid', () => {
+        {camelName}Business.get('123').catch(error => {
+            expect(error.httpCode).to.eq(400);
+        });
+    });
+
+    it('Get {camelName} by id', async () => {
+        let {camelName};
+        let data = await {camelName}Business.find();
+        if (data && data.results && data.results.length)
+            {camelName} = await {camelName}Business.get(data.results[0].id);
+        expect(!!{camelName}).to.eq(true);
+    });
+
+    it('Get {camelName} by code invalid', () => {
+        {camelName}Business.get{pascalName}ByCode(0).catch(error => {
+            expect(error.httpCode).to.eq(400);
+        });
+    });
+
+    it('Get {camelName} by code', async () => {
+        let {camelName};
+        let data = await {camelName}Business.find();
+        if (data && data.results && data.results.length)
+            {camelName} = await {camelName}Business.getCustomerByCode(data.results[0].code);
+        expect(!!{camelName}).to.eq(true);
+    });
+
+    it('Create new {camelName} with data invalid', () => {
+        {camelName}Business.create(undefined).catch(error => {
+            expect(error.httpCode).to.eq(400);
+        });
+    });
+
+    it('Create new {camelName} without name', () => {
+        let {camelName}Create = {
+            code: 1,
+            name: ''
+        };
+        {camelName}Business.create({camelName}Create).catch(error => {
+            expect(error.httpCode).to.eq(400);
+        });
+    });
+
+    it('Create new {camelName} with length name invalid', () => {
+        let {camelName}Create = {
+            code: 1,
+            name: 'This is the name with length greater than 50 characters!'
+        };
+        {camelName}Business.create({camelName}Create).catch(error => {
+            expect(error.httpCode).to.eq(400);
+        });
+    });
+
+    it('Create new {camelName} successfully', async () => {
+        let {camelName}Create = {
+            code: 10,
+            name: '{pascalName} test'
+        };
+        let {camelName} = await {camelName}Business.create({camelName}Create);
+        expect(!!{camelName}).to.eq(true);
+    });
+
+    it('Create new {camelName} with code duplication', () => {
+        let {camelName}Create = {
+            code: 10,
+            name: '{pascalName} test'
+        };
+        {camelName}Business.create({camelName}Create).catch(error => {
+            expect(error.httpCode).to.eq(400);
+        });
+    });
+
+    it('Create new {camelName} with name duplication', () => {
+        let {camelName}Create = {
+            code: 11,
+            name: '{pascalName} test'
+        };
+        {camelName}Business.create({camelName}Create).catch(error => {
+            expect(error.httpCode).to.eq(400);
+        });
+    });
+
+    it('Update {camelName} with data invalid', async () => {
+        let data = await {camelName}Business.find();
+        if (data && data.results && data.results.length) {
+            await {camelName}Business.update(data.results[0].id, undefined).catch(error => {
+                expect(error.httpCode).to.eq(400);
+            });
+        }
+    });
+
+    it('Update {camelName} without id', () => {
+        {camelName}Business.update('', undefined).catch(error => {
+            expect(error.httpCode).to.eq(400);
+        });
+    });
+
+    it('Update {camelName} with id not exists', async () => {
+        let data = await {camelName}Business.find();
+        if (data && data.results && data.results.length) {
+            let {camelName}Update = data.results[0];
+            await {camelName}Business.update('5b4dbf5b968d3a484eb5810a', {camelName}Update).catch(error => {
+                expect(error.httpCode).to.eq(400);
+            });
+        }
+    });
+
+    it('Update {camelName} without name', async () => {
+        let data = await {camelName}Business.find();
+        if (data && data.results && data.results.length) {
+            let {camelName}Update = data.results[0];
+            {camelName}Update.name = '';
+
+            await {camelName}Business.update({camelName}Update.id, {camelName}Update).catch(error => {
+                expect(error.httpCode).to.eq(400);
+            });
+        }
+    });
+
+    it('Update {camelName} with length name invalid', async () => {
+        let data = await {camelName}Business.find();
+        if (data && data.results && data.results.length) {
+            let {camelName}Update = data.results[0];
+            {camelName}Update.name = 'This is the name with length greater than 50 characters!';
+
+            await {camelName}Business.update({camelName}Update.id, {camelName}Update).catch(error => {
+                expect(error.httpCode).to.eq(400);
+            });
+        }
+    });
+
+    it('Update {camelName} with name duplication', async () => {
+        let {camelName}Create = {
+            code: 12,
+            name: '{pascalName} test 2'
+        };
+        let {camelName} = await {camelName}Business.create({camelName}Create);
+        if ({camelName}) {
+            {camelName}.name = '{pascalName} test';
+            await {camelName}Business.update({camelName}.id, {camelName}).catch(error => {
+                expect(error.httpCode).to.eq(400);
+            });
+        }
+    });
+
+    it('Update {camelName} successfully', async () => {
+        let result;
+        let data = await {camelName}Business.find();
+        if (data && data.results && data.results.length) {
+            let {camelName}Update = data.results[0];
+            {camelName}Update.name = '{pascalName} test updated';
+            result = await {camelName}Business.update({camelName}Update.id, {camelName}Update);
+            expect(!!result).to.eq(true);
+        }
+    });
+
+    it('Delete {camelName} without id', () => {
+        {camelName}Business.delete('').catch(error => {
+            expect(error.httpCode).to.eq(400);
+        });
+    });
+
+    it('Delete {camelName} with id not exists', () => {
+        {camelName}Business.delete('5b4dbf5b968d3a484eb5810a').catch(error => {
+            expect(error.httpCode).to.eq(400);
+        });
+    });
+
+    it('Delete {camelName} successfully', async () => {
+        let result;
+        let data = await {camelName}Business.find();
+        if (data && data.results && data.results.length)
+            result = await {camelName}Business.delete(data.results[0].id);
+        expect(result).to.eq(true);
+    });
+});

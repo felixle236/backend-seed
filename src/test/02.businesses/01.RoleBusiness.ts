@@ -49,8 +49,8 @@ describe('Role business testing', () => {
         expect(data && Array.isArray(data.results) && data.pagination && data.pagination.total === data.results.length).to.eq(true);
     });
 
-    it('Get role by invalid id', async () => {
-        await roleBusiness.get('').catch(error => {
+    it('Get role by id invalid', () => {
+        roleBusiness.get('123').catch(error => {
             expect(error.httpCode).to.eq(400);
         });
     });
@@ -63,8 +63,8 @@ describe('Role business testing', () => {
         expect(!!role).to.eq(true);
     });
 
-    it('Get role by invalid code', async () => {
-        await roleBusiness.getRoleByCode(0).catch(error => {
+    it('Get role by code invalid', () => {
+        roleBusiness.getRoleByCode(0).catch(error => {
             expect(error.httpCode).to.eq(400);
         });
     });
@@ -77,35 +77,35 @@ describe('Role business testing', () => {
         expect(!!role).to.eq(true);
     });
 
-    it('Create new role with invalid data', async () => {
-        await roleBusiness.create(undefined).catch(error => {
+    it('Create new role with data invalid', () => {
+        roleBusiness.create(undefined).catch(error => {
             expect(error.httpCode).to.eq(400);
         });
     });
 
-    it('Create new role without name', async () => {
+    it('Create new role without name', () => {
         let roleCreate = {
             code: 1,
             name: '',
             level: 1
         };
-        await roleBusiness.create(roleCreate).catch(error => {
+        roleBusiness.create(roleCreate).catch(error => {
             expect(error.httpCode).to.eq(400);
         });
     });
 
-    it('Create new role with length name invalid', async () => {
+    it('Create new role with length name invalid', () => {
         let roleCreate = {
             code: 1,
-            name: 'This is the name with length greater than 30 characters!',
+            name: 'This is the name with length greater than 50 characters!',
             level: 1
         };
-        await roleBusiness.create(roleCreate).catch(error => {
+        roleBusiness.create(roleCreate).catch(error => {
             expect(error.httpCode).to.eq(400);
         });
     });
 
-    it('Create new role', async () => {
+    it('Create new role successfully', async () => {
         let roleCreate = {
             code: 10,
             name: 'Role test',
@@ -115,38 +115,48 @@ describe('Role business testing', () => {
         expect(!!role).to.eq(true);
     });
 
-    it('Create new role with duplicate code', async () => {
+    it('Create new role with code duplication', () => {
         let roleCreate = {
             code: 10,
             name: 'Role test',
             level: 10
         };
-        await roleBusiness.create(roleCreate).catch(error => {
+        roleBusiness.create(roleCreate).catch(error => {
             expect(error.httpCode).to.eq(400);
         });
     });
 
-    it('Create new role with duplicate name', async () => {
+    it('Create new role with name duplication', () => {
         let roleCreate = {
             code: 11,
             name: 'Role test',
             level: 11
         };
-        await roleBusiness.create(roleCreate).catch(error => {
+        roleBusiness.create(roleCreate).catch(error => {
             expect(error.httpCode).to.eq(400);
         });
     });
 
-    it('Update role with invalid id', async () => {
-        await roleBusiness.update('', undefined).catch(error => {
-            expect(error.httpCode).to.eq(400);
-        });
-    });
-
-    it('Update role with invalid data', async () => {
+    it('Update role with data invalid', async () => {
         let roles = await roleBusiness.getAll();
         if (roles.length) {
             await roleBusiness.update(roles[0].id, undefined).catch(error => {
+                expect(error.httpCode).to.eq(400);
+            });
+        }
+    });
+
+    it('Update role without id', () => {
+        roleBusiness.update('', undefined).catch(error => {
+            expect(error.httpCode).to.eq(400);
+        });
+    });
+
+    it('Update role with id not exists', async () => {
+        let roles = await roleBusiness.getAll();
+        if (roles.length) {
+            let roleUpdate = roles[0];
+            await roleBusiness.update('5b4dbf5b968d3a484eb5810a', roleUpdate).catch(error => {
                 expect(error.httpCode).to.eq(400);
             });
         }
@@ -168,7 +178,7 @@ describe('Role business testing', () => {
         let roles = await roleBusiness.getAll();
         if (roles.length) {
             let roleUpdate = roles[0];
-            roleUpdate.name = 'This is the name with length greater than 30 characters!';
+            roleUpdate.name = 'This is the name with length greater than 50 characters!';
 
             await roleBusiness.update(roleUpdate.id, roleUpdate).catch(error => {
                 expect(error.httpCode).to.eq(400);
@@ -176,7 +186,7 @@ describe('Role business testing', () => {
         }
     });
 
-    it('Update role with duplicate name', async () => {
+    it('Update role with name duplication', async () => {
         let roleCreate = {
             code: 12,
             name: 'Role test 2',
@@ -191,7 +201,7 @@ describe('Role business testing', () => {
         }
     });
 
-    it('Update role', async () => {
+    it('Update role successfully', async () => {
         let result;
         let roles = await roleBusiness.getAll();
         if (roles.length < 1) {
@@ -202,23 +212,23 @@ describe('Role business testing', () => {
         }
     });
 
-    it('Delete role with invalid id', async () => {
-        await roleBusiness.delete('').catch(error => {
+    it('Delete role without id', () => {
+        roleBusiness.delete('').catch(error => {
             expect(error.httpCode).to.eq(400);
         });
     });
 
-    it('Delete role', async () => {
+    it('Delete role with id not exists', () => {
+        roleBusiness.delete('5b4dbf5b968d3a484eb5810a').catch(error => {
+            expect(error.httpCode).to.eq(400);
+        });
+    });
+
+    it('Delete role successfully', async () => {
         let result;
         let roles = await roleBusiness.getAll();
         if (roles.length)
             result = await roleBusiness.delete(roles[0].id);
         expect(result).to.eq(true);
-    });
-
-    it('Initial roles with data input invalid', async () => {
-        await roleBusiness.initialRoles(null as any, true).catch(error => {
-            expect(error.httpCode).to.eq(400);
-        });
     });
 });
